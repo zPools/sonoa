@@ -1,0 +1,8 @@
+obj/alert.o: alert.cpp alert.h uint256.h util.h netbase.h serialize.h \
+ allocators.h version.h clientversion.h compat.h key.h net.h core.h \
+ script.h keystore.h crypter.h sync.h threadsafety.h stealth.h bignum.h \
+ mruset.h protocol.h addrman.h ui_interface.h
+alert.cpp alert.h uint256.h util.h netbase.h serialize.h :
+ allocators.h version.h clientversion.h compat.h key.h net.h core.h :
+ script.h keystore.h crypter.h sync.h threadsafety.h stealth.h bignum.h :
+ mruset.h protocol.h addrman.h ui_interface.h :

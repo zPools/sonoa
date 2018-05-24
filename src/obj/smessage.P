@@ -1,0 +1,32 @@
+obj/smessage.o: smessage.cpp smessage.h \
+ /home/michi/denarius/src/leveldb/include/leveldb/db.h \
+ /home/michi/denarius/src/leveldb/include/leveldb/iterator.h \
+ /home/michi/denarius/src/leveldb/include/leveldb/slice.h \
+ /home/michi/denarius/src/leveldb/include/leveldb/status.h \
+ /home/michi/denarius/src/leveldb/include/leveldb/options.h \
+ /home/michi/denarius/src/leveldb/include/leveldb/write_batch.h net.h \
+ core.h uint256.h serialize.h allocators.h version.h clientversion.h \
+ util.h netbase.h compat.h script.h keystore.h key.h crypter.h sync.h \
+ threadsafety.h stealth.h bignum.h mruset.h protocol.h addrman.h db.h \
+ main.h scrypt.h hashblock.h obj/sonoA/sph_skein.h obj/sonoA/sph_types.h \
+ obj/sonoA/sph_echo.h obj/sonoA/sph_fugue.h obj/sonoA/sph_gost.h \
+ obj/sonoA/raptor.h obj/sonoA/sph_bmw.h obj/sonoA/sph_jh.h \
+ obj/sonoA/sph_keccak.h wallet.h ui_interface.h walletdb.h base58.h \
+ lz4/lz4.h init.h txdb.h txdb-leveldb.h lz4/lz4.c xxhash/xxhash.h \
+ xxhash/xxhash.c
+smessage.cpp smessage.h :
+ /home/michi/denarius/src/leveldb/include/leveldb/db.h :
+ /home/michi/denarius/src/leveldb/include/leveldb/iterator.h :
+ /home/michi/denarius/src/leveldb/include/leveldb/slice.h :
+ /home/michi/denarius/src/leveldb/include/leveldb/status.h :
+ /home/michi/denarius/src/leveldb/include/leveldb/options.h :
+ /home/michi/denarius/src/leveldb/include/leveldb/write_batch.h net.h :
+ core.h uint256.h serialize.h allocators.h version.h clientversion.h :
+ util.h netbase.h compat.h script.h keystore.h key.h crypter.h sync.h :
+ threadsafety.h stealth.h bignum.h mruset.h protocol.h addrman.h db.h :
+ main.h scrypt.h hashblock.h obj/sonoA/sph_skein.h obj/sonoA/sph_types.h :
+ obj/sonoA/sph_echo.h obj/sonoA/sph_fugue.h obj/sonoA/sph_gost.h :
+ obj/sonoA/raptor.h obj/sonoA/sph_bmw.h obj/sonoA/sph_jh.h :
+ obj/sonoA/sph_keccak.h wallet.h ui_interface.h walletdb.h base58.h :
+ lz4/lz4.h init.h txdb.h txdb-leveldb.h lz4/lz4.c xxhash/xxhash.h :
+ xxhash/xxhash.c :
