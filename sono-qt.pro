@@ -17,19 +17,27 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 win32 {
-BOOST_LIB_SUFFIX=-mgw49-mt-s-1_57
+windows:LIBS += -lshlwapi
+LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
+LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
+windows:LIBS += -lws2_32 -lole32 -loleaut32 -luuid -lgdi32
+LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_filesystem$$BOOST_LIB_SUFFIX -lboost_program_options$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_THREAD_LIB_SUFFIX
 BOOST_INCLUDE_PATH=C:/deps/boost_1_57_0
 BOOST_LIB_PATH=C:/deps/boost_1_57_0/stage/lib
 BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
 BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
-OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1l/include
-OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1l
+OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1m/include
+OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1m
 MINIUPNPC_INCLUDE_PATH=C:/deps/
 MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
 LIBPNG_INCLUDE_PATH=C:/deps/libpng-1.6.16
 LIBPNG_LIB_PATH=C:/deps/libpng-1.6.16/.libs
 QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
 QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
+SECP256K1_LIB_PATH =/home/uzbek/sw/secp256k1/.libs
+SECP256K1_INCLUDE_PATH = /home/uzbek/sw/secp256k1/include
+#GMP_INCLUDE_PATH=C:/deps/gmp-6.0.0
+#GMP_LIB_PATH=C:/deps/gmp-6.0.0/.libs
 }
 
 # for boost 1.37, add -mt to the boost libraries
