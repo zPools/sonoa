@@ -1,8 +1,0 @@
-obj/masternodeconfig.o: masternodeconfig.cpp net.h core.h uint256.h \
- serialize.h allocators.h version.h clientversion.h util.h netbase.h \
- compat.h script.h keystore.h key.h crypter.h sync.h threadsafety.h \
- stealth.h bignum.h mruset.h protocol.h addrman.h masternodeconfig.h
-masternodeconfig.cpp net.h core.h uint256.h :
- serialize.h allocators.h version.h clientversion.h util.h netbase.h :
- compat.h script.h keystore.h key.h crypter.h sync.h threadsafety.h :
- stealth.h bignum.h mruset.h protocol.h addrman.h masternodeconfig.h :

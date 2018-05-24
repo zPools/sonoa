@@ -1,6 +1,0 @@
-obj/stealth.o: stealth.cpp stealth.h util.h uint256.h netbase.h \
- serialize.h allocators.h version.h clientversion.h compat.h base58.h \
- bignum.h key.h script.h keystore.h crypter.h sync.h threadsafety.h
-stealth.cpp stealth.h util.h uint256.h netbase.h :
- serialize.h allocators.h version.h clientversion.h compat.h base58.h :
- bignum.h key.h script.h keystore.h crypter.h sync.h threadsafety.h :
