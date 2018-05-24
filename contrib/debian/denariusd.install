@@ -1,0 +1,2 @@
+debian/bin/sonod usr/bin
+src/sonod usr/lib/sono
