@@ -102,10 +102,14 @@ xCXXFLAGS=-O2 $(EXT_OPTIONS) -pthread -Wall -Wextra -Wno-ignored-qualifiers -Wno
 xLDFLAGS=$(LDHARDENING) $(LDFLAGS)
 
 OBJS= \
-    obj/echo.o \
-    obj/jh.o \
-    obj/keccak.o \
-	  obj/alert.o \
+    obj/sonoA/skein.o \
+    obj/sonoA/echo.o \
+    obj/sonoA/fugue.o \
+    obj/sonoA/bmw.o \
+    obj/sonoA/jh.o \
+    obj/sonoA/gost.o \
+    obj/sonoA/keccak.o \
+    obj/alert.o \
     obj/version.o \
     obj/checkpoints.o \
     obj/netbase.o \
@@ -120,7 +124,7 @@ OBJS= \
     obj/miner.o \
     obj/main.o \
     obj/net.o \
-	  obj/core.o \
+    obj/core.o \
     obj/protocol.o \
     obj/bitcoinrpc.o \
     obj/rpcdump.o \
@@ -144,13 +148,13 @@ OBJS= \
     obj/scrypt-x86_64.o \
     obj/smessage.o \
     obj/stealth.o \
-	  obj/activemasternode.o \
-	  obj/masternodeconfig.o \
+    obj/activemasternode.o \
+    obj/masternodeconfig.o \
     obj/masternode.o \
     obj/rpcdarksend.o \
     obj/spork.o \
     obj/darksend.o \
-	  obj/eccryptoverify.o
+    obj/eccryptoverify.o
 
 
 all: sonod
