@@ -30,7 +30,7 @@ static const int DATABASE_VERSION = 20001;
 // network protocol versioning
 //
 
-static const int PROTOCOL_VERSION = 20001; //Protocol remains the same with v2.0.0.0 (Protocol changes to 25213 in SONO v2.5)
+static const int PROTOCOL_VERSION = 20001;
 
 // intial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 20001;
