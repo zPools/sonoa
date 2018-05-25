@@ -69,7 +69,7 @@ static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 static const int64_t MAX_MONEY = 10000000 * COIN; // 10,000,000 SONO Max -> That should be reached within 250 years... hopefully I'm still alive tho
 static const int64_t COIN_YEAR_REWARD = 0.06 * COIN; // 6% per year
 
-static const int64_t MAINNET_POSFIX = 640000; //Mainnet Proof of Stake update not enabled until block 640k
+static const int64_t MAINNET_POSFIX = 3000; //Mainnet Proof of Stake update not enabled until block 3000. First coins could be mature until then.
 
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 
@@ -91,7 +91,7 @@ inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 1
 
 //inline unsigned int GetTargetSpacing(int nHeight) { return IsProtocolV2(nHeight) ? 60 : 60; }
 
-inline int64_t GetMNCollateral() { return 5000; }
+inline int64_t GetMNCollateral() { return 1000; }
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
