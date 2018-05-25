@@ -20,8 +20,8 @@
 #define DECORATION_SIZE 64
 #define NUM_ITEMS 3
 
-const QString BaseURL = "http://sono.io/SONOusd.php";
-const QString BaseURL2 = "http://sono.io/SONObtc.php";
+const QString BaseURL = "http://projectsono.io/SONOusd.php";
+const QString BaseURL2 = "http://projectsono.io/SONObtc.php";
 double sonox;
 double SONObtcx;
 
@@ -248,6 +248,10 @@ void OverviewPage::setBalance(qint64 balance, qint64 lockedbalance, qint64 stake
     ui->labelLockedText->setVisible(showLocked);
     ui->labelStake->setVisible(showStakeBalance);
     ui->labelStakeText->setVisible(showStakeBalance);
+
+    //Set invisible until we have proper values
+    ui->labelBTCTotal->setVisible(false);
+    ui->labelUSDTotal->setVisible(false);
 
 }
 

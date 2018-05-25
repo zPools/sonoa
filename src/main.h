@@ -18,13 +18,10 @@
 
 class CValidationState;
 
-#define BLOCK_START_MASTERNODE_PAYMENTS_TESTNET 81500 // Testnet Masternode payments enabled block 81k5
-#define BLOCK_START_MASTERNODE_PAYMENTS 645000 //Mainnet Masternode payments not enabled until block 645k
+#define BLOCK_START_MASTERNODE_PAYMENTS_TESTNET 10000 // Testnet Masternode Payment at block 10k
+#define BLOCK_START_MASTERNODE_PAYMENTS 2880 //Masternode Payment at height 2880. That is around 1 day, which should be good
 
-//#define START_MASTERNODE_PAYMENTS_TESTNET 1519430400  //Sat, 24 Feb 2018 00:00:00 GMT
-//#define START_MASTERNODE_PAYMENTS 1520985600  //Wed, 14 Mar 2018 00:00:00 GMT
-
-static const int64_t DARKSEND_COLLATERAL = (5000*COIN); // 5,000 SONO
+static const int64_t DARKSEND_COLLATERAL = (750*COIN); // 750 COINS
 static const int64_t DARKSEND_FEE = (0.010000*COIN); //0.01 SONO
 static const int64_t POOL_FEE_AMOUNT = (0.1*COIN); //0.1 SONO
 static const int64_t DARKSEND_POOL_MAX = (11000*COIN); //11,000 SONO
@@ -58,7 +55,7 @@ class CNode;
 
 static const int LAST_POW_BLOCK = 3000000; // Block 3m Approx. 3 years of Proof of Work before Proof of Stake consensus kicks in
 static const int FAIR_LAUNCH_BLOCK = 210; // Last Block until full block reward starts
-static const unsigned int MAX_BLOCK_SIZE = 1000000; // 1MB block hard limit, double the size of Bitcoin
+static const unsigned int MAX_BLOCK_SIZE = 5000000; // 5MB block hard limit. That is a limit at 30sec blocktime. We may risk that the chain split if a big pool has a poor connection - which should not
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2; // 512kb block soft limit, ditto
 /** The maximum size for transactions we're willing to relay/mine **/
 static const unsigned int MAX_STANDARD_TX_SIZE = MAX_BLOCK_SIZE_GEN/5;
@@ -69,7 +66,7 @@ static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 1000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
-static const int64_t MAX_MONEY = 10000000 * COIN; // 10,000,000 SONO SONO Max
+static const int64_t MAX_MONEY = 10000000 * COIN; // 10,000,000 SONO Max -> That should be reached within 250 years... hopefully I'm still alive tho
 static const int64_t COIN_YEAR_REWARD = 0.06 * COIN; // 6% per year
 
 static const int64_t MAINNET_POSFIX = 640000; //Mainnet Proof of Stake update not enabled until block 640k

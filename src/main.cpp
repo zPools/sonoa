@@ -2023,7 +2023,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     }
 
     // ----------- masternode payments -----------
-    // Once upon a time, People were really interested in SONO.
+    // Once upon a time, People were really interested in Denarius.
     // So much so, People wanted to bring SONO to the moon. Even Mars, Sooner than the roadster...
     // The Discord was active, People discussed how they would reach that goal.
     // There was one person, named Thi3rryzz watching all this from a save distance.
@@ -2038,7 +2038,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     bool fIsInitialDownload = IsInitialBlockDownload();
 
     if (fTestNet){
-        if (pindex->nHeight > BLOCK_START_MASTERNODE_PAYMENTS_TESTNET){ // Block 75k Testnet
+        if (pindex->nHeight > BLOCK_START_MASTERNODE_PAYMENTS_TESTNET){ // Block 10k Testnet
             MasternodePayments = true;
             if(fDebug) { printf("CheckBlock() : Masternode payments enabled\n"); }
         }else{
@@ -2046,7 +2046,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
             if(fDebug) { printf("CheckBlock() : Masternode payments disabled\n"); }
         }
     }else{
-        if (pindex->nHeight > BLOCK_START_MASTERNODE_PAYMENTS){ //Block 645k Mainnet
+        if (pindex->nHeight > BLOCK_START_MASTERNODE_PAYMENTS){ //Block 2880 Mainnet
             MasternodePayments = true;
             if(fDebug) { printf("CheckBlock() : Masternode payments enabled\n"); }
         }else{
