@@ -153,7 +153,7 @@ void MasternodeManager::updateAdrenalineNode(QString alias, QString addr, QStrin
                 else
                     address2.Set(address1);
                 if (vout.nValue != GetMNCollateral()*COIN)
-                    errorMessage += "TX is not equal to 5000 SONO. ";
+                    errorMessage += "TX is not equal to 1000 SONO. ";
             }
             if (fDebug) printf("MasternodeManager:: %s %s - found %s for alias %s\n", mne.getTxHash().c_str(), mne.getOutputIndex().c_str(), address2.ToString().c_str(),mne.getAlias().c_str());
             break;
