@@ -543,28 +543,36 @@ Value getblocktemplate(const Array& params, bool fHelp)
             // masternodes are in-eligible for payment, burn the coins in-stead
             std::string burnAddress;
             if (fTestNet) burnAddress = "8TestXXXXXXXXXXXXXXXXXXXXXXXXbCvpq";
-            else burnAddress = "SONOXXXXXXXXXXXXXXXXXXXXXXXXXZeeDTw";
+            else burnAddress = "SaCryptoLifeDotNetBurnAddrXXZ78XsA";
             CBitcoinAddress burnDestination;
             burnDestination.SetString(burnAddress);
             payee = GetScriptForDestination(burnDestination.Get());
         }
     }
     printf("getblock : payee = %i, bMasternode = %i\n",payee != CScript(),bMasternodePayments);
-    if(payee != CScript() && bMasternodePayments){   
-		CTxDestination address1;
-		ExtractDestination(payee, address1);
-		CBitcoinAddress address2(address1);
-		result.push_back(Pair("payee", address2.ToString().c_str()));
-		result.push_back(Pair("payee_amount", (int64_t)GetMasternodePayment(pindexPrev->nHeight+1, pblock->vtx[0].GetValueOut())));
-	} 
-    else {
-        result.push_back(Pair("payee", ""));
-        result.push_back(Pair("payee_amount", ""));
+
+    Object masternodeObj;
+
+
+    if(payee != CScript() && bMasternodePayments)
+    {
+        CTxDestination address1;
+        ExtractDestination(payee, address1);
+        CBitcoinAddress address2(address1);
+        masternodeObj.push_back(Pair("payee", address2.ToString().c_str()));
+        masternodeObj.push_back(Pair("amount", (int64_t)GetMasternodePayment(pindexPrev->nHeight+1, pblock->vtx[0].GetValueOut())));
     }
-	
-	result.push_back(Pair("masternode_payments", bMasternodePayments));
-    result.push_back(Pair("enforce_masternode_payments", bMasternodePayments));
-	
+    else
+    {
+        masternodeObj.push_back(Pair("payee", ""));
+        masternodeObj.push_back(Pair("payee_amount", ""));
+    }
+
+    result.push_back(Pair("masternode", masternodeObj));
+
+    result.push_back(Pair("masternode_payments_started", bMasternodePayments));
+    result.push_back(Pair("masternode_payments_enforced", bMasternodePayments));
+
     return result;
 }
 
