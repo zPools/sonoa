@@ -14,7 +14,7 @@ cryptographic software written by Eric Young (eay@cryptsoft.com).
 Intro
 -----
 SONO is a free open source project derived from Bitcoin, with
-the goal of providing a long-term energy-efficient Tribus-based crypto-currency.
+the goal of providing a long-term energy-efficient SonoA-based crypto-currency.
 Built on the foundation of Bitcoin, PPCoin, NovaCoin and BlackCoin, innovations such as proof-of-stake
 help further advance the field of crypto-currency.
 

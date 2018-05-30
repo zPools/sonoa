@@ -8,7 +8,7 @@
 // Name of client reported in the 'version' message. Report the same name
 // for both bitcoind and bitcoin-qt, to make it harder for attackers to
 // target servers or GUI users specifically.
-const std::string CLIENT_NAME("Satoshi");
+const std::string CLIENT_NAME("SONO-2.0.0.1");
 
 // Client version number
 #define CLIENT_VERSION_SUFFIX   ""

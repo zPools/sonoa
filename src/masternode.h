@@ -195,7 +195,7 @@ public:
     }
 
     uint256 GetHash(){
-        uint256 n2 = Tribus(BEGIN(nBlockHeight), END(nBlockHeight));
+        uint256 n2 = SonoA(BEGIN(nBlockHeight), END(nBlockHeight));
         uint256 n3 = vin.prevout.hash > n2 ? (vin.prevout.hash - n2) : (n2 - vin.prevout.hash);
 
         return n3;

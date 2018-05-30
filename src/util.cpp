@@ -1043,7 +1043,8 @@ const boost::filesystem::path &GetDataDir(bool fNetSpecific)
     static bool cachedPath[2] = {false, false};
 
     fs::path &path = pathCached[fNetSpecific];
-
+    
+    
     // This can be called during exceptions by printf, so we cache the
     // value so we don't have to do memory allocations after that.
     if (cachedPath[fNetSpecific])
@@ -1086,9 +1087,64 @@ boost::filesystem::path GetMasternodeConfigFile()
 void ReadConfigFile(map<string, string>& mapSettingsRet,
                     map<string, vector<string> >& mapMultiSettingsRet)
 {
+    int confLoop = 0;
+    injectConfig:
     boost::filesystem::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good())
-        return; // No bitcoin.conf file is OK
+    {
+            boost::filesystem::path ConfPath;
+                   ConfPath = GetDefaultDataDir() / "sono.conf";
+                   FILE* ConfFile = fopen(ConfPath.string().c_str(), "w");
+
+                   fprintf(ConfFile, "rpcuser=yourusername\n");
+
+                   //That can be done much nicer and smoother.
+
+                   static const char alphanum[] =
+                       "0123456789"
+                       "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                       "abcdefghijklmnopqrstuvwxyz";
+                   char s[64];
+
+                   for (int i = 0; i < 64; ++i)
+                   {
+                       s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+                   }
+
+                   std::string str(s);
+
+                   const char* p = str.data();
+                   fprintf(ConfFile, "rpcpassword=");
+                   fprintf(ConfFile, p);
+                   fprintf(ConfFile, "\n");
+
+                   //I can hear your facepalm for the code above. But it works :P
+
+                   fprintf(ConfFile, "listen=1\n");
+                   fprintf(ConfFile, "server=1\n");
+                   fprintf(ConfFile, "daemon=1\n");
+                   fprintf(ConfFile, "maxconnections=32\n");
+                   fprintf(ConfFile, "port=32000\n");
+                   fprintf(ConfFile, "rpcport=31000\n");
+                   fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=gfx-world.org\n"); //Thanks to belowzero01
+
+
+
+                   fclose(ConfFile);
+
+                   // Returns our config path, created config file is NOT loaded first time...
+                   // Wallet will need to be reloaded before config file is properly read...
+                   return ;
+
+                   if (confLoop < 1)
+                   {
+                   ++confLoop;
+                   goto injectConfig;
+                   }
+        }
 
     set<string> setOptions;
     setOptions.insert("*");

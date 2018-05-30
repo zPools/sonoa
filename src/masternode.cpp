@@ -641,8 +641,8 @@ uint256 CMasterNode::CalculateScore(int mod, int64_t nBlockHeight)
 
     if(!GetBlockHash(hash, nBlockHeight)) return 0;
 
-    uint256 hash2 = Tribus(BEGIN(hash), END(hash)); //Tribus Algo Integrated, WIP
-    uint256 hash3 = Tribus(BEGIN(hash), END(aux));
+    uint256 hash2 = SonoA(BEGIN(hash), END(hash)); //SonoA Algo Integrated, WIP
+    uint256 hash3 = SonoA(BEGIN(hash), END(aux));
 
     uint256 r = (hash3 > hash2 ? hash3 - hash2 : hash2 - hash3);
 
@@ -757,8 +757,8 @@ bool CMasternodePayments::Sign(CMasternodePaymentWinner& winner)
 uint64_t CMasternodePayments::CalculateScore(uint256 blockHash, CTxIn& vin)
 {
     uint256 n1 = blockHash;
-    uint256 n2 = Tribus(BEGIN(n1), END(n1));
-    uint256 n3 = Tribus(BEGIN(vin.prevout.hash), END(vin.prevout.hash));
+    uint256 n2 = SonoA(BEGIN(n1), END(n1));
+    uint256 n3 = SonoA(BEGIN(vin.prevout.hash), END(vin.prevout.hash));
     uint256 n4 = n3 > n2 ? (n3 - n2) : (n2 - n3);
 
     //printf(" -- CMasternodePayments CalculateScore() n2 = %d \n", n2.Get64());

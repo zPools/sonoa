@@ -741,7 +741,7 @@ public:
 
     uint256 GetPoWHash() const
     {
-        return Tribus(BEGIN(nVersion), END(nNonce));
+        return SonoA(BEGIN(nVersion), END(nNonce));
         //return scrypt_blockhash(CVOIDBEGIN(nVersion));
     }
 

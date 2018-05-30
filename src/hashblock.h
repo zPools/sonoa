@@ -1,3 +1,10 @@
+// Copyright (c) 2018 Michael Smolinski aka zPools
+// The SonoA algorithm was designed for ProjectSONO (P r o j e c t  S O N O) as approach to deliver a fast but secure
+// algorithm that fits well for a 30sec block time. In addition, the goal was an algo that is not (yet) mineable by
+// ASIC/FPGA or CloudHashing Services like Nicehash. Thats nothing personal, but its fair for small miners.
+// A special thank you goes to Carsen from Denarius, who is my inspiration
+// You are free to use SonoA for your own currencies/projects but dont remove or edit this 6 lines header.
+
 #ifndef HASHBLOCK_H
 #define HASHBLOCK_H
 
@@ -48,7 +55,7 @@ GLOBAL sph_keccak512_context    z_keccak;
 #define ZJH (memcpy(&ctx_jh, &z_jh, sizeof(z_jh)))
 
 template<typename T1>
-inline uint256 Tribus(const T1 pbegin, const T1 pend)
+inline uint256 SonoA(const T1 pbegin, const T1 pend)
 
 {
     sph_echo512_context         ctx_echo;
