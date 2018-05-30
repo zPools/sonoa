@@ -227,11 +227,11 @@ Value masternode(const Array& params, bool fHelp)
             mn.Check();
 
             if(strCommand == "active"){
-                obj.push_back(Pair(mn.addr.ToString().c_str(),       (int)mn.IsEnabled()));
+                obj.push_back(Pair(mn.addr.ToString().c_str(),       (string)(mn.IsEnabled() ? "Enabled" : "Error") ));
             } else if (strCommand == "full") { //Reports "MasternodeIP: Enabled, Last time seen, Time active, Rank, Protocol"
                 std::ostringstream streamFull;
                 streamFull << std::setw(18) <<
-                              (int)mn.IsEnabled() << " " <<   //Is Enabled
+                              (string)(mn.IsEnabled() ? "Enabled" : "Error") << " " <<   //Is Enabled
                               (int64_t)mn.lastTimeSeen << " " << //Last time seen
                               (int64_t)(mn.lastTimeSeen - mn.now) << " " << //Time active (in sec)
                               (int)(GetMasternodeRank(mn, pindexBest->nHeight)) << " " <<  //Rank
