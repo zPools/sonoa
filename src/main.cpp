@@ -2022,13 +2022,16 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
             return DoS(100, error("ConnectBlock() : coinstake pays too much(actual=%"PRId64" vs calculated=%"PRId64")", nStakeReward, nCalculatedStakeReward));
     }
 
+
+    //   ==> Honor to people who honor deserves <==
+
     // ----------- masternode payments -----------
     // Once upon a time, People were really interested in Denarius.
-    // So much so, People wanted to bring SONO to the moon. Even Mars, Sooner than the roadster...
+    // So much so, People wanted to bring DNR to the moon. Even Mars, Sooner than the roadster...
     // The Discord was active, People discussed how they would reach that goal.
     // There was one person, named Thi3rryzz watching all this from a save distance.
     // Then, the word MASTERNODES came to the table.
-    // People wanted masternodes... Really Bad. But King Carsen was already busy with the rest of SONO
+    // People wanted masternodes... Really Bad. But King Carsen was already busy with the rest of DNR
     // So Thi3rryzz decided to jump in..
     // After a lot of: "How much for MN" and "When MN?"
     // We hope to proudly present you:
