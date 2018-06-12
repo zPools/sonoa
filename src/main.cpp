@@ -50,7 +50,7 @@ unsigned int nStakeMinAge       = 8 * 60 * 60;      // 8 hour min stake age
 unsigned int nStakeMaxAge       = -1;               // unlimited
 unsigned int nModifierInterval  = 10 * 60;          // time to elapse before new modifier is computed
 
-int nCoinbaseMaturity = 20;
+int nCoinbaseMaturity = 490;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 
@@ -82,7 +82,7 @@ const string strMessageMagic = "SONO Signed Message:\n";
 // Settings
 int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
-int64_t nMinimumInputValue = 0;
+int64_t nMinimumInputValue = 50; //PoS available for inputs bigger than 50 coins. PoS input bigger than 50 should still be collecting smaller ones
 
 unsigned int nCoinCacheSize = 5000;
 

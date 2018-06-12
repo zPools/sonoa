@@ -20,10 +20,11 @@
 
 using namespace std;
 
-unsigned int nStakeSplitAge = 1 * 24 * 60 * 60;
+unsigned int nStakeSplitAge = 365 * 24 * 60 * 60;  //Split inputs older than 1 year
 int64_t nStakeCombineThreshold = 1000 * COIN;
 
 int64_t gcd(int64_t n,int64_t m) { return m == 0 ? n : gcd(m, n % m); }
+
 static uint64_t CoinWeightCost(const COutput &out)
 {
     int64_t nTimeWeight = (int64_t)GetTime() - (int64_t)out.tx->nTime;
@@ -1469,7 +1470,7 @@ void CWallet::AvailableCoinsMN(vector<COutput>& vCoins, bool fOnlyConfirmed, boo
                     found = true;
                     if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if(found && coin_type == ONLY_NONDENOMINATED_NOTMN) found = (pcoin->vout[i].nValue != GetMNCollateral()*COIN); // do not use MN funds 5,000 SONO
+                    if(found && coin_type == ONLY_NONDENOMINATED_NOTMN) found = (pcoin->vout[i].nValue != GetMNCollateral()*COIN); // do not use the MN funds of 1,000 SONO
                 } else {
                     found = true;
                 }
