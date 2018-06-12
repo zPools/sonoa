@@ -39,7 +39,7 @@ CTxMemPool mempool;
 map<uint256, CBlockIndex*> mapBlockIndex;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 20);      // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 8);      // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 
@@ -1299,8 +1299,12 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 {
     int64_t nSubsidy = 1 * COIN;
 
-    if (pindexBest->nHeight == 1)
-        nSubsidy = 4000000 * COIN;  // SWAP
+    if (pindexBest->nHeight == 0)
+        nSubsidy = 400000 * COIN;  // SWAP
+
+    else if (pindexBest->nHeight <= 15)
+        nSubsidy = 0 * COIN;
+
     else
         nSubsidy = 1 * COIN;
 
@@ -3206,9 +3210,9 @@ bool LoadBlockIndex(bool fAllowNew)
         if (!fAllowNew)
             return false;
 
-        const char* pszTimestamp = "http://www.coindesk.com/bitcoin-scaling-give-everyone-control/";
+        const char* pszTimestamp = "This need to be a good timestamp";
         CTransaction txNew;
-        txNew.nTime = 1527033600;
+        txNew.nTime = 1528786800;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 0 << CBigNum(42) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -3218,10 +3222,10 @@ bool LoadBlockIndex(bool fAllowNew)
         block.vtx.push_back(txNew);
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
-        block.nTime    = 1527033600;
+        block.nTime    = 1528786800;
         block.nVersion = 1;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = 26810;
+        block.nNonce   = 559;
 		if(fTestNet)
         {
             block.nNonce   = 0;
@@ -3249,7 +3253,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
 
         //// debug print
-        assert(block.hashMerkleRoot == uint256("0x1ff2c0b1f29f43a7ac4ccbe0b72c31ba63e1119f1cf189ff0e65bde0887759f8"));
+        assert(block.hashMerkleRoot == uint256("0xa307322ccd2ced59bbfc186cfc938e37c2ec858990d8b435bedabeab5de6a61f"));
         block.print();
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());

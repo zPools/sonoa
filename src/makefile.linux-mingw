@@ -57,9 +57,24 @@ LIBS += -l mingwthrd -l kernel32 -l user32 -l gdi32 -l comdlg32 -l winspool -l w
 HEADERS = $(wildcard *.h)
 
 OBJS= \
-    obj/echo.o \
-    obj/jh.o \
-    obj/keccak.o \
+    SonoA/blake.o \
+    SonoA/bmw.o \
+    SonoA/groestl.o \
+    SonoA/jh.o \
+    SonoA/keccak.o \
+    SonoA/skein.o \
+    SonoA/luffa.o \
+    SonoA/cubehash.o \
+    SonoA/shavite.o \
+    SonoA/echo.o \
+    SonoA/simd.o \
+    SonoA/hamsi.o \
+    SonoA/fugue.o \
+    SonoA/shabal.o \
+    SonoA/whirlpool.o \
+    SonoA/haval.o \
+    SonoA/gost.o \
+    SonoA/sha2big.o \
 	obj/alert.o \
     obj/version.o \
     obj/checkpoints.o \

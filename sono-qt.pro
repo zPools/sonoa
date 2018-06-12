@@ -144,13 +144,24 @@ contains(USE_LEVELDB, -) {
 		src/bloom.cpp \
 		src/hash.cpp \
 		src/aes_helper.c \
-                src/obj/sonoA/skein.c \
-                src/obj/sonoA/echo.c \
-                src/obj/sonoA/gost.c \
-                src/obj/sonoA/fugue.c \
-                src/obj/sonoA/bmw.c \
-                src/obj/sonoA/jh.c \
-                src/obj/sonoA/keccak.c
+                src/SonoA/blake.c \
+                src/SonoA/bmw.c \
+                src/SonoA/groestl.c \
+                src/SonoA/jh.c \
+                src/SonoA/keccak.c \
+                src/SonoA/skein.c \
+                src/SonoA/luffa.c \
+                src/SonoA/cubehash.c \
+                src/SonoA/shavite.c \
+                src/SonoA/echo.c \
+                src/SonoA/simd.c \
+                src/SonoA/hamsi.c \
+                src/SonoA/fugue.c \
+                src/SonoA/shabal.c \
+                src/SonoA/whirlpool.c \
+                src/SonoA/haval.c \
+                src/SonoA/gost.c \
+                src/SonoA/sha2big.c
 		
 } else {
 	message(Building with LevelDB transaction index)
@@ -166,13 +177,24 @@ contains(USE_LEVELDB, -) {
 		src/bloom.cpp \
 		src/hash.cpp \
 		src/aes_helper.c \
-                src/obj/sonoA/skein.c \
-                src/obj/sonoA/echo.c \
-                src/obj/sonoA/gost.c \
-                src/obj/sonoA/fugue.c \
-                src/obj/sonoA/bmw.c \
-                src/obj/sonoA/jh.c \
-                src/obj/sonoA/keccak.c
+                src/SonoA/blake.c \
+                src/SonoA/bmw.c \
+                src/SonoA/groestl.c \
+                src/SonoA/jh.c \
+                src/SonoA/keccak.c \
+                src/SonoA/skein.c \
+                src/SonoA/luffa.c \
+                src/SonoA/cubehash.c \
+                src/SonoA/shavite.c \
+                src/SonoA/echo.c \
+                src/SonoA/simd.c \
+                src/SonoA/hamsi.c \
+                src/SonoA/fugue.c \
+                src/SonoA/shabal.c \
+                src/SonoA/whirlpool.c \
+                src/SonoA/haval.c \
+                src/SonoA/gost.c \
+                src/SonoA/sha2big.c
 	!win32 {
 		# we use QMAKE_CXXFLAGS_RELEASE even without RELEASE=1 because we use RELEASE to indicate linking preferences not -O preferences
 		genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a
@@ -330,12 +352,24 @@ HEADERS += src/qt/bitcoingui.h \
     src/clientversion.h \
 	src/hash.h \
     src/hashblock.h \
-    src/obj/sonoA/sph_types.h \
-    src/obj/sonoA/sph_echo.h \
-    src/obj/sonoA/sph_fugue.h \
-    src/obj/sonoA/sph_bmw.h \
-    src/obj/sonoA/sph_jh.h \
-    src/obj/sonoA/sph_keccak.h \
+    src/SonoA/sph_blake.h \
+    src/SonoA/sph_skein.h \
+    src/SonoA/sph_keccak.h \
+    src/SonoA/sph_jh.h \
+    src/SonoA/sph_groestl.h \
+    src/SonoA/sph_bmw.h \
+    src/SonoA/sph_types.h \
+    src/SonoA/sph_luffa.h \
+    src/SonoA/sph_cubehash.h \
+    src/SonoA/sph_echo.h \
+    src/SonoA/sph_shavite.h \
+    src/SonoA/sph_simd.h \
+    src/SonoA/sph_hamsi.h \
+    src/SonoA/sph_fugue.h \
+    src/SonoA/sph_shabal.h \
+    src/SonoA/sph_whirlpool.h \
+    src/SonoA/sph_haval.h \
+    src/SonoA/sph_sha2.h \
     src/sph_types.h \
     src/threadsafety.h \
 	src/eccryptoverify.h \
