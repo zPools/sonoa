@@ -199,7 +199,7 @@ void OverviewPage::setBalance(qint64 balance, qint64 lockedbalance, qint64 stake
     int unitdBTC = BitcoinUnits::dBTC;
     currentBalance = balance;
     currentLockedBalance = lockedbalance;
-    currentStake = stake;
+    currentStake = stake - lockedbalance;
     currentUnconfirmedBalance = unconfirmedBalance;
     currentImmatureBalance = immatureBalance;
 
@@ -211,7 +211,7 @@ void OverviewPage::setBalance(qint64 balance, qint64 lockedbalance, qint64 stake
     ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance));
     ui->labelLocked->setText(BitcoinUnits::formatWithUnit(unit, lockedbalance));
 
-    ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, stake));
+    ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, currentStake));
     ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance));
     ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
     ui->labelTotal->setText(BitcoinUnits::formatWithUnit(unit, totalBalance));
