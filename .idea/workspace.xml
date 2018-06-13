@@ -11,41 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="wallet.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/wallet.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="415">
-              <caret line="3864" column="41" lean-forward="false" selection-start-line="3864" selection-start-column="41" selection-end-line="3864" selection-end-column="41" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="smessage.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/smessage.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="3047" column="43" lean-forward="false" selection-start-line="3047" selection-start-column="43" selection-end-line="3047" selection-end-column="43" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="rpcsmessage.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/rpcsmessage.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="415">
-              <caret line="807" column="49" lean-forward="false" selection-start-line="807" selection-start-column="49" selection-end-line="807" selection-end-column="49" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="415">
-              <caret line="4289" column="68" lean-forward="false" selection-start-line="4289" selection-start-column="68" selection-end-line="4289" selection-end-column="68" />
+              <caret line="2647" column="110" lean-forward="false" selection-start-line="2647" selection-start-column="110" selection-end-line="2647" selection-end-column="110" />
               <folding />
             </state>
           </provider>
@@ -101,11 +71,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="init.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="init.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/init.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="415">
               <caret line="879" column="36" lean-forward="false" selection-start-line="879" selection-start-column="30" selection-end-line="879" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rpcnet.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/rpcnet.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="54" column="55" lean-forward="false" selection-start-line="54" selection-start-column="55" selection-end-line="54" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="kernel.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/kernel.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="141" column="72" lean-forward="false" selection-start-line="141" selection-start-column="60" selection-end-line="141" selection-end-column="72" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="txdb-leveldb.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/txdb-leveldb.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="435" column="115" lean-forward="false" selection-start-line="435" selection-start-column="115" selection-end-line="435" selection-end-column="115" />
               <folding />
             </state>
           </provider>
@@ -121,15 +121,17 @@
       <find>%&quot;P</find>
       <find>%+&quot;P</find>
       <find>%+&quot;</find>
-      <find>&quot;PRI</find>
       <find>&quot;PRId64</find>
       <find>PRId64&quot;</find>
+      <find>16&quot;PRIx64&quot;</find>
+      <find>&quot;PRI</find>
     </findStrings>
     <replaceStrings>
       <replace>%&quot; PRIszu &quot;</replace>
       <replace>%&quot; PRId64 &quot;</replace>
       <replace>&quot; PRId64</replace>
       <replace>PRId64 &quot;</replace>
+      <replace>16&quot; PRIx64 &quot;</replace>
     </replaceStrings>
     <dirStrings>
       <dir>F:\Users\Flu\Documents\GitHub\sonoa</dir>
@@ -144,12 +146,15 @@
         <option value="$PROJECT_DIR$/src/wallet.cpp" />
         <option value="$PROJECT_DIR$/src/smessage.cpp" />
         <option value="$PROJECT_DIR$/src/rpcsmessage.cpp" />
-        <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/src/miner.cpp" />
         <option value="$PROJECT_DIR$/src/util.cpp" />
         <option value="$PROJECT_DIR$/src/rpcblockchain.cpp" />
         <option value="$PROJECT_DIR$/src/db.cpp" />
         <option value="$PROJECT_DIR$/src/init.cpp" />
+        <option value="$PROJECT_DIR$/src/rpcnet.cpp" />
+        <option value="$PROJECT_DIR$/src/kernel.cpp" />
+        <option value="$PROJECT_DIR$/src/txdb-leveldb.cpp" />
+        <option value="$PROJECT_DIR$/src/main.cpp" />
       </list>
     </option>
   </component>
@@ -216,12 +221,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1528928465907</updated>
-      <workItem from="1528928467236" duration="862000" />
+      <workItem from="1528928467236" duration="1369000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="862000" />
+    <option name="totallyTimeSpent" value="1369000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="3456" height="1416" extended-state="6" />
@@ -283,14 +288,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
-          <caret line="4289" column="68" lean-forward="false" selection-start-line="4289" selection-start-column="68" selection-end-line="4289" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/miner.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="415">
@@ -335,6 +332,38 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="415">
           <caret line="879" column="36" lean-forward="false" selection-start-line="879" selection-start-column="30" selection-end-line="879" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rpcnet.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="54" column="55" lean-forward="false" selection-start-line="54" selection-start-column="55" selection-end-line="54" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/kernel.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="141" column="72" lean-forward="false" selection-start-line="141" selection-start-column="60" selection-end-line="141" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/txdb-leveldb.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="435" column="115" lean-forward="false" selection-start-line="435" selection-start-column="115" selection-end-line="435" selection-end-column="115" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="2647" column="110" lean-forward="false" selection-start-line="2647" selection-start-column="110" selection-end-line="2647" selection-end-column="110" />
           <folding />
         </state>
       </provider>
