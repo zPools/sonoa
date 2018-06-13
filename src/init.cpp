@@ -939,7 +939,7 @@ bool AppInit2()
             printf("Invalid or missing peers.dat; recreating\n");
     }
 
-    printf("Loaded %i addresses from peers.dat  %"PRId64"ms\n",
+    printf("Loaded %i addresses from peers.dat  %" PRId64 "ms\n",
            addrman.size(), GetTimeMillis() - nStart);
 
 
@@ -1051,7 +1051,7 @@ bool AppInit2()
         pblockAddrIndex = pblockAddrIndex->pprev;
     }
 
-    printf("Rebuilt address index of %i blocks in %"PRId64"ms\n",
+    printf("Rebuilt address index of %i blocks in %" PRId64 "ms\n",
            pblockAddrIndex->nHeight, GetTimeMillis() - nStart);
     }
 
