@@ -85,6 +85,11 @@
            </column>
            <column>
             <property name="text">
+             <string>Version</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
              <string>Pubkey</string>
             </property>
            </column>

@@ -207,6 +207,7 @@ void MasternodeManager::updateAdrenalineNode(QString alias, QString addr, QStrin
     rankItem->setData(Qt::UserRole, rank ? rank : 2000);
     rankItem->setData(Qt::DisplayRole, rank ? QString::number(rank) : "");
 
+
     ui->tableWidget_2->setItem(nodeRow, 0, aliasItem);
     ui->tableWidget_2->setItem(nodeRow, 1, addrItem);
     ui->tableWidget_2->setItem(nodeRow, 2, rankItem);
@@ -247,17 +248,21 @@ void MasternodeManager::updateNodeList()
         ui->tableWidget->insertRow(0);
         int mnRank = GetMasternodeRank(mn, pindexBest->nHeight);
         // populate list
-        // Address, Rank, Active, Active Seconds, Last Seen, Pub Key
+        // Address, Rank, Active, Active Seconds, Last Seen, Pub Key, Version
         QTableWidgetItem *activeItem = new QTableWidgetItem();
         activeItem->setData(Qt::DisplayRole, QString::fromStdString(mn.IsEnabled() ? "Y" : "N"));
+
         QTableWidgetItem *addressItem = new QTableWidgetItem();
         addressItem->setData(Qt::EditRole, QString::fromStdString(mn.addr.ToString()));
+
         SortedWidgetItem *rankItem = new SortedWidgetItem();
         rankItem->setData(Qt::UserRole, mnRank);
         rankItem->setData(Qt::DisplayRole, QString::number(mnRank));
+
         SortedWidgetItem *activeSecondsItem = new SortedWidgetItem();
         activeSecondsItem->setData(Qt::UserRole, (qint64)(mn.lastTimeSeen - mn.now));
         activeSecondsItem->setData(Qt::DisplayRole, seconds_to_DHMS((qint64)(mn.lastTimeSeen - mn.now)));
+
         SortedWidgetItem *lastSeenItem = new SortedWidgetItem();
         lastSeenItem->setData(Qt::UserRole, (qint64)mn.lastTimeSeen);
         lastSeenItem->setData(Qt::DisplayRole, QString::fromStdString(DateTimeStrFormat(mn.lastTimeSeen)));
@@ -269,12 +274,20 @@ void MasternodeManager::updateNodeList()
         CBitcoinAddress address2(address1);
         QTableWidgetItem *pubkeyItem = new QTableWidgetItem(QString::fromStdString(address2.ToString()));
 
+
+        SortedWidgetItem *versionItem = new SortedWidgetItem();
+        versionItem->setData(Qt::UserRole, (qint64)mn.protocolVersion);
+        versionItem->setData(Qt::DisplayRole, QString::number(mn.protocolVersion));
+
+
         ui->tableWidget->setItem(mnRow, 0, addressItem);
         ui->tableWidget->setItem(mnRow, 1, rankItem);
         ui->tableWidget->setItem(mnRow, 2, activeItem);
         ui->tableWidget->setItem(mnRow, 3, activeSecondsItem);
         ui->tableWidget->setItem(mnRow, 4, lastSeenItem);
-        ui->tableWidget->setItem(mnRow, 5, pubkeyItem);
+        ui->tableWidget->setItem(mnRow, 5, versionItem);
+        ui->tableWidget->setItem(mnRow, 6, pubkeyItem);
+
     }
 
     ui->countLabel->setText(QString::number(ui->tableWidget->rowCount()));
