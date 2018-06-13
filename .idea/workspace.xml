@@ -51,7 +51,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="miner.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="miner.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/miner.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="415">
@@ -61,11 +61,51 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="init.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="util.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/util.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="1271" column="52" lean-forward="false" selection-start-line="1271" selection-start-column="52" selection-end-line="1271" selection-end-column="52" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rpcblockchain.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/rpcblockchain.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="125" column="55" lean-forward="false" selection-start-line="125" selection-start-column="55" selection-end-line="125" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="db.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/db.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="480" column="48" lean-forward="false" selection-start-line="480" selection-start-column="48" selection-end-line="480" selection-end-column="48" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="rpcdarksend.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/rpcdarksend.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="511" column="33" lean-forward="false" selection-start-line="511" selection-start-column="33" selection-end-line="511" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="init.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/init.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="567">
-              <caret line="1058" column="46" lean-forward="false" selection-start-line="1058" selection-start-column="35" selection-end-line="1058" selection-end-column="46" />
+            <state relative-caret-position="415">
+              <caret line="879" column="36" lean-forward="false" selection-start-line="879" selection-start-column="30" selection-end-line="879" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -79,10 +119,17 @@
       <find>%&quot;PRIszu&quot;</find>
       <find>%&quot;PRId64&quot;</find>
       <find>%&quot;P</find>
+      <find>%+&quot;P</find>
+      <find>%+&quot;</find>
+      <find>&quot;PRI</find>
+      <find>&quot;PRId64</find>
+      <find>PRId64&quot;</find>
     </findStrings>
     <replaceStrings>
       <replace>%&quot; PRIszu &quot;</replace>
       <replace>%&quot; PRId64 &quot;</replace>
+      <replace>&quot; PRId64</replace>
+      <replace>PRId64 &quot;</replace>
     </replaceStrings>
     <dirStrings>
       <dir>F:\Users\Flu\Documents\GitHub\sonoa</dir>
@@ -95,11 +142,14 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/wallet.cpp" />
-        <option value="$PROJECT_DIR$/src/init.cpp" />
         <option value="$PROJECT_DIR$/src/smessage.cpp" />
         <option value="$PROJECT_DIR$/src/rpcsmessage.cpp" />
         <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/src/miner.cpp" />
+        <option value="$PROJECT_DIR$/src/util.cpp" />
+        <option value="$PROJECT_DIR$/src/rpcblockchain.cpp" />
+        <option value="$PROJECT_DIR$/src/db.cpp" />
+        <option value="$PROJECT_DIR$/src/init.cpp" />
       </list>
     </option>
   </component>
@@ -166,12 +216,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1528928465907</updated>
-      <workItem from="1528928467236" duration="599000" />
+      <workItem from="1528928467236" duration="862000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="599000" />
+    <option name="totallyTimeSpent" value="862000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="3456" height="1416" extended-state="6" />
@@ -217,14 +267,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/init.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="567">
-          <caret line="1058" column="46" lean-forward="false" selection-start-line="1058" selection-start-column="35" selection-end-line="1058" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/smessage.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
@@ -253,6 +295,46 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="415">
           <caret line="429" column="59" lean-forward="false" selection-start-line="429" selection-start-column="59" selection-end-line="429" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/util.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="1271" column="52" lean-forward="false" selection-start-line="1271" selection-start-column="52" selection-end-line="1271" selection-end-column="52" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rpcblockchain.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="125" column="55" lean-forward="false" selection-start-line="125" selection-start-column="55" selection-end-line="125" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/db.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="480" column="48" lean-forward="false" selection-start-line="480" selection-start-column="48" selection-end-line="480" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/rpcdarksend.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="511" column="33" lean-forward="false" selection-start-line="511" selection-start-column="33" selection-end-line="511" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/init.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="879" column="36" lean-forward="false" selection-start-line="879" selection-start-column="30" selection-end-line="879" selection-end-column="36" />
           <folding />
         </state>
       </provider>
