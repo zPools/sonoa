@@ -63,17 +63,28 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 ## SonoA
 
-**SonoA** is a hashing algorithm, developed by zPools. It hash through 7 SHA3 candidates, with the SHA3 winner Keccak at the end to enclose the hashes. Following algorithm, sorted by their rank, are used within SonoA:
+**SonoA** is a hashing algorithm, developed by zPools. It hash through 17 SHA3 candidates. Other than other x-styled algorithm, it may use a algorithm more than one time.
+Following algorithm are used within SonoA:
 
-Echo
-Skein
-Fugue
-Gost 
-BMW 
-JH
-Keccak 
+blake
+bmw
+groestl
+jh
+keccak
+skein
+luffa
+cubehash
+shavite
+simd
+echo
+hamsi
+fugue
+shabal
+whirlpool
+sha2
+haval
 
 It is inspired by x11, but unlike x11, it is not mineable by ASICS. 
 We can't promise it will never be mineable with ASIC, because the development of those are very advanced. But it should withstand them a while. 
 
-SonoA is a perfect compromise between secure hashing and delivering enough hashrate to maintain a 30 sec blocktime. 
+SonoA is a perfect compromise between secure hashing and still delivering enough hashrate to maintain a 30 sec blocktime. 
