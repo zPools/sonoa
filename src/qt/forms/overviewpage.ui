@@ -58,6 +58,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="labelTradeLink">
+            <property name="text">
+             <string>SONO</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -96,7 +103,7 @@
              <string>Total of coins that was staked, and do not yet count toward the current balance</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="textInteractionFlags">
              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -119,7 +126,7 @@
              <string>Your current total balance</string>
             </property>
             <property name="text">
-             <string notr="true">35626236326.63632636 DNR</string>
+             <string notr="true">200000000.00000001 SONO</string>
             </property>
             <property name="textInteractionFlags">
              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -148,7 +155,7 @@
              <string>Current total balance in watch-only addresses</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -173,7 +180,7 @@
              <string>Mined balance in watch-only addresses that has not yet matured</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -198,7 +205,7 @@
              <string>Your current balance in watch-only addresses</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -244,7 +251,7 @@
              <string>Your current spendable balance</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="textInteractionFlags">
              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -267,7 +274,7 @@
              <string>Your current total balance estimated in USD, Rate is not updated often</string>
             </property>
             <property name="text">
-             <string>0 USD</string>
+             <string>0 SONO</string>
             </property>
             <property name="textInteractionFlags">
              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -309,7 +316,7 @@
              <string>Balance from new stakes or coins that is not mature enough to be spent</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="textInteractionFlags">
              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -331,7 +338,7 @@
              <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="textInteractionFlags">
              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -491,7 +498,7 @@
              <string>Unconfirmed transactions to watch-only addresses</string>
             </property>
             <property name="text">
-             <string notr="true">0 DNR</string>
+             <string notr="true">0 SONO</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -516,7 +523,7 @@
              <string>Balance locked from usage, e.g. masternode collateral</string>
             </property>
             <property name="text">
-             <string>0 DNR</string>
+             <string>0 SONO</string>
             </property>
             <property name="textInteractionFlags">
              <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
