@@ -39,14 +39,14 @@ CTxMemPool mempool;
 map<uint256, CBlockIndex*> mapBlockIndex;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 8);      // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower -> chain would have problems if it would be higher
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 
 // Block Variables
 
 unsigned int nTargetSpacing     = 30;               // 30 seconds, FAST
-unsigned int nStakeMinAge       = 24 * 60 * 60;      // 8 hour min stake age
+unsigned int nStakeMinAge       = 24 * 60 * 60;     // 24 hour min stake age
 unsigned int nStakeMaxAge       = -1;               // unlimited
 unsigned int nModifierInterval  = 10 * 60;          // time to elapse before new modifier is computed
 
@@ -1300,10 +1300,13 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
     int64_t nSubsidy = 1 * COIN;
 
     if (pindexBest->nHeight == 0)
-        nSubsidy = 400000 * COIN;  // SWAP
+        nSubsidy = 560000 * COIN;  // The coin supply from Monday 18.06.2018 -> for SWAP from SONOv1 to SONOv2
 
-    else if (pindexBest->nHeight <= 15)
+    else if (pindexBest->nHeight <= 20) // Mined by the team to harden the Genesis
         nSubsidy = 0 * COIN;
+
+    else if (pindexBest->nHeight <= 500) // short instamine protection
+        nSubsidy = 0.1 * COIN;
 
     else
         nSubsidy = 1 * COIN;
@@ -3210,9 +3213,9 @@ bool LoadBlockIndex(bool fAllowNew)
         if (!fAllowNew)
             return false;
 
-        const char* pszTimestamp = "This need to be a good timestamp";
+        const char* pszTimestamp = "Our chain started at 18-06-2018 13-00 GMT -- Yesterday Germany lost against Mexico";
         CTransaction txNew;
-        txNew.nTime = 1528786800;
+        txNew.nTime = 1529319600;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 0 << CBigNum(42) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -3222,10 +3225,10 @@ bool LoadBlockIndex(bool fAllowNew)
         block.vtx.push_back(txNew);
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
-        block.nTime    = 1528786800;
+        block.nTime    = 1529319600;
         block.nVersion = 1;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = 559;
+        block.nNonce   = 7204;
 		if(fTestNet)
         {
             block.nNonce   = 0;
@@ -3253,7 +3256,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
 
         //// debug print
-        assert(block.hashMerkleRoot == uint256("0xa307322ccd2ced59bbfc186cfc938e37c2ec858990d8b435bedabeab5de6a61f"));
+        assert(block.hashMerkleRoot == uint256("0x75f2b98343ca1d316ebc8b5fced496492d03a010712e057efde5e04a0cbb8dac"));
         block.print();
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());

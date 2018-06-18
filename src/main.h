@@ -79,7 +79,7 @@ static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20
 /** Maxiumum number of signature check operations in an IsStandard() P2SH script */
 static const unsigned int MAX_P2SH_SIGOPS = 15;
 
-static const uint256 hashGenesisBlock("0x0053410a0fb9a24c9d17c3a5e236e2005b5393bb8c7ce0142bf9a518418960ce");
+static const uint256 hashGenesisBlock("0x00001e74a346f93f177995121bdb9826fb8e5445163d2e87591f6b01291aae5a");
 static const uint256 hashGenesisBlockTestNet("");
 
 //inline bool IsProtocolV1RetargetingFixed(int nHeight) { return fTestNet || nHeight > 0; }
