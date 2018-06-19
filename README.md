@@ -37,6 +37,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 
 ## SonoA Miners
+
 **CPU:** https://github.com/zPools/cpuminer-multi/releases
 
 **NVIDIA:** https://github.com/zPools/ccminer-sonoa/releases
@@ -47,7 +48,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 ## Exchanges
 
-**Currently on hold** 
+**Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BCH
 
 
 
