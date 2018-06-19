@@ -37,9 +37,9 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 
 ## SonoA Miners
-**CPU:** TBA
+**CPU:** https://github.com/zPools/cpuminer-multi/releases
 
-**NVIDIA:** TBA
+**NVIDIA:** https://github.com/zPools/ccminer-sonoa/releases
 
 **AMD:** TBA
 
@@ -53,11 +53,9 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 ## Pools 
 
-**zPools:** https://zPools.de/
+**zPools:** https://new.zPools.de/
 
-**pandapool** https://pandapool.nl/
 
-**my-pool** http://my-pool.name/
 
 
 
@@ -66,25 +64,46 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 **SonoA** is a hashing algorithm, developed by zPools. It hash through 17 SHA3 candidates. Other than other x-styled algorithm, it may use a algorithm more than one time.
 Following algorithm are used within SonoA:
 
-blake
-bmw
-groestl
-jh
-keccak
-skein
-luffa
-cubehash
-shavite
-simd
-echo
-hamsi
-fugue
-shabal
-whirlpool
-sha2
-haval
+- blake
+- bmw
+- groestl
+- jh
+- keccak
+- skein
+- luffa
+- cubehash
+- shavite
+- simd
+- echo
+- hamsi
+- fugue
+- shabal
+- whirlpool
+- sha2
+- haval
 
 It is inspired by x11, but unlike x11, it is not mineable by ASICS. 
 We can't promise it will never be mineable with ASIC, because the development of those are very advanced. But it should withstand them a while. 
 
 SonoA is a perfect compromise between secure hashing and still delivering enough hashrate to maintain a 30 sec blocktime. 
+
+
+
+
+
+## Do you want to contribute?
+
+We always look for improvements of our wallet. Here are some task we may need help with
+
+- CPU load reduction
+- Memory load reduction
+- Merge to the latest LevelDB
+- Build improvements for MAC
+- Build improvements for FreeBSD & Arch Linux
+- Support for ARM
+- Language change
+- Faster chain sync,  special when the chain grows bigger and bigger
+- IOS and Android wallet
+
+If you have any other ideas to improve the wallet, please share them! They are welcome!
+
