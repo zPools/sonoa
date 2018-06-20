@@ -12,7 +12,8 @@
 #include "uint256.h"
 
 
-static const int nCheckpointSpan = nCoinbaseMaturity * 2; // twice of coin maturity is a long enough chain
+//static const int nCheckpointSpan = nCoinbaseMaturity * 2; // twice of coin maturity is a long enough chain
+static const int nCheckpointSpan = 60; // 1000 would be overkill -> 60 is ok
 
 namespace Checkpoints
 {
@@ -27,7 +28,8 @@ namespace Checkpoints
     //
     static MapCheckpoints mapCheckpoints =
         boost::assign::map_list_of
-        ( 0,       hashGenesisBlock )
+        (   0,       hashGenesisBlock )
+        (3000,       uint256("0x00000000012913a55056291faa2d46c34121a2c9a6637b0e0fea754cd0936582") )
 	;
 
     // TestNet has no checkpoints

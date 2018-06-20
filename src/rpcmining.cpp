@@ -549,7 +549,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
             payee = GetScriptForDestination(burnDestination.Get());
         }
     }
-    printf("getblock : payee = %i, bMasternode = %i\n",payee != CScript(),bMasternodePayments);
+    if(fDebug) { printf("getblock : payee = %i, bMasternode = %i\n",payee != CScript(),bMasternodePayments); }
 
     Object masternodeObj;
 
