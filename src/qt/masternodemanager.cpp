@@ -164,11 +164,13 @@ void MasternodeManager::updateAdrenalineNode(QString alias, QString addr, QStrin
         errorMessage += "Could not find collateral address. ";
     }
 
-    if (errorMessage == ""){
+    if (errorMessage == "" || mnCount > vecMasternodes.size())
+    {
         status = QString::fromStdString("Loading");
         collateral = QString::fromStdString(address2.ToString().c_str());
     }
-    else {
+    else
+    {
         status = QString::fromStdString("Error");
         collateral = QString::fromStdString(errorMessage);
     }
@@ -290,7 +292,14 @@ void MasternodeManager::updateNodeList()
 
     }
 
-    ui->countLabel->setText(QString::number(ui->tableWidget->rowCount()));
+    if (mnCount > 0)
+        ui->countLabel->setText(QString("%1 active (%2 seen)").arg(vecMasternodes.size()).arg(mnCount));
+    else
+        ui->countLabel->setText("Loading...");
+
+    if (mnCount < vecMasternodes.size())
+        ui->countLabel->setText(QString("%1 active").arg(vecMasternodes.size()));
+
     ui->tableWidget->setSortingEnabled(true);
 
     if(pwalletMain)

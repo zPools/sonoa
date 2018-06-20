@@ -597,8 +597,8 @@ void CDarkSendPool::NewBlock()
         //denominate all non-denominated inputs every 50 blocks (25 minutes)
         if(pindexBest->nHeight % 50 == 0)
             UnlockCoins();
-        // free up masternode connections every 120 blocks (1 hour) unless we are syncing
-        if(pindexBest->nHeight % 120 == 0 && !IsInitialBlockDownload())
+        // free up masternode connections every 30 blocks unless we are syncing
+        if(pindexBest->nHeight % 60 == 0 && !IsInitialBlockDownload())
             ProcessMasternodeConnections();
     }
 }
@@ -975,27 +975,32 @@ void ThreadCheckDarkSendPool(void* parg)
             masternodePayments.CleanPaymentList();
         }
 
-        int mnRefresh = 10; //(3*5)
+        int mnRefresh = 30;
 
         //try to sync the masternode list and payment list every 90 seconds from at least 3 nodes until we have them all
-        if(vNodes.size() > 2 && c % mnRefresh == 0 && RequestedMasterNodeList < 10 && (mnCount == 0 || vecMasternodes.size() < mnCount)) {
+        if(vNodes.size() > 2 && c % mnRefresh == 0 && (mnCount == 0 || vecMasternodes.size() < mnCount))
+        {
             bool fIsInitialDownload = IsInitialBlockDownload();
-            if(!fIsInitialDownload) {
+            if(!fIsInitialDownload)
+            {
                 LOCK(cs_vNodes);
                 BOOST_FOREACH(CNode* pnode, vNodes)
                 {
-                    if (pnode->nVersion >= darkSendPool.PROTOCOL_VERSION) {
-
-                        //keep track of who we've asked for the list
-                        if(pnode->HasFulfilledRequest("mnsync")) continue;
+                    if(pnode->HasFulfilledRequest("mnsync"))
+                    {
+                        continue;
+                    }
+                    else
+                    {
                         pnode->FulfilledRequest("mnsync");
-
                         printf("Asking for Masternode list from %s\n",pnode->addr.ToStringIPPort().c_str());
-
                         pnode->PushMessage("dseg", CTxIn()); //request full mn list
                         pnode->PushMessage("mnget"); //sync payees
                         pnode->PushMessage("getsporks"); //get current network sporks
+
                         RequestedMasterNodeList++;
+                        break;
+
                     }
                 }
             }

@@ -1104,9 +1104,9 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                        "0123456789"
                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                        "abcdefghijklmnopqrstuvwxyz";
-                   char s[64];
+                   char s[32];
 
-                   for (int i = 0; i < 64; ++i)
+                   for (int i = 0; i < 32; ++i)
                    {
                        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
                    }
@@ -1123,12 +1123,12 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                    fprintf(ConfFile, "listen=1\n");
                    fprintf(ConfFile, "server=1\n");
                    fprintf(ConfFile, "daemon=1\n");
-                   fprintf(ConfFile, "maxconnections=32\n");
+                   fprintf(ConfFile, "maxconnections=16\n");
                    fprintf(ConfFile, "port=32000\n");
                    fprintf(ConfFile, "rpcport=31000\n");
                    fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
-                   fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
-                   fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=seed2.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=seed3.projectsono.io\n");
                    fprintf(ConfFile, "addnode=gfx-world.org\n"); //Thanks to belowzero01
 
 

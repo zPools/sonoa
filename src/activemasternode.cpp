@@ -481,7 +481,14 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode(bool fSelectUnlocked)
     }
 
     // Retrieve all possible outputs
-    pwalletMain->AvailableCoinsMN(vCoins, true, fSelectUnlocked);
+        pwalletMain->AvailableCoinsMN(vCoins, true, fSelectUnlocked);
+
+        // Lock MN coins from masternode.conf back if they where temporary unlocked
+        if(!confLockedCoins.empty())
+        {
+            BOOST_FOREACH(COutPoint outpoint, confLockedCoins)
+            pwalletMain->LockCoin(outpoint);
+        }
 
     // Lock MN coins from masternode.conf back if they where temporary unlocked
     if(!confLockedCoins.empty()) {
