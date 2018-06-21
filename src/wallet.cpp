@@ -21,7 +21,9 @@
 using namespace std;
 
 unsigned int nStakeSplitAge = 365 * 24 * 60 * 60;  //Split inputs older than 1 year
-int64_t nStakeCombineThreshold = 1000 * COIN;
+static int64_t nStakeCombineThreshold = 500 * COIN;
+static int64_t nStakeSplitThreshold = 999 * COIN; //Split it before it event. get a MN collateral
+
 
 int64_t gcd(int64_t n,int64_t m) { return m == 0 ? n : gcd(m, n % m); }
 
@@ -3307,7 +3309,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 vwtxPrev.push_back(pcoin.first);
                 txNew.vout.push_back(CTxOut(0, scriptPubKeyOut));
 
-                if (GetWeight(block.GetBlockTime(), (int64_t)txNew.nTime) < nStakeSplitAge)
+                if (nCredit >= nStakeSplitThreshold)
                     txNew.vout.push_back(CTxOut(0, scriptPubKeyOut)); //split stake
                 if (fDebug && GetBoolArg("-printcoinstake"))
                     printf("CreateCoinStake() : added kernel type=%d\n", whichType);

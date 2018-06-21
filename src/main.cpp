@@ -46,6 +46,7 @@ CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 // Block Variables
 
 unsigned int nTargetSpacing     = 30;               // 30 seconds, FAST
+inline unsigned int GetTargetSpacing()              { return nTargetSpacing; }
 unsigned int nStakeMinAge       = 24 * 60 * 60;     // 24 hour min stake age
 unsigned int nStakeMaxAge       = -1;               // unlimited
 unsigned int nModifierInterval  = 10 * 60;          // time to elapse before new modifier is computed
@@ -1395,7 +1396,8 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
     return pindex;
 }
 
-unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
+
+unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
     CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
 
@@ -1426,6 +1428,109 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
     return bnNew.GetCompact();
 }
+
+
+
+unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlock *pblock*/) {
+    /* current difficulty formula, darkcoin - DarkGravity v3, written by Evan Duffield - evan@darkcoin.io */
+    const CBlockIndex *BlockLastSolved = pindexLast;
+    const CBlockIndex *BlockReading = pindexLast;
+   // const CBlock *BlockCreating = pblock;
+   // BlockCreating = BlockCreating;
+    int64_t nActualTimespan = 0;
+    int64_t LastBlockTime = 0;
+    int64_t PastBlocksMin = 24;
+    int64_t PastBlocksMax = 24;
+    int64_t CountBlocks = 0;
+    CBigNum PastDifficultyAverage;
+    CBigNum PastDifficultyAveragePrev;
+
+    if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin) {
+        return bnProofOfWorkLimit.GetCompact();
+    }
+
+    for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
+        if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
+        CountBlocks++;
+
+        if(CountBlocks <= PastBlocksMin) {
+            if (CountBlocks == 1) { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
+            else { PastDifficultyAverage = ((PastDifficultyAveragePrev * CountBlocks)+(CBigNum().SetCompact(BlockReading->nBits))) / (CountBlocks+1); }
+            PastDifficultyAveragePrev = PastDifficultyAverage;
+        }
+
+        if(LastBlockTime > 0){
+            int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
+            nActualTimespan += Diff;
+        }
+        LastBlockTime = BlockReading->GetBlockTime();
+
+        if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
+        BlockReading = BlockReading->pprev;
+    }
+
+    int64_t nTargetSpacing = GetTargetSpacing();
+
+    CBigNum bnNew(PastDifficultyAverage);
+
+    int64_t nTargetTimespan = CountBlocks*nTargetSpacing;
+
+    if (nActualTimespan < nTargetTimespan/3)
+        nActualTimespan = nTargetTimespan/3;
+    if (nActualTimespan > nTargetTimespan*3)
+        nActualTimespan = nTargetTimespan*3;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
+
+    if (bnNew > bnProofOfWorkLimit){
+        bnNew = bnProofOfWorkLimit;
+    }
+
+    if (fTestNet)
+    {
+    printf("Difficulty Retarget - Dark Gravity Wave 3\n");
+    printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
+    printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
+    }
+
+    return bnNew.GetCompact();
+}
+
+
+
+unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
+{
+    if (fTestNet)
+    {
+        if (pindexLast->nHeight < 130)
+        {
+            return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
+        }
+        else
+        {
+            return DarkGravityWave3(pindexLast);
+        }
+    }
+
+
+    return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
+
+    /*
+    // Smoothly Transition: GetNextTargetRequired_Initial_POW -> DGW -> GetNextTargetRequired_POS
+    if (pindexLast->nHeight < 10)
+        return GetNextTargetRequired_PoS(pindexLast, fProofOfStake);
+    else if (pindexLast->nHeight < 100000000)
+        return DarkGravityWave3(pindexLast);
+    else
+        return GetNextTargetRequired_PoS(pindexLast, fProofOfStake);
+     */
+}
+
+
+
+
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
 {
