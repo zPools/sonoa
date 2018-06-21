@@ -1299,6 +1299,13 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 {
     int64_t nSubsidy = 1 * COIN;
 
+    if (fTestNet)
+    {
+        nSubsidy = 100 * COIN;
+    }
+    else
+    {
+
     if (pindexBest->nHeight == 0)
         nSubsidy = 560000 * COIN;  // The coin supply from Monday 18.06.2018 -> for SWAP from SONOv1 to SONOv2
 
@@ -1310,7 +1317,7 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 
     else
         nSubsidy = 1 * COIN;
-
+    }
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
@@ -1325,7 +1332,14 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 {
     int64_t nSubsidy;
 
-    nSubsidy = 1 * COIN;
+    if (fTestNet)
+    {
+        nSubsidy = 50 * COIN;
+    }
+    else
+    {
+    nSubsidy = 1 * COIN;    
+    }
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
@@ -2949,7 +2963,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         if (bnNewBlock > bnRequired)
         {
             if (pfrom)
-                pfrom->Misbehaving(100);
+                pfrom->Misbehaving(1);
             return error("ProcessBlock() : block with too little %s", pblock->IsProofOfStake()? "proof-of-stake" : "proof-of-work");
         }
     }
