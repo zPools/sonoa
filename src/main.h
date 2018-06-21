@@ -80,7 +80,7 @@ static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20
 static const unsigned int MAX_P2SH_SIGOPS = 15;
 
 static const uint256 hashGenesisBlock("0x00001e74a346f93f177995121bdb9826fb8e5445163d2e87591f6b01291aae5a");
-static const uint256 hashGenesisBlockTestNet("");
+static const uint256 hashGenesisBlockTestNet("0x00abcf544bf249d76a8b7fd87c9e116bbf4af29a21a21639af6d8056c1ed92ca");
 
 //inline bool IsProtocolV1RetargetingFixed(int nHeight) { return fTestNet || nHeight > 0; }
 //inline bool IsProtocolV2(int nHeight) { return fTestNet || nHeight > 0; }

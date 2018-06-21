@@ -41,7 +41,7 @@ set<pair<COutPoint, unsigned int> > setStakeSeen;
 
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower -> chain would have problems if it would be higher
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
 // Block Variables
 
@@ -3194,7 +3194,7 @@ bool LoadBlockIndex(bool fAllowNew)
         pchMessageStart[3] = 0x0b;
 
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 16 bits PoW target limit for testnet
-        nStakeMinAge = 1 * 60 * 60; // test net min age is 1 hour
+        nStakeMinAge = 1 * 30 * 60; // test net min age is 30 min
         nCoinbaseMaturity = 10; // test maturity is 10 blocks
     };
 
@@ -3216,6 +3216,10 @@ bool LoadBlockIndex(bool fAllowNew)
         const char* pszTimestamp = "Our chain started at 18-06-2018 13-00 GMT -- Yesterday Germany lost against Mexico";
         CTransaction txNew;
         txNew.nTime = 1529319600;
+        if(fTestNet)
+        {
+            txNew.nTime = 1529566200;
+        }
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 0 << CBigNum(42) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -3226,12 +3230,16 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nTime    = 1529319600;
+        if(fTestNet)
+        {
+            block.nTime = txNew.nTime;
+        }
         block.nVersion = 1;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
         block.nNonce   = 7204;
 		if(fTestNet)
         {
-            block.nNonce   = 0;
+            block.nNonce   = 1416;
         }
         if (false && (block.GetHash() != hashGenesisBlock)) {
 
@@ -3256,7 +3264,14 @@ bool LoadBlockIndex(bool fAllowNew)
 
 
         //// debug print
-        assert(block.hashMerkleRoot == uint256("0x75f2b98343ca1d316ebc8b5fced496492d03a010712e057efde5e04a0cbb8dac"));
+        if (fTestNet)
+        {
+            assert(block.hashMerkleRoot == uint256("0x44e85752f19ee431a33b9ef816c84aa587ca8909e8afce84d2d17752e9f22755"));
+        }
+        else
+        {
+            assert(block.hashMerkleRoot == uint256("0x75f2b98343ca1d316ebc8b5fced496492d03a010712e057efde5e04a0cbb8dac"));
+        }
         block.print();
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());

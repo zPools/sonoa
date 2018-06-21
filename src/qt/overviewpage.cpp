@@ -121,6 +121,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->listTransactions->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE));
     ui->listTransactions->setMinimumHeight(NUM_ITEMS * (DECORATION_SIZE + 2));
     ui->listTransactions->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->labelTradeLink->setVisible(false);
 
     connect(ui->listTransactions, SIGNAL(clicked(QModelIndex)), this, SLOT(handleTransactionClicked(QModelIndex)));
 
@@ -257,12 +258,12 @@ void OverviewPage::setBalance(qint64 balance, qint64 lockedbalance, qint64 stake
 
 void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
 {
-    //ui->labelSpendable->setVisible(showWatchOnly);      // show spendable label (only when watch-only is active)
-    ui->labelWatchonly->setVisible(showWatchOnly);      // show watch-only label
-    //ui->lineWatchBalance->setVisible(showWatchOnly);    // show watch-only balance separator line
-    ui->labelWatchAvailable->setVisible(showWatchOnly); // show watch-only available balance
-    ui->labelWatchPending->setVisible(showWatchOnly);   // show watch-only pending balance
-    ui->labelWatchTotal->setVisible(showWatchOnly);     // show watch-only total balance
+    //ui->labelSpendable->setVisible(showWatchOnly);          // show spendable label (only when watch-only is active)
+    ui->labelWatchonly->setVisible(showWatchOnly);          // show watch-only label
+    //ui->lineWatchBalance->setVisible(showWatchOnly);        // show watch-only balance separator line
+    ui->labelWatchAvailable->setVisible(showWatchOnly);     // show watch-only available balance
+    ui->labelWatchPending->setVisible(showWatchOnly);       // show watch-only pending balance
+    ui->labelWatchTotal->setVisible(showWatchOnly);         // show watch-only total balance
 	
 	ui->watch1->setVisible(showWatchOnly);
 	ui->watch2->setVisible(showWatchOnly);
