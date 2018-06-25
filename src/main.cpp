@@ -1405,10 +1405,10 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
 
     if (fTestNet)
     {
-        if (pindexLast->nHeight < 10100)
+        if (pindexLast->nHeight > 10100)
             bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
     }
-    else if (pindexLast->nHeight < 25000)
+    else if (pindexLast->nHeight > 25000)
         bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
 
 
