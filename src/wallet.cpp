@@ -20,9 +20,9 @@
 
 using namespace std;
 
-unsigned int nStakeSplitAge = 365 * 24 * 60 * 60;  //Split inputs older than 1 year
-static int64_t nStakeCombineThreshold = 500 * COIN;
-static int64_t nStakeSplitThreshold = 999 * COIN; //Split it before it event. get a MN collateral
+//unsigned int nStakeSplitAge = 365 * 24 * 60 * 60;  //Split inputs older than 1 year
+static int64_t nStakeCombineThreshold = 998 * COIN; // collect until you have 998 and split with 999.
+static int64_t nStakeSplitThreshold = 999 * COIN;
 
 
 int64_t gcd(int64_t n,int64_t m) { return m == 0 ? n : gcd(m, n % m); }
@@ -3316,7 +3316,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 fKernelFound = true;
                 break;
             }
-        }
+}
 
         if (fKernelFound || fShutdown)
             break; // if kernel is found stop searching
@@ -3371,6 +3371,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         nCredit += nReward;
     }
 
+
 	// Masternode Payments
     int payments = 1;
     // start masternode payments
@@ -3400,7 +3401,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                     // masternodes are in-eligible for payment, burn the coins in-stead
                     std::string burnAddress;
                     if (fTestNet) burnAddress = "8TestXXXXXXXXXXXXXXXXXXXXXXXXbCvpq";
-                    else burnAddress = "SONOXXXXXXXXXXXXXXXXXXXXXXXXXZeeDTw";
+                    else burnAddress = "SaCryptoLifeDotNetBurnAddrXXZ78XsA";
                     CBitcoinAddress burnDestination;
                     burnDestination.SetString(burnAddress);
                     payee = GetScriptForDestination(burnDestination.Get());

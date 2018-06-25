@@ -39,8 +39,9 @@ CTxMemPool mempool;
 map<uint256, CBlockIndex*> mapBlockIndex;
 set<pair<COutPoint, unsigned int> > setStakeSeen;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower -> chain would have problems if it would be higher
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower, it was a better start for the chain when there was only CPU
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
+CBigNum bnProofOfStakeLimitv2(~uint256(0) >> 48);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
 // Block Variables
@@ -50,6 +51,7 @@ inline unsigned int GetTargetSpacing()              { return nTargetSpacing; }
 unsigned int nStakeMinAge       = 24 * 60 * 60;     // 24 hour min stake age
 unsigned int nStakeMaxAge       = -1;               // unlimited
 unsigned int nModifierInterval  = 10 * 60;          // time to elapse before new modifier is computed
+
 
 int nCoinbaseMaturity = 490;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -1401,6 +1403,14 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
 {
     CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
 
+    if (fTestNet)
+    {
+        if (pindexLast->nHeight < 10100)
+            bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
+    }
+
+
+
     if (pindexLast == NULL)
         return bnTargetLimit.GetCompact(); // genesis block
 
@@ -1430,7 +1440,7 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
 }
 
 
-
+//DGWv3 was used in testnet for a while but was replaced with AGW
 unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlock *pblock*/) {
     /* current difficulty formula, darkcoin - DarkGravity v3, written by Evan Duffield - evan@darkcoin.io */
     const CBlockIndex *BlockLastSolved = pindexLast;
@@ -1500,6 +1510,79 @@ unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlo
 
 
 
+
+unsigned int static AntiGravityWave(const CBlockIndex* pindexLast/*, const CBlock *pblock*/) {
+    /* AntiGravityWave by reorder, derived from code by Evan Duffield - evan@darkcoin.io */
+    const CBlockIndex *BlockLastSolved = pindexLast;
+    const CBlockIndex *BlockReading = pindexLast;
+   // const CBlock *BlockCreating = pblock;
+   // BlockCreating = BlockCreating;
+    int64_t nActualTimespan = 0;
+    int64_t LastBlockTime = 0;
+    int64_t PastBlocksMin = 72;
+    int64_t PastBlocksMax = 72;
+    int64_t CountBlocks = 0;
+    CBigNum PastDifficultyAverage;
+    CBigNum PastDifficultyAveragePrev;
+
+    if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin) {
+        return bnProofOfWorkLimit.GetCompact();
+    }
+
+    for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
+        if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
+        CountBlocks++;
+
+        if(CountBlocks <= PastBlocksMin) {
+            if (CountBlocks == 1)
+                { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
+            else { PastDifficultyAverage = ((PastDifficultyAveragePrev * CountBlocks)+(CBigNum().SetCompact(BlockReading->nBits))) / (CountBlocks+1); }
+            PastDifficultyAveragePrev = PastDifficultyAverage;
+        }
+
+        if(LastBlockTime > 0){
+            int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
+            nActualTimespan += Diff;
+        }
+        LastBlockTime = BlockReading->GetBlockTime();
+
+        if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
+        BlockReading = BlockReading->pprev;
+    }
+
+    CBigNum bnNew(PastDifficultyAverage);
+
+    --CountBlocks;
+
+    int64_t nTargetSpacing = GetTargetSpacing();
+
+    int64_t nTargetTimespan = CountBlocks*nTargetSpacing;
+
+    if (nActualTimespan < nTargetTimespan/2)
+        nActualTimespan = nTargetTimespan/2;
+    if (nActualTimespan > nTargetTimespan*2)
+        nActualTimespan = nTargetTimespan*2;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
+
+    if (bnNew > bnProofOfWorkLimit){
+        bnNew = bnProofOfWorkLimit;
+    }
+
+    if (fTestNet || fDebug)
+    {
+    printf("Difficulty Retarget - Dark Gravity Wave 3\n");
+    printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
+    printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
+    }
+
+    return bnNew.GetCompact();
+}
+
+
+
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
     if (fTestNet)
@@ -1508,24 +1591,17 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         {
             return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
         }
-        else
+        else if (pindexLast->nHeight < 10100)
         {
             return DarkGravityWave3(pindexLast);
         }
+        else
+            return AntiGravityWave(pindexLast);
     }
 
 
     return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
 
-    /*
-    // Smoothly Transition: GetNextTargetRequired_Initial_POW -> DGW -> GetNextTargetRequired_POS
-    if (pindexLast->nHeight < 10)
-        return GetNextTargetRequired_PoS(pindexLast, fProofOfStake);
-    else if (pindexLast->nHeight < 100000000)
-        return DarkGravityWave3(pindexLast);
-    else
-        return GetNextTargetRequired_PoS(pindexLast, fProofOfStake);
-     */
 }
 
 
@@ -3314,7 +3390,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 16 bits PoW target limit for testnet
         nStakeMinAge = 1 * 30 * 60; // test net min age is 30 min
-        nCoinbaseMaturity = 10; // test maturity is 10 blocks
+        nCoinbaseMaturity = 10; // test maturity is 20 blocks
     };
 
     //
