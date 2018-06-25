@@ -16,6 +16,8 @@
 
 int CMasterNode::minProtoVersion = MIN_MN_PROTO_VERSION;
 
+
+
 CCriticalSection cs_masternodes;
 
 /** The list of active masternodes */
@@ -62,6 +64,11 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
+        int masternodeversion = MIN_MN_PROTO_VERSION;
+        if (pindexBest->nHeight > 25000)
+            masternodeversion = 20011;
+
+
         CTxIn vin;
         CService addr;
         CPubKey pubkey;
@@ -91,7 +98,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
 
         strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
 
-        if(protocolVersion < MIN_MN_PROTO_VERSION) {
+        if(protocolVersion < masternodeversion) {
             printf("dsee - ignoring outdated masternode %s protocol version %d\n", vin.ToString().c_str(), protocolVersion);
             return;
         }
@@ -477,6 +484,10 @@ bool GetMasternodeRanks()
     // std::vector<pair<int, CMasterNode*> > vecMasternodeScores;
 
     vecMasternodeScores.clear();
+
+    int masternodeversion = MIN_MN_PROTO_VERSION;
+    if (pindexBest->nHeight > 25000)
+        masternodeversion = 20011;
 
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
 

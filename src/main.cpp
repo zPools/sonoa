@@ -1408,7 +1408,8 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
         if (pindexLast->nHeight < 10100)
             bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
     }
-
+    else if (pindexLast->nHeight < 25000)
+        bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
 
 
     if (pindexLast == NULL)
@@ -1573,9 +1574,11 @@ unsigned int static AntiGravityWave(const CBlockIndex* pindexLast/*, const CBloc
 
     if (fTestNet || fDebug)
     {
-    printf("Difficulty Retarget - Dark Gravity Wave 3\n");
+    printf("\n");
+    printf("Difficulty Retarget - Anti Gravity Wave\n");
     printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
     printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
+    printf("\n");
     }
 
     return bnNew.GetCompact();
@@ -1598,9 +1601,12 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         else
             return AntiGravityWave(pindexLast);
     }
-
-
-    return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
+    else if (pindexLast->nHeight < 25000)
+    {
+        return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
+    }
+    else
+        return AntiGravityWave(pindexLast);
 
 }
 
@@ -3892,11 +3898,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         if (pfrom->nVersion < MIN_PEER_PROTO_VERSION)
             oldVersion = true;
-/*
-        // Disconnect nodes that are over block height 900k and have an old peer version
-        if (nBestHeight >= 900000 && pfrom->nVersion < PROTOCOL_VERSION)
+
+        // Disconnect nodes that are over block height 25k and have an old peer version
+        if (nBestHeight >= 25000 && pfrom->nVersion < PROTOCOL_VERSION)
             oldVersion = true;
-*/
+
         if (oldVersion == true)
         {
           printf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->nVersion);
