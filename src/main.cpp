@@ -85,7 +85,7 @@ const string strMessageMagic = "SONO Signed Message:\n";
 // Settings
 int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
-int64_t nMinimumInputValue = 50; //PoS available for inputs bigger than 50 coins. PoS input bigger than 50 should still be collecting smaller ones
+int64_t nMinimumInputValue = 0;
 
 unsigned int nCoinCacheSize = 5000;
 
@@ -2319,7 +2319,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                     int lastPaid = mn.nBlockLastPaid;
                                     int paidAge = pindex->nHeight+1 - lastPaid;
                                     printf("Masternode PoS payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[1].vout[i].nValue / COIN).c_str(), paidAge, mn.nBlockLastPaid);
-                                    if (paidAge < 150) // TODO: Probably make this check the MN is in the top 50?
+                                    if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                     {
                                         printf("WARNING: This masternode payment is too aggressive and will not be accepted after block XXXX");
                                     }
@@ -2384,7 +2384,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                 int lastPaid = mn.nBlockLastPaid;
                                 int paidAge = pindex->nHeight+1 - lastPaid;
                                 printf("Masternode PoW payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[0].vout[i].nValue).c_str(), paidAge, mn.nBlockLastPaid);
-                                if (paidAge < 150) // TODO: Probably make this check the MN is in the top 50?
+                                if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                 {
                                     printf("WARNING: This masternode payment is too aggressive and will not be accepted after block XXXX\n");
                                 }

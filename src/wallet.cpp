@@ -1458,22 +1458,30 @@ void CWallet::AvailableCoinsMN(vector<COutput>& vCoins, bool fOnlyConfirmed, boo
             if(pcoin->IsCoinStake() && pcoin->GetBlocksToMaturity() > 0)
                 continue;
 
+
+
             int nDepth = pcoin->GetDepthInMainChain();
             if (nDepth <= 0) // NOTE: coincontrol fix / ignore 0 confirm
                 continue;
 
-            for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
+            for (unsigned int i = 0; i < pcoin->vout.size(); i++)
+            {
                 bool found = false;
-                if(coin_type == ONLY_DENOMINATED) {
-                    //should make this a vector
-
+                if(coin_type == ONLY_DENOMINATED)
+                {
                     found = IsDenominatedAmount(pcoin->vout[i].nValue);
-                } else if(coin_type == ONLY_NONDENOMINATED || coin_type == ONLY_NONDENOMINATED_NOTMN) {
+                }
+                else if(coin_type == ONLY_NONDENOMINATED || coin_type == ONLY_NONDENOMINATED_NOTMN)
+                {
                     found = true;
-                    if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
+                    if (IsCollateralAmount(pcoin->vout[i].nValue))
+                        continue; // do not use collateral amounts
                     found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if(found && coin_type == ONLY_NONDENOMINATED_NOTMN) found = (pcoin->vout[i].nValue != GetMNCollateral()*COIN); // do not use the MN funds of 1,000 SONO
-                } else {
+                    if(found && coin_type == ONLY_NONDENOMINATED_NOTMN)
+                        found = (pcoin->vout[i].nValue != GetMNCollateral()*COIN); // do not use the MN funds of 1,000 SONO
+                }
+                else
+                {
                     found = true;
                 }
                 if(!found) continue;
@@ -1484,11 +1492,11 @@ void CWallet::AvailableCoinsMN(vector<COutput>& vCoins, bool fOnlyConfirmed, boo
                         continue;
                 }
 
-				        //isminetype mine = IsMine(pcoin->vout[i]);
-		            bool mine = IsMine(pcoin->vout[i]);
 
-                    if (!(pcoin->IsSpent(i)) && pcoin->vout[i].nValue > 0 &&
-                    (!coinControl || !coinControl->HasSelected() || coinControl->IsSelected((*it).first, i)))
+                bool mine = IsMine(pcoin->vout[i]);
+
+                if (!(pcoin->IsSpent(i)) && pcoin->vout[i].nValue > 0 &&
+                   (!coinControl || !coinControl->HasSelected() || coinControl->IsSelected((*it).first, i)))
                         vCoins.push_back(COutput(pcoin, i, nDepth, mine));
             }
         }
@@ -1509,6 +1517,7 @@ void CWallet::AvailableCoinsForStaking(vector<COutput>& vCoins, unsigned int nSp
             if (pcoin->nTime + nStakeMinAge > nSpendTime)
                 continue;
 
+
             if (pcoin->GetBlocksToMaturity() > 0)
                 continue;
 
@@ -1518,10 +1527,8 @@ void CWallet::AvailableCoinsForStaking(vector<COutput>& vCoins, unsigned int nSp
 
             for (unsigned int i = 0; i < pcoin->vout.size(); i++)
                 if (!(pcoin->IsSpent(i)) && IsMine(pcoin->vout[i]) && pcoin->vout[i].nValue >= nMinimumInputValue
-                        && !IsLockedCoin((*it).first, i) // ignore outputs that are locked for MNs
-                        )
-                    //vCoins.push_back(COutput(pcoin, i, nDepth));
-					          vCoins.push_back(COutput(pcoin, i, nDepth, true));
+                    && !IsLockedCoin((*it).first, i))     // ignore outputs that are locked for MNs
+                        vCoins.push_back(COutput(pcoin, i, nDepth, true));
         }
     }
 }
