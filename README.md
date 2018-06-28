@@ -40,21 +40,26 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **CPU:** https://github.com/zPools/cpuminer-multi/releases
 
-**NVIDIA:** https://github.com/zPools/ccminer-sonoa/releases
+**NVIDIA:** https://github.com/QuaLiTyX/ccminer/releases
 
-**AMD:** TBA
+**AMD:** https://github.com/zPools/sgminer-sonoa (NOT YET TESTED)
 
 
 
 ## Exchanges
 
 **Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BCH
+**Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BTC
 
 
 
 ## Pools 
 
 **zPools:** https://new.zPools.de/
+**Mining Patriot** https://miningpatriot.com/  
+**Titan Minin**  https://titan-mining.net/  
+**MyPools** https://sono.mypools.net/   
+**SnakePoolNow** http://snakepoolnow.de/  
 
 
 
@@ -89,6 +94,12 @@ We can't promise it will never be mineable with ASIC, because the development of
 SonoA is a perfect compromise between secure hashing and still delivering enough hashrate to maintain a 30 sec blocktime. 
 
 
+
+## Useful Links
+
+**Phyton Hashing Module** https://github.com/zPools/sonoa-hash
+**NOMP (Pool)** https://github.com/zPools/node-open-mining-portal
+**Masernode Guide** https://github.com/buzzkillb/SONO-masternode
 
 
 
