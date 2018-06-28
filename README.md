@@ -49,6 +49,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 ## Exchanges
 
 **Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BCH
+
 **Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BTC
 
 
@@ -56,9 +57,13 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 ## Pools 
 
 **zPools:** https://new.zPools.de/
+
 **Mining Patriot** https://miningpatriot.com/  
+
 **Titan Minin**  https://titan-mining.net/  
-**MyPools** https://sono.mypools.net/   
+
+**MyPools** https://sono.mypools.net/  
+
 **SnakePoolNow** http://snakepoolnow.de/  
 
 
@@ -98,7 +103,9 @@ SonoA is a perfect compromise between secure hashing and still delivering enough
 ## Useful Links
 
 **Phyton Hashing Module** https://github.com/zPools/sonoa-hash
+
 **NOMP (Pool)** https://github.com/zPools/node-open-mining-portal
+
 **Masernode Guide** https://github.com/buzzkillb/SONO-masternode
 
 
