@@ -16,8 +16,6 @@
 
 int CMasterNode::minProtoVersion = MIN_MN_PROTO_VERSION;
 
-
-
 CCriticalSection cs_masternodes;
 
 /** The list of active masternodes */
@@ -65,7 +63,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         if(fIsInitialDownload) return;
 
         int masternodeversion = MIN_MN_PROTO_VERSION;
-        if (pindexBest->nHeight > 25000)
+        if (pindexBest->nHeight > 42000)
             masternodeversion = 20011;
 
 
@@ -486,13 +484,13 @@ bool GetMasternodeRanks()
     vecMasternodeScores.clear();
 
     int masternodeversion = MIN_MN_PROTO_VERSION;
-    if (pindexBest->nHeight > 25000)
+    if (pindexBest->nHeight > 42000)
         masternodeversion = 20011;
 
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
 
         mn.Check();
-        if(mn.protocolVersion < MIN_MN_PROTO_VERSION) continue;
+        if(mn.protocolVersion < masternodeversion) continue;
 
         if (!mn.nBlockLastPaid || mn.nBlockLastPaid == 0)
         {

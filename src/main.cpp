@@ -1408,7 +1408,7 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
         if (pindexLast->nHeight > 10100)
             bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
     }
-    else if (pindexLast->nHeight > 25000)
+    else if (pindexLast->nHeight > 42000)
         bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
 
 
@@ -1601,7 +1601,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         else
             return AntiGravityWave(pindexLast);
     }
-    else if (pindexLast->nHeight < 25000)
+    else if (pindexLast->nHeight < 42000)
     {
         return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
     }
@@ -3899,8 +3899,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (pfrom->nVersion < MIN_PEER_PROTO_VERSION)
             oldVersion = true;
 
-        // Disconnect nodes that are over block height 25k and have an old peer version
-        if (nBestHeight >= 25000 && pfrom->nVersion < PROTOCOL_VERSION)
+        // Disconnect nodes that are over block height 42k and have an old peer version
+        if (nBestHeight >= 42000 && pfrom->nVersion < PROTOCOL_VERSION)
             oldVersion = true;
 
         if (oldVersion == true)
