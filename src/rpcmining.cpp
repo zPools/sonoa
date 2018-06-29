@@ -119,7 +119,8 @@ Value getworkex(const Array& params, bool fHelp)
             "getworkex [data, coinbase]\n"
             "If [data, coinbase] is not specified, returns extended work data.\n"
         );
-
+if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when not sync
+    {
     if (vNodes.empty())
         throw JSONRPCError(-9, "SONO is not connected!");
 
@@ -128,6 +129,7 @@ Value getworkex(const Array& params, bool fHelp)
 
     if (pindexBest->nHeight >= LAST_POW_BLOCK)
         throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");
+    }
 
     typedef map<uint256, pair<CBlock*, CScript> > mapNewBlock_t;
     static mapNewBlock_t mapNewBlock;
@@ -253,7 +255,8 @@ Value getwork(const Array& params, bool fHelp)
             "  \"hash1\" : formatted hash buffer for second hash (DEPRECATED)\n" // deprecated
             "  \"target\" : little endian hash target\n"
             "If [data] is specified, tries to solve the block and returns true if it was successful.");
-
+if (!fTestNet)
+    {
     if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
 
@@ -262,6 +265,7 @@ Value getwork(const Array& params, bool fHelp)
 
     if (pindexBest->nHeight >= LAST_POW_BLOCK)
         throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");
+    }
 
     typedef map<uint256, pair<CBlock*, CScript> > mapNewBlock_t;
     static mapNewBlock_t mapNewBlock;    // FIXME: thread safety

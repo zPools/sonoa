@@ -628,26 +628,34 @@ void StakeMiner(CWallet *pwallet)
                 return;
         }
 
-        if (fTryToSync)
+        if (!fTestNet) //it is ok for testnet... Sometimes your quiet alone here
         {
-            fTryToSync = false;
-            if (vNodes.size() < 3 || nBestHeight < GetNumBlocksOfPeers())
+
+            if (fTryToSync)
             {
-				vnThreadsRunning[THREAD_STAKE_MINER]--;
-                MilliSleep(60000);
-                vnThreadsRunning[THREAD_STAKE_MINER]++;
-				if (fShutdown)
-                    return;
+                fTryToSync = false;
+                if (vNodes.size() < 3 || nBestHeight < GetNumBlocksOfPeers())
+                {
+                    vnThreadsRunning[THREAD_STAKE_MINER]--;
+                    MilliSleep(60000);
+                    vnThreadsRunning[THREAD_STAKE_MINER]++;
+                    if (fShutdown)
+                        return;
+                }
             }
+
+               if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < mnCount))
+               {
+                 vnThreadsRunning[THREAD_STAKE_MINER]--;
+                 MilliSleep(10000);
+                 vnThreadsRunning[THREAD_STAKE_MINER]++;
+                 continue;
+               }
+
         }
 
-           if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < mnCount))
-           {
-             vnThreadsRunning[THREAD_STAKE_MINER]--;
-             MilliSleep(10000);
-             vnThreadsRunning[THREAD_STAKE_MINER]++;
-             continue;
-           }
+
+
 
         //
         // Create new block

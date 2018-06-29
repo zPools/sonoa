@@ -62,6 +62,11 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
+        int masternodeversion = MIN_MN_PROTO_VERSION;
+        if (pindexBest->nHeight > 42000)
+            masternodeversion = 20011;
+
+
         CTxIn vin;
         CService addr;
         CPubKey pubkey;
@@ -91,7 +96,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
 
         strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
 
-        if(protocolVersion < MIN_MN_PROTO_VERSION) {
+        if(protocolVersion < masternodeversion) {
             printf("dsee - ignoring outdated masternode %s protocol version %d\n", vin.ToString().c_str(), protocolVersion);
             return;
         }
@@ -478,10 +483,14 @@ bool GetMasternodeRanks()
 
     vecMasternodeScores.clear();
 
+    int masternodeversion = MIN_MN_PROTO_VERSION;
+    if (pindexBest->nHeight > 42000)
+        masternodeversion = 20011;
+
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
 
         mn.Check();
-        if(mn.protocolVersion < MIN_MN_PROTO_VERSION) continue;
+        if(mn.protocolVersion < masternodeversion) continue;
 
         if (!mn.nBlockLastPaid || mn.nBlockLastPaid == 0)
         {
