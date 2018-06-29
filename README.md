@@ -93,7 +93,7 @@ Following algorithm are used within SonoA:
 - sha2
 - haval
 
-It is inspired by x11, but unlike x11, it is not mineable by ASICS. 
+It is inspired by X11 and X17, but unlike x11, it is not mineable by ASICS. 
 We can't promise it will never be mineable with ASIC, because the development of those are very advanced. But it should withstand them a while. 
 
 SonoA is a perfect compromise between secure hashing and still delivering enough hashrate to maintain a 30 sec blocktime. 
