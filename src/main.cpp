@@ -1512,12 +1512,10 @@ unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlo
 
 
 
-unsigned int static AntiGravityWave(const CBlockIndex* pindexLast/*, const CBlock *pblock*/) {
-    /* AntiGravityWave by reorder, derived from code by Evan Duffield - evan@darkcoin.io */
+unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
+    /* AntiGravityWave by reorder, derived from code by Evan Duffield - evan@darkcoin.io */ 
     const CBlockIndex *BlockLastSolved = pindexLast;
     const CBlockIndex *BlockReading = pindexLast;
-   // const CBlock *BlockCreating = pblock;
-   // BlockCreating = BlockCreating;
     int64_t nActualTimespan = 0;
     int64_t LastBlockTime = 0;
     int64_t PastBlocksMin = 72;
@@ -3900,8 +3898,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             oldVersion = true;
 
         // Disconnect nodes that are over block height 42k and have an old peer version
-        if (nBestHeight >= 42000 && pfrom->nVersion < PROTOCOL_VERSION)
-            oldVersion = true;
+        //if (nBestHeight >= 42000 && pfrom->nVersion < PROTOCOL_VERSION)
+        //    oldVersion = true;
 
         if (oldVersion == true)
         {

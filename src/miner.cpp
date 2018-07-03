@@ -82,7 +82,7 @@ public:
 uint64_t nLastBlockTx = 0;
 uint64_t nLastBlockSize = 0;
 int64_t nLastCoinStakeSearchInterval = 0;
- 
+
 // We want to sort transactions by priority and fee, so:
 typedef boost::tuple<double, double, CTransaction*> TxPriority;
 class TxPriorityCompare
@@ -123,8 +123,8 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
     txNew.vin.resize(1);
     txNew.vin[0].prevout.SetNull();
     txNew.vout.resize(1);
-    
-    
+
+
     int nHeight = pindexPrev->nHeight+1; // height of new block
 
     if (!fProofOfStake)
@@ -165,21 +165,21 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
     // start masternode payments
     bool bMasterNodePayment = false;
 
-	//Only if it isn't Proof of Stake?
-	if (!fProofOfStake)
+    //Only if it isn't Proof of Stake?
+    if (!fProofOfStake)
     {
-		if (fTestNet){
-			if (nHeight >= BLOCK_START_MASTERNODE_PAYMENTS_TESTNET){
-				bMasterNodePayment = true;
-			}
-		}else{
-			if (nHeight >= BLOCK_START_MASTERNODE_PAYMENTS){
-				bMasterNodePayment = true;
-			}
-		}
+        if (fTestNet){
+            if (nHeight >= BLOCK_START_MASTERNODE_PAYMENTS_TESTNET){
+                bMasterNodePayment = true;
+            }
+        }else{
+            if (nHeight >= BLOCK_START_MASTERNODE_PAYMENTS){
+                bMasterNodePayment = true;
+            }
+        }
         if(fDebug) { printf("CreateNewBlock(): Masternode Payments : %i\n", bMasterNodePayment); }
-	}
-	
+    }
+
     // Fee-per-kilobyte amount considered the same as "free"
     // Be careful setting this: if you set it to zero then
     // a transaction spammer can cheaply fill blocks using
@@ -217,14 +217,21 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
                     printf("CreateNewBlock: Failed to detect masternode to pay\n");
                     // pay the burn address if it can't detect
                     if (fDebug) printf("CreateNewBlock(): Failed to detect masternode to pay, burning coins..\n");
+
                     std::string burnAddress;
-                    if (fTestNet) std::string burnAddress = "8TestXXXXXXXXXXXXXXXXXXXXXXXXbCvpq";
-                    else std::string burnAddress = "SaCryptoLifeDotNetBurnAddrXXZ78XsA";
+
+                    if (fTestNet)
+                        std::string burnAddress = "8TestXXXXXXXXXXXXXXXXXXXXXXXXbCvpq";
+                    else
+                        std::string burnAddress = "SaCryptoLifeDotNetBurnAddrXXZ78XsA";
+
+
                     CBitcoinAddress burnAddr;
                     burnAddr.SetString(burnAddress);
                     payee = GetScriptForDestination(burnAddr.Get());
                 }
             }
+
             if(hasPayment){
                 payments = txNew.vout.size() + 1;
                 printf("CreateNewBlock(): Payment Size: %i\n", payments);
@@ -433,7 +440,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
         }
 
         if (fDebug && GetBoolArg("-printpriority"))
-            printf("CreateNewBlock(): total size %" PRIu64 "\n", nBlockSize);
+            printf("CreateNewBlock(): total size %"PRIu64"\n", nBlockSize);
 
         if (!fProofOfStake){
             pblock->vtx[0].vout[0].nValue = blockValue;
@@ -569,7 +576,7 @@ bool CheckStake(CBlock* pblock, CWallet& wallet)
 
    // verify hash target and signature of coinstake tx
     //if (!CheckProofOfStake(mapBlockIndex[pblock->hashPrevBlock], pblock->vtx[1], pblock->nBits, proofHash, hashTarget))
-	if (!CheckProofOfStake(pblock->vtx[1], pblock->nBits, proofHash, hashTarget))
+    if (!CheckProofOfStake(pblock->vtx[1], pblock->nBits, proofHash, hashTarget))
         return error("CheckStake() : proof-of-stake checking failed");
 
     //// debug print
@@ -602,7 +609,7 @@ void StakeMiner(CWallet *pwallet)
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
 
     // Make this thread recognisable as the mining thread
-    RenameThread("sono-miner");
+    RenameThread("denarius-miner");
 
     bool fTryToSync = true;
 
@@ -628,34 +635,28 @@ void StakeMiner(CWallet *pwallet)
                 return;
         }
 
-        if (!fTestNet) //it is ok for testnet... Sometimes your quiet alone here
+        if (fTryToSync)
         {
-
-            if (fTryToSync)
+            fTryToSync = false;
+            if (vNodes.size() < 3 || nBestHeight < GetNumBlocksOfPeers())
             {
-                fTryToSync = false;
-                if (vNodes.size() < 3 || nBestHeight < GetNumBlocksOfPeers())
+                vnThreadsRunning[THREAD_STAKE_MINER]--;
+                MilliSleep(60000);
+                vnThreadsRunning[THREAD_STAKE_MINER]++;
+                if (fShutdown)
                 {
-                    vnThreadsRunning[THREAD_STAKE_MINER]--;
-                    MilliSleep(60000);
-                    vnThreadsRunning[THREAD_STAKE_MINER]++;
-                    if (fShutdown)
-                        return;
+                    return;
                 }
             }
-
-               if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < mnCount))
-               {
-                 vnThreadsRunning[THREAD_STAKE_MINER]--;
-                 MilliSleep(10000);
-                 vnThreadsRunning[THREAD_STAKE_MINER]++;
-                 continue;
-               }
-
         }
 
-
-
+        if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < 50))
+        {
+            vnThreadsRunning[THREAD_STAKE_MINER]--;
+            MilliSleep(10000);
+            vnThreadsRunning[THREAD_STAKE_MINER]++;
+            continue;
+        }
 
         //
         // Create new block
@@ -683,6 +684,5 @@ void StakeMiner(CWallet *pwallet)
                 return;
             MilliSleep(nMinerSleep);
         }
-
     }
 }

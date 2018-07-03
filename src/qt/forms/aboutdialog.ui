@@ -128,7 +128,7 @@ This product includes software developed by the OpenSSL Project for use in the O
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Join us on the forums at &lt;a href=&quot;https://sonotalk.org&quot; style=&quot;color: #FFF;&quot;&gt;https://sonotalk.org&lt;/a&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Join our Discord Server at &lt;a href=&quot;https://discord.gg/8bY2rjX&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://discord.gg/8bY2rjX&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
