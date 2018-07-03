@@ -1409,7 +1409,7 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
             bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
     }
     else if (pindexLast->nHeight > 42000)
-        bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
+        bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
 
 
     if (pindexLast == NULL)
