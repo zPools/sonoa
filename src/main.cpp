@@ -1409,7 +1409,7 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
             bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
     }
     else if (pindexLast->nHeight > 42000)
-        bnTargetLimit = fProofOfStake ? bnProofOfStakeLimitv2 : bnProofOfWorkLimit;
+        bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
 
 
     if (pindexLast == NULL)
@@ -1512,12 +1512,10 @@ unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlo
 
 
 
-unsigned int static AntiGravityWave(const CBlockIndex* pindexLast/*, const CBlock *pblock*/) {
-    /* AntiGravityWave by reorder, derived from code by Evan Duffield - evan@darkcoin.io */
+unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
+    /* AntiGravityWave by reorder, derived from code by Evan Duffield - evan@darkcoin.io */ 
     const CBlockIndex *BlockLastSolved = pindexLast;
     const CBlockIndex *BlockReading = pindexLast;
-   // const CBlock *BlockCreating = pblock;
-   // BlockCreating = BlockCreating;
     int64_t nActualTimespan = 0;
     int64_t LastBlockTime = 0;
     int64_t PastBlocksMin = 72;
