@@ -42,6 +42,7 @@ set<pair<COutPoint, unsigned int> > setStakeSeen;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower, it was a better start for the chain when there was only CPU
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfStakeLimitv2(~uint256(0) >> 48);
+CBigNum bnProofOfStakeLimitv3(~uint256(0) >> 28);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
 // Block Variables
@@ -1566,9 +1567,12 @@ unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
     bnNew *= nActualTimespan;
     bnNew /= nTargetTimespan;
 
-    if (bnNew > bnProofOfWorkLimit){
+    if (bnNew > bnProofOfWorkLimit)
+    {
         bnNew = bnProofOfWorkLimit;
     }
+
+
 
     if (fTestNet || fDebug)
     {
@@ -1583,9 +1587,98 @@ unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
 }
 
 
+unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofOfStake) {
+    /* AntiGravityWave2 by zPools, derived from Bluecoin, reorder and Evan Duffield - evan@darkcoin.io */
+    const CBlockIndex *BlockLastSolved = GetLastBlockIndex(pindexLast, fProofOfStake);
+    const CBlockIndex *BlockReading = GetLastBlockIndex(pindexLast, fProofOfStake);
+    int64_t nActualTimespan = 0;
+    int64_t LastBlockTime = 0;
+    int64_t PastBlocksMin = 72;
+    int64_t PastBlocksMax = 72;
+    int64_t CountBlocks = 0;
+    CBigNum PastDifficultyAverage;
+    CBigNum PastDifficultyAveragePrev;
+
+    if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin)
+    {
+        return bnProofOfWorkLimit.GetCompact();
+    }
+
+    for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++)
+    {
+
+        while (BlockReading->IsProofOfStake() != fProofOfStake)
+        {
+            if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
+            BlockReading = BlockReading->pprev;
+        }
+
+        if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
+        CountBlocks++;
+
+        if(CountBlocks <= PastBlocksMin) {
+            if (CountBlocks == 1)
+                { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
+            else { PastDifficultyAverage = ((PastDifficultyAveragePrev * CountBlocks)+(CBigNum().SetCompact(BlockReading->nBits))) / (CountBlocks+1); }
+            PastDifficultyAveragePrev = PastDifficultyAverage;
+        }
+
+        if(LastBlockTime > 0){
+            int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
+            nActualTimespan += Diff;
+        }
+        LastBlockTime = BlockReading->GetBlockTime();
+
+        if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
+        BlockReading = BlockReading->pprev;
+    }
+
+    CBigNum bnNew(PastDifficultyAverage);
+
+    --CountBlocks;
+
+    int64_t nTargetSpacing = GetTargetSpacing();
+
+    int64_t nTargetTimespan = CountBlocks*nTargetSpacing;
+
+    if (nActualTimespan < nTargetTimespan/2)
+        nActualTimespan = nTargetTimespan/2;
+    if (nActualTimespan > nTargetTimespan*2)
+        nActualTimespan = nTargetTimespan*2;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
+
+    if (fProofOfStake)
+    {
+        if (bnNew > bnProofOfStakeLimitv3)
+            bnNew = bnProofOfStakeLimitv3;
+    }
+
+    else
+    {
+       if (bnNew > bnProofOfWorkLimit)
+           bnNew = bnProofOfWorkLimit;
+    }
+
+
+    if (fTestNet || fDebug)
+    {
+    printf("\n");
+    printf("Difficulty Retarget - Anti Gravity Wave\n");
+    printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
+    printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
+    printf("\n");
+    }
+
+    return bnNew.GetCompact();
+}
+
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
+    // Change testnet from GNTR -> DGW3 -> AGW
     if (fTestNet)
     {
         if (pindexLast->nHeight < 130)
@@ -1599,12 +1692,14 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         else
             return AntiGravityWave(pindexLast);
     }
+    // As long mainnet is below 42k, return GNTR
     else if (pindexLast->nHeight < 42000)
     {
         return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
     }
+    // If its above 42k, make it AGW
     else
-        return AntiGravityWave(pindexLast);
+        return AntiGravityWave2(pindexLast, fProofOfStake);
 
 }
 
@@ -2316,10 +2411,12 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                 {
                                     int lastPaid = mn.nBlockLastPaid;
                                     int paidAge = pindex->nHeight+1 - lastPaid;
+                                    int MNacceptable = 50 - paidAge;
                                     printf("Masternode PoS payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[1].vout[i].nValue / COIN).c_str(), paidAge, mn.nBlockLastPaid);
                                     if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                     {
-                                        printf("WARNING: This masternode payment is too aggressive and will not be accepted after block XXXX");
+                                        printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable);
+                                        //return DoS(100, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                     }
                                     mn.nBlockLastPaid = pindex->nHeight+1;
                                     foundPayee = true;
@@ -2381,10 +2478,12 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                             {
                                 int lastPaid = mn.nBlockLastPaid;
                                 int paidAge = pindex->nHeight+1 - lastPaid;
+                                int MNacceptable = 50 - paidAge;
                                 printf("Masternode PoW payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[0].vout[i].nValue).c_str(), paidAge, mn.nBlockLastPaid);
                                 if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                 {
-                                    printf("WARNING: This masternode payment is too aggressive and will not be accepted after block XXXX\n");
+                                    printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable);
+                                    //return DoS(100, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                 }
                                 mn.nBlockLastPaid = pindex->nHeight+1;
                                 foundPayee = true;
