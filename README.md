@@ -50,7 +50,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BCH
 
-**Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BTC
+**Bitzlato** Trading pair SONO/BTC - Russian - https://bitzlato.com/trade/SONO/BTC
 
 
 
