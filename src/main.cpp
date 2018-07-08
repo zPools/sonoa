@@ -1699,13 +1699,13 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
     }
     // If its above 42k make it AGW
     else if (pindexLast->nHeight < 67000)
-	{
+    {
         return AntiGravityWave1(pindexLast, fProofOfStake);
+    } 
 	
-	   } 
-	
-	
-	
+     // If above 67k make AGW2 
+     else
+	return AntiGravityaWave2(pindexLast, fProofOfStake);
 
 }
 
@@ -2421,8 +2421,10 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                     printf("Masternode PoS payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[1].vout[i].nValue / COIN).c_str(), paidAge, mn.nBlockLastPaid);
                                     if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                     {
-                                        printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable);
-                                        //return DoS(100, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+					if (pindex->nHeight < 70000)
+                                            printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;                         
+					else
+					    return DoS(100, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                     }
                                     mn.nBlockLastPaid = pindex->nHeight+1;
                                     foundPayee = true;
@@ -2488,9 +2490,12 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                 printf("Masternode PoW payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[0].vout[i].nValue).c_str(), paidAge, mn.nBlockLastPaid);
                                 if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                 {
-                                    printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable);
-                                    //return DoS(100, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+					if (pindex->nHeight < 70000)
+                                            printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;                         
+					else
+					    return DoS(100, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                 }
+				    
                                 mn.nBlockLastPaid = pindex->nHeight+1;
                                 foundPayee = true;
                             }
