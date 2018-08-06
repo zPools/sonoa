@@ -1678,7 +1678,7 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
-    // Change testnet from GNTR -> DGW3 -> AGW
+    // Change testnet from GNTR -> DGW3 -> AGW -> AGW2
     if (fTestNet)
     {
         if (pindexLast->nHeight < 130)
@@ -1689,16 +1689,23 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         {
             return DarkGravityWave3(pindexLast);
         }
-        else
+        else if (pindexLast->nHeight < 29000)
+        {
             return AntiGravityWave(pindexLast);
+        }
+        else
+            return AntiGravityWave2(pindexLast, fProofOfStake);
+
     }
     // As long mainnet is below 42k, return GNTR
     else if (pindexLast->nHeight < 42000)
     {
         return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
     }
+
+
     // If its above 42k make it AGW
-    else if (pindexLast->nHeight < 67000)
+/*    else if (pindexLast->nHeight < 67000)
     {
         return AntiGravityWave1(pindexLast, fProofOfStake);
     } 
@@ -1706,6 +1713,11 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
      // If above 67k make AGW2 
      else
 	return AntiGravityaWave2(pindexLast, fProofOfStake);
+*/
+
+
+    else
+        return AntiGravityWave(pindexLast)
 
 }
 
