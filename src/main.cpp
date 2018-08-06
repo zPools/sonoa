@@ -1717,7 +1717,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
 
     else
-        return AntiGravityWave(pindexLast)
+        return AntiGravityWave(pindexLast);
 
 }
 
