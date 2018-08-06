@@ -1704,20 +1704,22 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
     }
 
 
+    else
+        return AntiGravityWave(pindexLast);
+
+
     // If its above 42k make it AGW
 /*    else if (pindexLast->nHeight < 67000)
     {
         return AntiGravityWave1(pindexLast, fProofOfStake);
-    } 
-	
-     // If above 67k make AGW2 
+    }
+
+     // If above 67k make AGW2
      else
-	return AntiGravityaWave2(pindexLast, fProofOfStake);
+        return AntiGravityaWave2(pindexLast, fProofOfStake);
 */
 
 
-    else
-        return AntiGravityWave(pindexLast);
 
 }
 
