@@ -1666,7 +1666,7 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
     if (fTestNet || fDebug)
     {
     printf("\n");
-    printf("Difficulty Retarget - Anti Gravity Wave\n");
+    printf("Difficulty Retarget - Anti Gravity Wave 2\n");
     printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
     printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
     printf("\n");
@@ -1678,18 +1678,14 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
-    // Change testnet from GNTR -> DGW3 -> AGW -> AGW2
+    // Change testnet from GNTR -> DGW3 -> AGW2
     if (fTestNet)
     {
-        if (pindexLast->nHeight < 130)
+        if (pindexLast->nHeight < 200)
         {
             return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
         }
-        else if (pindexLast->nHeight < 10100)
-        {
-            return DarkGravityWave3(pindexLast);
-        }
-        else if (pindexLast->nHeight < 29000)
+        else if (pindexLast->nHeight < 400)
         {
             return AntiGravityWave(pindexLast);
         }
@@ -1697,6 +1693,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
             return AntiGravityWave2(pindexLast, fProofOfStake);
 
     }
+
     // As long mainnet is below 42k, return GNTR
     else if (pindexLast->nHeight < 42000)
     {
