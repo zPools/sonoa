@@ -637,9 +637,8 @@ void StakeMiner(CWallet *pwallet)
                 MilliSleep(60000);
                 vnThreadsRunning[THREAD_STAKE_MINER]++;
                 if (fShutdown)
-                {
-                    return;
-                }
+                return;
+                
             }
         }
 
