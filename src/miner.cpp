@@ -642,7 +642,7 @@ void StakeMiner(CWallet *pwallet)
             }
         }
 
-        if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < 50))
+        if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < 3))
         {
             vnThreadsRunning[THREAD_STAKE_MINER]--;
             MilliSleep(10000);
