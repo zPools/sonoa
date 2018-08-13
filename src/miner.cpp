@@ -597,6 +597,16 @@ bool CheckStake(CBlock* pblock, CWallet& wallet)
     return true;
 }
 
+
+unsigned int GetNeededMN()
+{
+    if (fTestNet)
+        return 3;
+
+    else
+        return 50;
+}
+
 void StakeMiner(CWallet *pwallet)
 {
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
@@ -642,7 +652,7 @@ void StakeMiner(CWallet *pwallet)
             }
         }
 
-        if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < 3))
+        if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < GetNeededMN()))
         {
             vnThreadsRunning[THREAD_STAKE_MINER]--;
             MilliSleep(10000);
