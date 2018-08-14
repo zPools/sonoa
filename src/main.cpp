@@ -43,6 +43,8 @@ CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower, it was a better s
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfStakeLimitv2(~uint256(0) >> 48);
 CBigNum bnProofOfStakeLimitv3(~uint256(0) >> 28);
+CBigNum bnProofOfStakeLimitv4(~uint256(0) >> 22);
+CBigNum bnProofOfStakeLimitvTEST(~uint256(0) >> 1);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
 // Block Variables
@@ -1598,6 +1600,8 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
     int64_t CountBlocks = 0;
     CBigNum PastDifficultyAverage;
     CBigNum PastDifficultyAveragePrev;
+    CBigNum StakeLimitSwitch;
+
 
     if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin)
     {
@@ -1650,10 +1654,24 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
     bnNew *= nActualTimespan;
     bnNew /= nTargetTimespan;
 
+
+    // For testnet, we switch the min diff from 28 to 22. Main will start with 22
+    if (fTestNet)
+    {
+        if (pindexLast->nHeight < 16500)
+            StakeLimitSwitch = bnProofOfStakeLimitv3;
+        else
+            StakeLimitSwitch = bnProofOfStakeLimitvTEST;
+    }
+    else
+        StakeLimitSwitch = bnProofOfStakeLimitv4;
+
+
+
     if (fProofOfStake)
     {
-        if (bnNew > bnProofOfStakeLimitv3)
-            bnNew = bnProofOfStakeLimitv3;
+        if (bnNew > StakeLimitSwitch)
+            bnNew = StakeLimitSwitch;
     }
 
     else
@@ -2432,8 +2450,9 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                     printf("Masternode PoS payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[1].vout[i].nValue / COIN).c_str(), paidAge, mn.nBlockLastPaid);
                                     if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                     {
-					if (pindex->nHeight < 70000)
-                                            printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;                         
+                    if (pindex->nHeight < 70000)
+                                            // return DoS(1, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+                                             printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
 					else
 					    return DoS(100, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                     }
@@ -2502,7 +2521,8 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                 if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                 {
 					if (pindex->nHeight < 70000)
-                                            printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;                         
+                                          //  return DoS(1, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+                                           printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
 					else
 					    return DoS(100, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                 }
