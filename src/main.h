@@ -91,6 +91,7 @@ inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 1
 
 //inline unsigned int GetTargetSpacing(int nHeight) { return IsProtocolV2(nHeight) ? 60 : 60; }
 
+//Masternode number of coin need in collateral address
 inline int64_t GetMNCollateral() { return 1000; }
 
 extern CScript COINBASE_FLAGS;
