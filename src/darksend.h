@@ -291,7 +291,7 @@ public:
 
     void InitCollateralAddress(){
         std::string strAddress = "";
-            strAddress = "DQjK69r9hjKgJo3foVsqdErBzL1Rdmsswr";
+            strAddress = "DQjK69r9hjKgJo3foVsqdErBzL1Rdmsswr";  //<----- should have a sono adress here...
         SetCollateralAddress(strAddress);
     }
 

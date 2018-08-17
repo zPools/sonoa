@@ -233,12 +233,12 @@ void CDarkSendPool::CheckTimeout(){
             UpdateState(POOL_STATUS_ACCEPTING_ENTRIES);
         }
     } else if(GetTimeMillis()-lastTimeChanged >= (DARKSEND_QUEUE_TIMEOUT*1000)+addLagTime){
-        if(fDebug) printf("CDarkSendPool::CheckTimeout() -- Session timed out (30s) -- resetting\n");
+        if(fDebug) printf("CDarkSendPool::CheckTimeout() -- Session timed out (120s) -- resetting\n");
         SetNull();
         UnlockCoins();
 
         UpdateState(POOL_STATUS_ERROR);
-        lastMessage = _("Session timed out (30 seconds), please resubmit.");
+        lastMessage = _("Session timed out (120 seconds), please resubmit.");
     }
 
     if(state == POOL_STATUS_SIGNING && GetTimeMillis()-lastTimeChanged >= (DARKSEND_SIGNING_TIMEOUT*1000)+addLagTime ) {
@@ -937,13 +937,13 @@ void ThreadCheckDarkSendPool(void* parg)
     {
         c++;
 
-        MilliSleep(1000);
-        //printf("ThreadCheckDarkSendPool::check timeout\n");
-        //darkSendPool.CheckTimeout();
+        MilliSleep(2500); //give time to shutdown and send info to darksend
+        printf("ThreadCheckDarkSendPool::check timeout\n"); //for debug on testnet, do desactivate when main
+        darkSendPool.CheckTimeout();
 
-        int mnTimeout = 150; //2.5 minutes
+        //int mnTimeout = 150; //2.5 minutes, disable for test
 
-        if(c % mnTimeout == 0){
+        if(c % 60 == 0){     //120 for same number has darksend.timeout
             LOCK(cs_main);
             /*
                 cs_main is required for doing masternode.Check because something
@@ -977,7 +977,7 @@ void ThreadCheckDarkSendPool(void* parg)
 
         int mnRefresh = 30;
 
-        //try to sync the masternode list and payment list every 90 seconds from at least 3 nodes until we have them all
+        //try to sync the masternode list and payment list every 30 seconds from at least 3 nodes until we have them all
         if(vNodes.size() > 2 && c % mnRefresh == 0 && (mnCount == 0 || vecMasternodes.size() < mnCount))
         {
             bool fIsInitialDownload = IsInitialBlockDownload();

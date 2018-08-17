@@ -502,7 +502,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaste
 
 
     /// debug print
-        printf("net: trying connection %s lastseen=%.1fhrs\n",
+        printf("net: trying connection %s lastseen=%.1fhrs\n",      //<---- show a lot in debug, try to connect same ip for days...
         pszDest ? pszDest : addrConnect.ToString().c_str(),
         pszDest ? 0 : (double)(GetAdjustedTime() - addrConnect.nTime)/3600.0);
 
