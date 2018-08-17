@@ -52,7 +52,7 @@ CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 unsigned int nTargetSpacing     = 30;               // 30 seconds, FAST
 inline unsigned int GetTargetSpacing()              { return nTargetSpacing; }
 unsigned int nStakeMinAge       = 24 * 60 * 60;     // 24 hour min stake age
-unsigned int nStakeMaxAge       = -1;               // unlimited, not really a good idea, should have a max or may cause overweight of some wallet.
+unsigned int nStakeMaxAge       = -1;               // unlimited
 unsigned int nModifierInterval  = 10 * 60;          // time to elapse before new modifier is computed
 
 

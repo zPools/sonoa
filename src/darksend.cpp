@@ -938,10 +938,14 @@ void ThreadCheckDarkSendPool(void* parg)
         c++;
 
         MilliSleep(2500); //give time to shutdown and send info to darksend
-        printf("ThreadCheckDarkSendPool::check timeout\n"); //for debug on testnet, do desactivate when main
+        if (fTestNet || fDebug)
+        {
+          printf("ThreadCheckDarkSendPool::check timeout\n");
+        }
+
         darkSendPool.CheckTimeout();
 
-        //int mnTimeout = 150; //2.5 minutes, disable for test
+        //int mnTimeout = 150; //2.5 minutes, disabled for test
 
         if(c % 60 == 0){     //120 for same number has darksend.timeout
             LOCK(cs_main);
