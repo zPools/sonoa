@@ -481,28 +481,30 @@ CNode* FindNode(const CService& addr)
 
 CNode* ConnectNode(CAddress addrConnect, const char *pszDest, bool darkSendMaster)
 {
-    if (pszDest == NULL) {
+    if (pszDest == NULL)
+    {
         if (IsLocal(addrConnect))
             return NULL;
 
         // Look for an existing connection
         CNode* pnode = FindNode((CService)addrConnect);
         if (pnode)
+
         {
-        if(darkSendMaster)
+            if(darkSendMaster)
                 pnode->fDarkSendMaster = true;
 
-            pnode->AddRef();
+                pnode->AddRef();
 
-            pnode->PushMessage("mktinv", GetTime() - (7 * 24 * 60 * 60));
+                pnode->PushMessage("mktinv", GetTime() - (7 * 24 * 60 * 60));
 
-            return pnode;
+                return pnode;
         }
     }
 
 
-    /// debug print
-        printf("net: trying connection %s lastseen=%.1fhrs\n",      //<---- show a lot in debug, try to connect same ip for days...
+    // debug print
+        printf("net: trying connection %s lastseen=%.1fhrs\n",
         pszDest ? pszDest : addrConnect.ToString().c_str(),
         pszDest ? 0 : (double)(GetAdjustedTime() - addrConnect.nTime)/3600.0);
 
