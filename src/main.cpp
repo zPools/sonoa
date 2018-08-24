@@ -42,21 +42,22 @@ set<pair<COutPoint, unsigned int> > setStakeSeen;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower, it was a better start for the chain when there was only CPU
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfStakeLimitv2(~uint256(0) >> 48);
-CBigNum bnProofOfStakeLimitv3(~uint256(0) >> 28);
-CBigNum bnProofOfStakeLimitv4(~uint256(0) >> 22);
-CBigNum bnProofOfStakeLimitvTEST(~uint256(0) >> 1);
+CBigNum bnProofOfStakeLimitvFix(~uint256(0) >> 22);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
 // Block Variables
 
 unsigned int nTargetSpacing     = 30;               // 30 seconds, FAST
-inline unsigned int GetTargetSpacing()              { return nTargetSpacing; }
+unsigned int nTargetSpacing2    = 60;               // PoS and PoW together sould get the chain to 30 sec
+inline unsigned int GetTargetSpacing()              { if (fTestNet) return nTargetSpacing2; else return nTargetSpacing;}
+
+
 unsigned int nStakeMinAge       = 24 * 60 * 60;     // 24 hour min stake age
 unsigned int nStakeMaxAge       = -1;               // unlimited
 unsigned int nModifierInterval  = 10 * 60;          // time to elapse before new modifier is computed
 
 
-int nCoinbaseMaturity = 490;
+int nCoinbaseMaturity = 490;                        // 500 block until mature
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 
@@ -1600,7 +1601,6 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
     int64_t CountBlocks = 0;
     CBigNum PastDifficultyAverage;
     CBigNum PastDifficultyAveragePrev;
-    CBigNum StakeLimitSwitch;
 
 
     if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin)
@@ -1654,24 +1654,10 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
     bnNew *= nActualTimespan;
     bnNew /= nTargetTimespan;
 
-
-    // For testnet, we switch the min diff from 28 to 22. Main will start with 22
-    if (fTestNet)
-    {
-        if (pindexLast->nHeight < 16500)
-            StakeLimitSwitch = bnProofOfStakeLimitv3;
-        else
-            StakeLimitSwitch = bnProofOfStakeLimitvTEST;
-    }
-    else
-        StakeLimitSwitch = bnProofOfStakeLimitv4;
-
-
-
     if (fProofOfStake)
     {
-        if (bnNew > StakeLimitSwitch)
-            bnNew = StakeLimitSwitch;
+        if (bnNew > bnProofOfStakeLimitvFix)
+            bnNew = bnProofOfStakeLimitvFix;
     }
 
     else

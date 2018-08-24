@@ -1,3 +1,5 @@
+//The SonoA (x97) algo by zPools
+
 #ifndef HASHBLOCK_H
 #define HASHBLOCK_H
 
