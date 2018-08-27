@@ -42,15 +42,14 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **NVIDIA:** https://github.com/QuaLiTyX/ccminer/releases
 
-**AMD:** https://github.com/zPools/sgminer-sonoa (NOT YET TESTED)
+**AMD:** BOUNTY => 300 coins for the first AMD miner
 
 
 
 ## Exchanges
 
-**Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BCH
+**crex24** Trading pair SONO/BTC - https://crex24.com/de/exchange/SONO-BTC
 
-**Bitzlato** Trading pair SONO/BCH - Russian - https://bitzlato.com/trade/SONO/BTC
 
 
 
@@ -58,13 +57,15 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **zPools:** https://new.zPools.de/
 
-**Mining Patriot** https://miningpatriot.com/  
-
-**Titan Minin**  https://titan-mining.net/  
-
-**MyPools** https://sono.mypools.net/  
+**Mining Patriot** https://miningpatriot.com/   
 
 **SnakePoolNow** http://snakepoolnow.de/  
+
+**umine** https://umine.org/ 
+
+**kob** http://kob.site/
+
+**zergpool** https://zergpool.com/
 
 
 
