@@ -1095,11 +1095,11 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
             boost::filesystem::path ConfPath;
                    ConfPath = GetDefaultDataDir() / "sono.conf";
                    
-                   FILE* ConfFile = fopen(ConfPath.string().c_str(), "w")
+                   FILE* ConfFile = fopen(ConfPath.string().c_str(), "w");
                        
-                       fprintf(ConfFile, "###################\n");
-                       fprintf(ConfFile, "#->SONO - CONFIG<-#\n");
-                       fprintf(ConfFile, "###################\n\n\n");
+                   fprintf(ConfFile, "###################\n");
+                   fprintf(ConfFile, "#->SONO - CONFIG<-#\n");
+                   fprintf(ConfFile, "###################\n\n\n");
 
                    fprintf(ConfFile, "rpcuser=yourusername\n");
 
@@ -1129,13 +1129,13 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                    fprintf(ConfFile, "server=1\n");
                    fprintf(ConfFile, "daemon=1\n");
                    fprintf(ConfFile, "maxconnections=16\n");
-                       fprintf(ConfFile, "port=32000\n");
-                       fprintf(ConfFile, "rpcport=31000\n");
-                       fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
-                       fprintf(ConfFile, "addnode=seed2.projectsono.io\n");
-                       fprintf(ConfFile, "addnode=seed3.projectsono.io\n");
-                       fprintf(ConfFile, "addnode=gfx-world.org\n"); //Thanks to belowzero01
-                       fprintf(ConfFile, "addnode=seed.zpools.de\n"); //USA Seed
+                   fprintf(ConfFile, "port=32000\n");
+                   fprintf(ConfFile, "rpcport=31000\n");
+                   fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=seed2.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=seed3.projectsono.io\n");
+                   fprintf(ConfFile, "addnode=gfx-world.org\n"); //Thanks to belowzero01
+                   fprintf(ConfFile, "addnode=seed.zpools.de\n"); //USA Seed
 
 
 
