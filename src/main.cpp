@@ -42,7 +42,7 @@ set<pair<COutPoint, unsigned int> > setStakeSeen;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower, it was a better start for the chain when there was only CPU
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfStakeLimitv2(~uint256(0) >> 48);
-CBigNum bnProofOfStakeLimitvFix(~uint256(0) >> 22);
+CBigNum bnProofOfStakeLimitvFix(~uint256(0) >> 21);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
 // Block Variables
@@ -1341,7 +1341,7 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 
     if (fTestNet)
     {
-        nSubsidy = 50 * COIN;
+        nSubsidy = nCoinAge * COIN_YEAR_REWARD / 365;
     }
     else
     {
@@ -1445,9 +1445,11 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
 }
 
 
+// DGWv3 is obsolete and remain here for historical reason
+/*
 //DGWv3 was used in testnet for a while but was replaced with AGW
-unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlock *pblock*/) {
-    /* current difficulty formula, darkcoin - DarkGravity v3, written by Evan Duffield - evan@darkcoin.io */
+unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast, const CBlock *pblock) {
+    /* current difficulty formula, darkcoin - DarkGravity v3, written by Evan Duffield - evan@darkcoin.io
     const CBlockIndex *BlockLastSolved = pindexLast;
     const CBlockIndex *BlockReading = pindexLast;
    // const CBlock *BlockCreating = pblock;
@@ -1512,7 +1514,7 @@ unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlo
 
     return bnNew.GetCompact();
 }
-
+*/
 
 
 
@@ -3515,9 +3517,9 @@ bool LoadBlockIndex(bool fAllowNew)
     if (fTestNet)
     {
         pchMessageStart[0] = 0x07;
-        pchMessageStart[1] = 0x11;
-        pchMessageStart[2] = 0x05;
-        pchMessageStart[3] = 0x0b;
+        pchMessageStart[1] = 0x12;
+        pchMessageStart[2] = 0x13;
+        pchMessageStart[3] = 0x14;
 
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 16 bits PoW target limit for testnet
         nStakeMinAge = 1 * 30 * 60; // test net min age is 30 min
@@ -3544,7 +3546,7 @@ bool LoadBlockIndex(bool fAllowNew)
         txNew.nTime = 1529319600;
         if(fTestNet)
         {
-            txNew.nTime = 1529566200;
+            txNew.nTime = 1535349600;
         }
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -3565,7 +3567,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nNonce   = 7204;
 		if(fTestNet)
         {
-            block.nNonce   = 1416;
+            block.nNonce   = 82;
         }
         if (false && (block.GetHash() != hashGenesisBlock)) {
 
@@ -3592,7 +3594,7 @@ bool LoadBlockIndex(bool fAllowNew)
         //// debug print
         if (fTestNet)
         {
-            assert(block.hashMerkleRoot == uint256("0x44e85752f19ee431a33b9ef816c84aa587ca8909e8afce84d2d17752e9f22755"));
+            assert(block.hashMerkleRoot == uint256("0x250d1754eb415b4057dd1ca62b775113ec26d7b3e3322b0a0d01310fa8f7402e"));
         }
         else
         {
