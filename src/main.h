@@ -66,7 +66,7 @@ static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 1000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
-static const int64_t MAX_MONEY = 10000000 * COIN; // 10,000,000 SONO Max -> Around 9 Years.
+static const int64_t MAX_MONEY = 5000000 * COIN; // 10,000,000 SONO Max -> Around 9 Years.
 static const int64_t COIN_YEAR_REWARD = 0.10 * COIN; // 10% per year (0.01 would be 1%).
 
 static const int64_t MAINNET_POSFIX = 2880; //Mainnet Proof of Stake update not enabled until block 2880. First coins could be mature until then.
