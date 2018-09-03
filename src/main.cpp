@@ -48,8 +48,19 @@ CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 // Block Variables
 
 unsigned int nTargetSpacing     = 30;               // 30 seconds, FAST
-unsigned int nTargetSpacing2    = 60;               // PoS and PoW together sould get the chain to 30 sec
-inline unsigned int GetTargetSpacing()              { if (fTestNet) return nTargetSpacing2; else return nTargetSpacing;}
+unsigned int nTargetSpacing2    = 60;               // PoS and PoW together sould get the chain to 30 sec in the near future
+
+inline unsigned int GetTargetSpacing()
+{
+    if (fTestNet)
+        return nTargetSpacing2;
+
+    else if (pindexBest->nHeight <= PoSFixHeight)
+        return nTargetSpacing;
+
+    else
+        return nTargetSpacing2;
+}
 
 
 unsigned int nStakeMinAge       = 24 * 60 * 60;     // 24 hour min stake age
@@ -1314,16 +1325,19 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
     {
 
     if (pindexBest->nHeight == 0)
-        nSubsidy = 560000 * COIN;  // The coin supply from Monday 18.06.2018 -> for SWAP from SONOv1 to SONOv2
+        nSubsidy = 560000 * COIN;                   // The coin supply from Monday 18.06.2018 -> for SWAP from SONOv1 to SONOv2
 
-    else if (pindexBest->nHeight <= 20) // Mined by the team to harden the Genesis
+    else if (pindexBest->nHeight <= 20)             // Mined by the team to harden the Genesis
         nSubsidy = 0 * COIN;
 
-    else if (pindexBest->nHeight <= 500) // short instamine protection
+    else if (pindexBest->nHeight <= 500)            // short instamine protection
         nSubsidy = 0.1 * COIN;
 
-    else
+    else if (pindexBest->nHeight <= PoSFixHeight)   // 1 Coin per block until PoSFix kicks in. Then reward is 2 Coins per block
         nSubsidy = 1 * COIN;
+
+    else
+        nSubsidy = 2 * COIN;
     }
 
     if (fDebug && GetBoolArg("-printcreation"))
@@ -1341,12 +1355,15 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 
     if (fTestNet)
     {
-        nSubsidy = nCoinAge * COIN_YEAR_REWARD / 365;
+        nSubsidy = nCoinAge * COIN_YEAR_REWARD_TN / 365;
     }
+
+    else if (pindexBest->nHeight <= PoSFixHeight)   // 1 Coin per block until PoSFix kicks in. Then reward is 40% p.a.
+        nSubsidy = 1 * COIN;
+
     else
-    {
-    nSubsidy = 1 * COIN;    
-    }
+        nSubsidy = nCoinAge * COIN_YEAR_REWARD / 365;
+
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
@@ -2438,11 +2455,10 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                     printf("Masternode PoS payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[1].vout[i].nValue / COIN).c_str(), paidAge, mn.nBlockLastPaid);
                                     if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                     {
-                    if (pindex->nHeight < 70000)
-                                            // return DoS(1, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
-                                             printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
-					else
-					    return DoS(100, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+                                        if (pindex->nHeight < PoSFixHeight || fTestNet)
+                                             printf ("\nWARNING: Masternode PoS payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
+                                        else
+                                            return DoS(1, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                     }
                                     mn.nBlockLastPaid = pindex->nHeight+1;
                                     foundPayee = true;
@@ -2508,11 +2524,10 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                 printf("Masternode PoW payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[0].vout[i].nValue).c_str(), paidAge, mn.nBlockLastPaid);
                                 if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                 {
-					if (pindex->nHeight < 70000)
-                                          //  return DoS(1, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
-                                           printf ("\nWARNING: Masternode payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
-					else
-					    return DoS(100, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+                                    if (pindex->nHeight < PoSFixHeight || fTestNet)
+                                         printf ("\nWARNING: Masternode PoW payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
+                                    else
+                                        return DoS(1, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                 }
 				    
                                 mn.nBlockLastPaid = pindex->nHeight+1;
@@ -3121,7 +3136,7 @@ bool CBlock::AcceptBlock()
     int nHeight = pindexPrev->nHeight+1;
 
     if (IsProofOfWork() && nHeight > LAST_POW_BLOCK)
-        return DoS(100, error("AcceptBlock() : reject proof-of-work at height %d", nHeight));
+        return DoS(100, error("AcceptBlock() : reject proof-of-work at height %d. Block beyond last PoW-Block", nHeight));
 
     // Check proof-of-work or proof-of-stake
     if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake()))
@@ -4027,8 +4042,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             oldVersion = true;
 
         // Disconnect nodes that are over block height 42k and have an old peer version
-        //if (nBestHeight >= 42000 && pfrom->nVersion < PROTOCOL_VERSION)
-        //    oldVersion = true;
+        if (nBestHeight >= PoSFixHeight && pfrom->nVersion < PROTOCOL_VERSION)
+            oldVersion = true;
 
         if (oldVersion == true)
         {
@@ -4036,15 +4051,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
           pfrom->fDisconnect = true;
           return false;
         }
-
-        /*
-        if (pfrom->nVersion < PROTO_VERSION)
-        {
-            // disconnect from peers older than this proto version
-            printf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->nVersion);
-            pfrom->fDisconnect = true;
-            return false;
-        }*/
 
         if (pfrom->nVersion == 10300)
             pfrom->nVersion = 300;
