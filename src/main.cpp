@@ -1582,7 +1582,85 @@ unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
     return bnNew.GetCompact();
 }
 
+unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofOfStake) {
+    /* AntiGravityWave by reorder, derived from code by Evan Duffield - evan@darkcoin.io */
+    
+    CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
+    
+    const CBlockIndex *BlockLastSolved = GetLastBlockIndex(pindexLast, fProofOfStake);;
+    const CBlockIndex *BlockReading = GetLastBlockIndex(pindexLast, fProofOfStake);
+    
+   // const CBlock *BlockCreating = pblock;
+   // BlockCreating = BlockCreating;
+    int64_t nActualTimespan = 0;
+    int64_t LastBlockTime = 0;
+    int64_t PastBlocksMin = 72;
+    int64_t PastBlocksMax = 72;
+    int64_t CountBlocks = 0;
+    CBigNum PastDifficultyAverage;
+    CBigNum PastDifficultyAveragePrev;
 
+    if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin) {
+        return bnTargetLimit.GetCompact();
+    }
+    
+    for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
+        if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
+        CountBlocks++;
+
+        if(CountBlocks <= PastBlocksMin) {
+            if (CountBlocks == 1)
+                { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
+            else { PastDifficultyAverage = ((PastDifficultyAveragePrev * CountBlocks)+(CBigNum().SetCompact(BlockReading->nBits))) / (CountBlocks+1); }
+            PastDifficultyAveragePrev = PastDifficultyAverage;
+        }
+
+        if(LastBlockTime > 0){
+            int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
+            nActualTimespan += Diff;
+        }
+        LastBlockTime = BlockReading->GetBlockTime();
+        
+        BlockReading = GetLastBlockIndex(BlockReading->pprev, fProofOfStake);  //get previous block
+        
+    }
+
+    CBigNum bnNew(PastDifficultyAverage);
+
+    --CountBlocks;
+    
+    if (CountBlocks==0) {
+        return bnTargetLimit.GetCompact();
+    }
+
+    int64_t nTargetSpacing = GetTargetSpacing()*2; //targetSpacing is 30s, change it to 30s*2=60s for both pow and pos
+
+    int64_t nTargetTimespan = CountBlocks*nTargetSpacing;
+
+    if (nActualTimespan < nTargetTimespan/2)
+        nActualTimespan = nTargetTimespan/2;
+    if (nActualTimespan > nTargetTimespan*2)
+        nActualTimespan = nTargetTimespan*2;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
+
+    if (bnNew > bnTargetLimit){
+        bnNew = bnTargetLimit;
+    }
+
+    if (fTestNet || fDebug)
+    {
+    printf("\n");
+    printf("Difficulty Retarget - Anti Gravity Wave\n");
+    printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
+    printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
+    printf("\n");
+    }
+
+    return bnNew.GetCompact();
+}
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
@@ -1597,14 +1675,14 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
             return DarkGravityWave3(pindexLast);
         }
         else
-            return AntiGravityWave(pindexLast);
+            return AntiGravityWave2(pindexLast, fProofOfStake);
     }
     else if (pindexLast->nHeight < 42000)
     {
         return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
     }
     else
-        return AntiGravityWave(pindexLast);
+        return AntiGravityWave2(pindexLast, fProofOfStake);
 
 }
 
