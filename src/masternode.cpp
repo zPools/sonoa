@@ -506,9 +506,9 @@ bool GetMasternodeRanks()
     return true;
 }
 
-int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
+int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
 {
-    //LOCK(cs_masternodes);
+    LOCK(cs_masternodes);
     std::vector< pair<unsigned int, CTxIn> > vecMasternodeScores;
 
     for (CMasterNode & mn : vecMasternodes) {
@@ -529,9 +529,9 @@ int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
 
     unsigned int rank = 0;
-    for (PAIRTYPE(unsigned int, CTxIn) &s : vecMasternodeScores) {
+    BOOST_FOREACH (PAIRTYPE(unsigned int, CTxIn)& s, vecMasternodeScores){
         rank++;
-        if (s.second == vin) {
+        if(s.second == vin) {
             return rank;
         }
     }
@@ -570,10 +570,10 @@ int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly2());
 
     int rank = 0;
-    for (PAIRTYPE(unsigned int, int) &s : vecMasternodeScores) {
-        rank++;
-        if (rank == findRank) return s.second;
-    }
+    BOOST_FOREACH (PAIRTYPE(unsigned int, int)& s, vecMasternodeScores){
+            rank++;
+            if(rank == findRank) return s.second;
+        }
 
     return -1;
 }
