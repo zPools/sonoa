@@ -474,36 +474,41 @@ int GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
 
     return winner;
 }
-bool GetMasternodeRanks()
+std::vector<MasterNodeRank> GetMasternodeRanks(int64_t nBlockHeight, int minProtocol)
 {
-    if (masternodePayments.vecMasternodeRanksLastUpdated == pindexBest->nHeight)
-        return true;
+    std::vector<pair<unsigned int, CMasterNode> > vecMasternodeScores;
+    std::vector<pair<int, CMasterNode> > vecMasternodeRanks;
 
-    // std::vector<pair<int, CMasterNode*> > vecMasternodeScores;
+    //make sure we know about this block
+    uint256 hash = 0;
+    if(!GetBlockHash(hash, nBlockHeight)) return vecMasternodeRanks;
 
-    vecMasternodeScores.clear();
-
-    int masternodeversion = MIN_MN_PROTO_VERSION;
-    if (pindexBest->nHeight > PoSFixHeight)
-        masternodeversion = PROTOCOL_VERSION;
-
+    // scan for winner
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
 
         mn.Check();
-        if(mn.protocolVersion < masternodeversion) continue;
 
-        if (!mn.nBlockLastPaid || mn.nBlockLastPaid == 0)
-        {
-            CBlockIndex* pindex = pindexBest;
-            mn.UpdateLastPaidBlock(pindex, 2880); // search back 1 day
+        if(mn.protocolVersion < minProtocol) continue;
+        if(!mn.IsEnabled()) {
+            continue;
         }
-        vecMasternodeScores.push_back(make_pair(mn.nBlockLastPaid, &mn));
+
+        uint256 n = mn.CalculateScore(1, nBlockHeight);
+        unsigned int n2 = 0;
+        memcpy(&n2, &n, sizeof(n2));
+
+        vecMasternodeScores.push_back(make_pair(n2, mn));
     }
 
-    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareLastPaidBlock());
+    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnlyMN());
 
-    masternodePayments.vecMasternodeRanksLastUpdated = pindexBest->nHeight;
-    return true;
+    int rank = 0;
+    BOOST_FOREACH (PAIRTYPE(unsigned int, CMasterNode)& s, vecMasternodeScores){
+        rank++;
+        vecMasternodeRanks.push_back(make_pair(rank, s.second));
+    }
+
+    return vecMasternodeRanks;
 }
 
 int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
