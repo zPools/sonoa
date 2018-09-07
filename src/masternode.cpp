@@ -484,8 +484,8 @@ bool GetMasternodeRanks()
     vecMasternodeScores.clear();
 
     int masternodeversion = MIN_MN_PROTO_VERSION;
-    if (pindexBest->nHeight > PoSFixHeight)
-        masternodeversion = PROTOCOL_VERSION;
+    //if (pindexBest->nHeight > 42000)
+    //    masternodeversion = 20011;
 
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
 
@@ -508,74 +508,30 @@ bool GetMasternodeRanks()
 
 int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
 {
-    //LOCK(cs_masternodes);
-    std::vector< pair<unsigned int, CTxIn> > vecMasternodeScores;
+    LOCK(cs_masternodes);
+    GetMasternodeRanks();
+    unsigned int i = 0;
 
-    for (CMasterNode & mn : vecMasternodes) {
-        mn.Check();
-
-        if (mn.protocolVersion < minProtocol) continue;
-        if (!mn.IsEnabled()) {
-            continue;
-        }
-
-        uint256 n = mn.CalculateScore(1, nBlockHeight);
-        unsigned int n2 = 0;
-        memcpy(&n2, &n, sizeof(n2));
-
-        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
+    BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
+    {
+        i++;
+        if (s.second->vin == tmn.vin)
+            return i;
     }
-
-    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
-
-    unsigned int rank = 0;
-    for (PAIRTYPE(unsigned int, CTxIn) &s : vecMasternodeScores) {
-        rank++;
-        if (s.second == vin) {
-            return rank;
-        }
-    }
-
-    return -1;
 }
 
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
 {
     LOCK(cs_masternodes);
-    int i = 0;
+    GetMasternodeRanks();
+    unsigned int i = 0;
 
-    int masternodeversion = MIN_MN_PROTO_VERSION;
-    if (pindexBest->nHeight > PoSFixHeight)
-        masternodeversion = PROTOCOL_VERSION;
-
-    std::vector <pair<unsigned int, int>> vecMasternodeScores;
-
-    i = 0;
-    for (CMasterNode mn : vecMasternodes) {
-        mn.Check();
-        if (mn.protocolVersion < masternodeversion) continue;
-        if (!mn.IsEnabled()) {
-            i++;
-            continue;
-        }
-
-        uint256 n = mn.CalculateScore(1, nBlockHeight);
-        unsigned int n2 = 0;
-        memcpy(&n2, &n, sizeof(n2));
-
-        vecMasternodeScores.push_back(make_pair(n2, i));
+    BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
+    {
         i++;
+        if (i == findRank)
+            return s.first;
     }
-
-    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly2());
-
-    int rank = 0;
-    for (PAIRTYPE(unsigned int, int) &s : vecMasternodeScores) {
-        rank++;
-        if (rank == findRank) return s.second;
-    }
-
-    return -1;
 }
 
 //Get the last hash that matches the modulus given. Processed in reverse order
