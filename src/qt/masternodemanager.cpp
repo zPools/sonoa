@@ -248,7 +248,7 @@ void MasternodeManager::updateNodeList()
     {
         int mnRow = 0;
         ui->tableWidget->insertRow(0);
-        int mnRank = GetMasternodeRank(mn.vin, pindexBest->nHeight);
+        int mnRank = GetMasternodeRanks(pindexBest->nHeight);
         // populate list
         // Address, Rank, Active, Active Seconds, Last Seen, Pub Key, Version
         QTableWidgetItem *activeItem = new QTableWidgetItem();
