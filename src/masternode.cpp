@@ -508,17 +508,13 @@ bool GetMasternodeRanks()
 
 int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
 {
-    int masternodeversion = MIN_MN_PROTO_VERSION;
-    if (pindexBest->nHeight > PoSFixHeight)
-        masternodeversion = PROTOCOL_VERSION;
-
     LOCK(cs_masternodes);
     std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
 
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
         mn.Check();
 
-        if(mn.protocolVersion < masternodeversion) continue;
+        if(mn.protocolVersion < minProtocol) continue;
         if(!mn.IsEnabled()) {
             continue;
         }
