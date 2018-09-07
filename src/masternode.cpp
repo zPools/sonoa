@@ -157,7 +157,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
 
         // make sure the vout that was signed is related to the transaction that spawned the masternode
         //  - this is expensive, so it's only done once per masternode
-        if(!darkSendSigner.IsVinAssociatedWithPubkey(vin, pubkey)) {
+        if(!darkSendSigner.IsVinAssociatedWithPubkey(vin, pubkey) && !IsInitialBlockDownload()) {
             printf("dsee - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -508,30 +508,74 @@ bool GetMasternodeRanks()
 
 int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
 {
-    LOCK(cs_masternodes);
-    GetMasternodeRanks();
-    unsigned int i = 0;
+    //LOCK(cs_masternodes);
+    std::vector< pair<unsigned int, CTxIn> > vecMasternodeScores;
 
-    BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
-    {
-        i++;
-        if (s.second->vin == tmn.vin)
-            return i;
+    for (CMasterNode & mn : vecMasternodes) {
+        mn.Check();
+
+        if (mn.protocolVersion < minProtocol) continue;
+        if (!mn.IsEnabled()) {
+            continue;
+        }
+
+        uint256 n = mn.CalculateScore(1, nBlockHeight);
+        unsigned int n2 = 0;
+        memcpy(&n2, &n, sizeof(n2));
+
+        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
     }
+
+    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
+
+    unsigned int rank = 0;
+    for (PAIRTYPE(unsigned int, CTxIn) &s : vecMasternodeScores) {
+        rank++;
+        if (s.second == vin) {
+            return rank;
+        }
+    }
+
+    return -1;
 }
 
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
 {
     LOCK(cs_masternodes);
-    GetMasternodeRanks();
-    unsigned int i = 0;
+    int i = 0;
 
-    BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
-    {
+    int masternodeversion = MIN_MN_PROTO_VERSION;
+    if (pindexBest->nHeight > PoSFixHeight)
+        masternodeversion = PROTOCOL_VERSION;
+
+    std::vector <pair<unsigned int, int>> vecMasternodeScores;
+
+    i = 0;
+    for (CMasterNode mn : vecMasternodes) {
+        mn.Check();
+        if (mn.protocolVersion < masternodeversion) continue;
+        if (!mn.IsEnabled()) {
+            i++;
+            continue;
+        }
+
+        uint256 n = mn.CalculateScore(1, nBlockHeight);
+        unsigned int n2 = 0;
+        memcpy(&n2, &n, sizeof(n2));
+
+        vecMasternodeScores.push_back(make_pair(n2, i));
         i++;
-        if (i == findRank)
-            return s.first;
     }
+
+    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly2());
+
+    int rank = 0;
+    for (PAIRTYPE(unsigned int, int) &s : vecMasternodeScores) {
+        rank++;
+        if (rank == findRank) return s.second;
+    }
+
+    return -1;
 }
 
 //Get the last hash that matches the modulus given. Processed in reverse order

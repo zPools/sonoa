@@ -28,9 +28,9 @@ Value getpoolinfo(const Array& params, bool fHelp)
 
     Object obj;
     obj.push_back(Pair("current_masternode",        GetCurrentMasterNode()));
-    obj.push_back(Pair("state",        darkSendPool.GetState()));
-    obj.push_back(Pair("entries",      darkSendPool.GetEntriesCount()));
-    obj.push_back(Pair("entries_accepted",      darkSendPool.GetCountEntriesAccepted()));
+    obj.push_back(Pair("state",                     darkSendPool.GetState()));
+    obj.push_back(Pair("entries",                   darkSendPool.GetEntriesCount()));
+    obj.push_back(Pair("entries_accepted",          darkSendPool.GetCountEntriesAccepted()));
     return obj;
 }
 
@@ -227,15 +227,15 @@ Value masternode(const Array& params, bool fHelp)
             mn.Check();
 
             if(strCommand == "active"){
-                obj.push_back(Pair(mn.addr.ToString().c_str(),       (string)(mn.IsEnabled() ? "Enabled" : "Error") ));
-            } else if (strCommand == "full") { //Reports "MasternodeIP: Enabled, Last time seen, Time active, Rank, Protocol"
+                obj.push_back(Pair(mn.addr.ToString().c_str(), (string)(mn.IsEnabled() ? "Enabled" : "Error") ));
+            } else if (strCommand == "full") {                                              //Reports "MasternodeIP: Enabled, Last time seen, Time active, Rank, Protocol"
                 std::ostringstream streamFull;
                 streamFull << std::setw(18) <<
-                              (string)(mn.IsEnabled() ? "Enabled" : "Error") << " " <<   //Is Enabled
-                              (int64_t)mn.lastTimeSeen << " " << //Last time seen
-                              (int64_t)(mn.lastTimeSeen - mn.now) << " " << //Time active (in sec)
-                              (int)(GetMasternodeRank(mn, pindexBest->nHeight)) << " " <<  //Rank
-                              (int64_t)mn.protocolVersion; //Protocol Version of Masternode
+                              (string)(mn.IsEnabled() ? "Enabled" : "Error") << " " <<      // Is Enabled
+                              (int64_t)mn.lastTimeSeen << " " <<                            // Last time seen
+                              (int64_t)(mn.lastTimeSeen - mn.now) << " " <<                 // Time active (in sec)
+                              (int)(GetMasternodeRank(mn, pindexBest->nHeight)) << " " <<   // Rank
+                              (int64_t)mn.protocolVersion;                                  // Protocol Version of Masternode
 
                 std::string strFull = streamFull.str();
                 obj.push_back(Pair(mn.addr.ToString().c_str(), strFull));

@@ -20,7 +20,7 @@ class CMasterNode;
 class CMasternodePayments;
 class uint256;
 
-#define MASTERNODE_NOT_PROCESSED               0 // initial state
+#define MASTERNODE_NOT_PROCESSED               0            // initial state
 #define MASTERNODE_IS_CAPABLE                  1
 #define MASTERNODE_NOT_CAPABLE                 2
 #define MASTERNODE_STOPPED                     3
@@ -30,7 +30,7 @@ class uint256;
 #define MASTERNODE_SYNC_IN_PROCESS             8
 #define MASTERNODE_REMOTELY_ENABLED            9
 
-#define MASTERNODE_MIN_CONFIRMATIONS           15
+#define MASTERNODE_MIN_CONFIRMATIONS           720          // was 15. Increased to 720, that one can not skip masternode payment threshold
 #define MASTERNODE_MIN_DSEEP_SECONDS           (10*60)
 #define MASTERNODE_MIN_DSEE_SECONDS            (5*60)
 #define MASTERNODE_PING_SECONDS                (1*60)

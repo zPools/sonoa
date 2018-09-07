@@ -53,9 +53,9 @@ class CNode;
 
 // General SONO Block Values
 
-static const int LAST_POW_BLOCK             = 10000000; // 10m blocks Proof of Work before Proof of Stake consensus kicks in
-static const int FAIR_LAUNCH_BLOCK          = 0; // Dont matter. We dont use it, but we leave it here
-static const unsigned int MAX_BLOCK_SIZE    = 5000000; // 5MB block hard limit. That is a limit at 30sec blocktime. We may risk that the chain split if a big pool has a poor connection - which should not be
+static const int LAST_POW_BLOCK             = 10000000;     // 10m blocks Proof of Work before Proof of Stake consensus kicks in. Max coin supply will kick in earlier
+static const int FAIR_LAUNCH_BLOCK          = 0;            // Dont matter. We dont use it, but we leave it here
+static const unsigned int MAX_BLOCK_SIZE    = 5000000;      // 5MB block hard limit. That is a limit at 30sec blocktime. We may risk that the chain split if a big pool has a poor connection - which should not be
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2; // 2.5MB block soft limit, ditto
 /** The maximum size for transactions we're willing to relay/mine **/
 static const unsigned int MAX_STANDARD_TX_SIZE = MAX_BLOCK_SIZE_GEN/5;
@@ -69,7 +69,7 @@ static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 
 
 static const int64_t PoSFixHeight           = 310000;           // PoSFixHeight
-static const int64_t MAX_MONEY              = 5000000 * COIN;   // 10,000,000 SONO Max -> Around 9 Years.
+static const int64_t MAX_MONEY              = 5000000 * COIN;   // 5,000,000 SONO Max -> Around 4 years.
 static const int64_t COIN_YEAR_REWARD       = 0.40 * COIN;      // 40% per year (0.01 would be 1%).
 static const int64_t COIN_YEAR_REWARD_TN    = 0.10 * COIN;      // 10% per year for Testnet
 
