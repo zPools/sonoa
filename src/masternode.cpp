@@ -444,6 +444,15 @@ int GetMasternodeByVin(CTxIn& vin)
     return -1;
 }
 
+struct CompareValueOnlyMN
+{
+    bool operator()(const pair<int64_t, CMasterNode>& t1,
+                    const pair<int64_t, CMasterNode>& t2) const
+    {
+        return t1.first < t2.first;
+    }
+};
+
 int GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
 {
     int i = 0;
