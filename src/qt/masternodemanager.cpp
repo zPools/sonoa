@@ -177,7 +177,7 @@ void MasternodeManager::updateAdrenalineNode(QString alias, QString addr, QStrin
 
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
         if (mn.addr.ToString().c_str() == addr){
-            rank = GetMasternodeRank(mn, pindexBest->nHeight);
+            rank = GetMasternodeRank(mn.vin, pindexBest->nHeight);
             status = QString::fromStdString("Online");
             collateral = QString::fromStdString(address2.ToString().c_str());
         }
@@ -248,7 +248,7 @@ void MasternodeManager::updateNodeList()
     {
         int mnRow = 0;
         ui->tableWidget->insertRow(0);
-        int mnRank = GetMasternodeRank(mn, pindexBest->nHeight);
+        int mnRank = GetMasternodeRank(mn.vin, pindexBest->nHeight);
         // populate list
         // Address, Rank, Active, Active Seconds, Last Seen, Pub Key, Version
         QTableWidgetItem *activeItem = new QTableWidgetItem();
