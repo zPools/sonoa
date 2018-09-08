@@ -53,9 +53,9 @@ class CNode;
 
 // General SONO Block Values
 
-static const int LAST_POW_BLOCK = 9000000; // Block 9m Approx. 9 years of Proof of Work before Proof of Stake consensus kicks in
-static const int FAIR_LAUNCH_BLOCK = 0; // Dont matter. We dont use it, but we leave it here
-static const unsigned int MAX_BLOCK_SIZE = 5000000; // 5MB block hard limit. That is a limit at 30sec blocktime. We may risk that the chain split if a big pool has a poor connection - which should not be
+static const int LAST_POW_BLOCK             = 10000000;     // 10m blocks Proof of Work before Proof of Stake consensus kicks in. Max coin supply will kick in earlier
+static const int FAIR_LAUNCH_BLOCK          = 0;            // Dont matter. We dont use it, but we leave it here
+static const unsigned int MAX_BLOCK_SIZE    = 5000000;      // 5MB block hard limit. That is a limit at 30sec blocktime. We may risk that the chain split if a big pool has a poor connection - which should not be
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2; // 2.5MB block soft limit, ditto
 /** The maximum size for transactions we're willing to relay/mine **/
 static const unsigned int MAX_STANDARD_TX_SIZE = MAX_BLOCK_SIZE_GEN/5;
@@ -66,8 +66,12 @@ static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 1000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
-static const int64_t MAX_MONEY = 10000000 * COIN; // 10,000,000 SONO Max -> That should be reached within 250 years... hopefully I'm still alive tho
-static const int64_t COIN_YEAR_REWARD = 0.00 * COIN; // 0% per year (0.01 would be 1%). We use static PoS reward, but we leave it here
+
+
+static const int64_t PoSFixHeight           = 310000;           // PoSFixHeight
+static const int64_t MAX_MONEY              = 5000000 * COIN;   // 5,000,000 SONO Max -> Around 4 years.
+static const int64_t COIN_YEAR_REWARD       = 0.40 * COIN;      // 40% per year (0.01 would be 1%).
+static const int64_t COIN_YEAR_REWARD_TN    = 0.10 * COIN;      // 10% per year for Testnet
 
 static const int64_t MAINNET_POSFIX = 2880; //Mainnet Proof of Stake update not enabled until block 2880. First coins could be mature until then.
 
@@ -80,17 +84,14 @@ static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20
 static const unsigned int MAX_P2SH_SIGOPS = 15;
 
 static const uint256 hashGenesisBlock("0x00001e74a346f93f177995121bdb9826fb8e5445163d2e87591f6b01291aae5a");
-static const uint256 hashGenesisBlockTestNet("0x00abcf544bf249d76a8b7fd87c9e116bbf4af29a21a21639af6d8056c1ed92ca");
-
-//inline bool IsProtocolV1RetargetingFixed(int nHeight) { return fTestNet || nHeight > 0; }
-//inline bool IsProtocolV2(int nHeight) { return fTestNet || nHeight > 0; }
-//inline bool V3(int64_t nTime) { return fTestNet || nTime > 1524196491; } //nTime April 20th 2018
+static const uint256 hashGenesisBlockTestNet("0x00cb9fb6f6ef3347806a6c1a3bfb868961edd82363f0ecd1889efa490180ac1c");
 
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 10 * 60; } // up to 10 minutes from the past
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 10 minutes from the future
 
 //inline unsigned int GetTargetSpacing(int nHeight) { return IsProtocolV2(nHeight) ? 60 : 60; }
 
+//Amount of coins needed for the Masternode collateral address
 inline int64_t GetMNCollateral() { return 1000; }
 
 extern CScript COINBASE_FLAGS;

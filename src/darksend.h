@@ -224,7 +224,7 @@ class CDarksendSession
 class CDarkSendPool
 {
 public:
-    static const int PROTOCOL_VERSION = 20011;
+    static const int PROTOCOL_VERSION = 20021;
 
     // clients entries
     std::vector<CDarkSendEntry> myEntries;
@@ -291,7 +291,7 @@ public:
 
     void InitCollateralAddress(){
         std::string strAddress = "";
-            strAddress = "DQjK69r9hjKgJo3foVsqdErBzL1Rdmsswr";
+            strAddress = "SRc3rwY5ihUqyc8DmYGjujEQmxJeRMq2rk";
         SetCollateralAddress(strAddress);
     }
 

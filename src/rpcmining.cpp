@@ -52,27 +52,27 @@ Value getmininginfo(const Array& params, bool fHelp)
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
 
     Object obj, diff, weight;
-    obj.push_back(Pair("blocks",        (int)nBestHeight));
-    obj.push_back(Pair("currentblocksize",(uint64_t)nLastBlockSize));
-    obj.push_back(Pair("currentblocktx",(uint64_t)nLastBlockTx));
+    obj.push_back(Pair("blocks",            (int)nBestHeight));
+    obj.push_back(Pair("blockvalue",        (uint64_t)GetProofOfWorkReward(nBestHeight+1, 0)));
+    obj.push_back(Pair("currentblocksize",  (uint64_t)nLastBlockSize));
+    obj.push_back(Pair("currentblocktx",    (uint64_t)nLastBlockTx));
+    obj.push_back(Pair("errors",            GetWarnings("statusbar")));
+    obj.push_back(Pair("pooledtx",          (uint64_t)mempool.size()));
 
     diff.push_back(Pair("proof-of-work",        GetDifficulty()));
     diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
     diff.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
-    obj.push_back(Pair("difficulty",    diff));
-
-    obj.push_back(Pair("blockvalue",    (uint64_t)GetProofOfWorkReward(nBestHeight+1, 0)));
+    obj.push_back(Pair("difficulty",            diff));
+    
     obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
-    obj.push_back(Pair("netstakeweight", GetPoSKernelPS()));
-    obj.push_back(Pair("errors",        GetWarnings("statusbar")));
-    obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
-
+   
     weight.push_back(Pair("minimum",    (uint64_t)nMinWeight));
     weight.push_back(Pair("maximum",    (uint64_t)nMaxWeight));
-    weight.push_back(Pair("combined",  (uint64_t)nWeight));
-    obj.push_back(Pair("stakeweight", weight));
+    weight.push_back(Pair("combined",   (uint64_t)nWeight));
+    obj.push_back(Pair("stakeweight",    weight));
+    obj.push_back(Pair("netstakeweight", GetPoSKernelPS()));
 
-    obj.push_back(Pair("stakeinterest",    (uint64_t)COIN_YEAR_REWARD));
+    //obj.push_back(Pair("stakeinterest",    (uint64_t)COIN_YEAR_REWARD));
     obj.push_back(Pair("testnet",       fTestNet));
     return obj;
 }
@@ -539,16 +539,9 @@ Value getblocktemplate(const Array& params, bool fHelp)
 	
     if(!masternodePayments.GetBlockPayee(pindexPrev->nHeight+1, payee)){
         //no masternode detected
-        int winningNode = GetMasternodeByRank(1);
+        int winningNode = GetCurrentMasterNode(1);
         if(winningNode >= 0){
-            BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
-            {
-                if (s.first == winningNode)
-                {
-                    payee.SetDestination(s.second->pubkey.GetID());
-                    break;
-                }
-            }
+        payee.SetDestination(vecMasternodes[winningNode].pubkey.GetID());
         } else {
             printf("getblocktemplate() RPC: Failed to detect masternode to pay, burning coins\n");
             // masternodes are in-eligible for payment, burn the coins in-stead

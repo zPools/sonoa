@@ -35,13 +35,13 @@ TARGET_OS=NATIVE_WINDOWS make libleveldb.a libmemenv.a CC=/mnt/mxe/usr/bin/i686-
       parallel {
         stage('Linux QT') {
           steps {
-            sh 'qmake && make -j5'
+            sh 'qmake && make -j$(nproc)'
           }
         }
         stage('Linux Daemon') {
           steps {
             sh '''cd src/
-make -j3 -f makefile.unix'''
+make -j$(nproc) -f makefile.unix'''
           }
         }
         stage('Windows Wallet') {

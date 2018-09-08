@@ -42,18 +42,33 @@ set<pair<COutPoint, unsigned int> > setStakeSeen;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);       // lower, it was a better start for the chain when there was only CPU
 CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 CBigNum bnProofOfStakeLimitv2(~uint256(0) >> 48);
+CBigNum bnProofOfStakeLimitvFix(~uint256(0) >> 21);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
 // Block Variables
 
 unsigned int nTargetSpacing     = 30;               // 30 seconds, FAST
-inline unsigned int GetTargetSpacing()              { return nTargetSpacing; }
+unsigned int nTargetSpacing2    = 60;               // PoS and PoW together sould get the chain to 30 sec in the near future
+
+inline unsigned int GetTargetSpacing()
+{
+    if (fTestNet)
+        return nTargetSpacing2;
+
+    else if (pindexBest->nHeight <= PoSFixHeight)
+        return nTargetSpacing;
+
+    else
+        return nTargetSpacing2;
+}
+
+
 unsigned int nStakeMinAge       = 24 * 60 * 60;     // 24 hour min stake age
 unsigned int nStakeMaxAge       = -1;               // unlimited
 unsigned int nModifierInterval  = 10 * 60;          // time to elapse before new modifier is computed
 
 
-int nCoinbaseMaturity = 490;
+int nCoinbaseMaturity = 490;                        // 500 block until mature
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 
@@ -1310,16 +1325,19 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
     {
 
     if (pindexBest->nHeight == 0)
-        nSubsidy = 560000 * COIN;  // The coin supply from Monday 18.06.2018 -> for SWAP from SONOv1 to SONOv2
+        nSubsidy = 560000 * COIN;                   // The coin supply from Monday 18.06.2018 -> for SWAP from SONOv1 to SONOv2
 
-    else if (pindexBest->nHeight <= 20) // Mined by the team to harden the Genesis
+    else if (pindexBest->nHeight <= 20)             // Mined by the team to harden the Genesis
         nSubsidy = 0 * COIN;
 
-    else if (pindexBest->nHeight <= 500) // short instamine protection
+    else if (pindexBest->nHeight <= 500)            // short instamine protection
         nSubsidy = 0.1 * COIN;
 
-    else
+    else if (pindexBest->nHeight <= PoSFixHeight)   // 1 Coin per block until PoSFix kicks in. Then reward is 2 Coins per block
         nSubsidy = 1 * COIN;
+
+    else
+        nSubsidy = 2 * COIN;
     }
 
     if (fDebug && GetBoolArg("-printcreation"))
@@ -1337,12 +1355,15 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees)
 
     if (fTestNet)
     {
-        nSubsidy = 50 * COIN;
+        nSubsidy = nCoinAge * COIN_YEAR_REWARD_TN / 365;
     }
+
+    else if (pindexBest->nHeight <= PoSFixHeight)   // 1 Coin per block until PoSFix kicks in. Then reward is 40% p.a.
+        nSubsidy = 1 * COIN;
+
     else
-    {
-    nSubsidy = 1 * COIN;    
-    }
+        nSubsidy = nCoinAge * COIN_YEAR_REWARD / 365;
+
 
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%" PRId64 "\n", FormatMoney(nSubsidy).c_str(), nCoinAge);
@@ -1441,9 +1462,11 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
 }
 
 
+// DGWv3 is obsolete and remain here for historical reason
+/*
 //DGWv3 was used in testnet for a while but was replaced with AGW
-unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlock *pblock*/) {
-    /* current difficulty formula, darkcoin - DarkGravity v3, written by Evan Duffield - evan@darkcoin.io */
+unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast, const CBlock *pblock) {
+    /* current difficulty formula, darkcoin - DarkGravity v3, written by Evan Duffield - evan@darkcoin.io
     const CBlockIndex *BlockLastSolved = pindexLast;
     const CBlockIndex *BlockReading = pindexLast;
    // const CBlock *BlockCreating = pblock;
@@ -1508,7 +1531,7 @@ unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast/*, const CBlo
 
     return bnNew.GetCompact();
 }
-
+*/
 
 
 
@@ -1566,9 +1589,12 @@ unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
     bnNew *= nActualTimespan;
     bnNew /= nTargetTimespan;
 
-    if (bnNew > bnProofOfWorkLimit){
+    if (bnNew > bnProofOfWorkLimit)
+    {
         bnNew = bnProofOfWorkLimit;
     }
+
+
 
     if (fTestNet || fDebug)
     {
@@ -1583,28 +1609,137 @@ unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
 }
 
 
+unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofOfStake) {
+    /* AntiGravityWave2 by zPools, derived from Bluecoin, reorder and Evan Duffield - evan@darkcoin.io */
+    const CBlockIndex *BlockLastSolved = GetLastBlockIndex(pindexLast, fProofOfStake);
+    const CBlockIndex *BlockReading = GetLastBlockIndex(pindexLast, fProofOfStake);
+    int64_t nActualTimespan = 0;
+    int64_t LastBlockTime = 0;
+    int64_t PastBlocksMin = 72;
+    int64_t PastBlocksMax = 72;
+    int64_t CountBlocks = 0;
+    CBigNum PastDifficultyAverage;
+    CBigNum PastDifficultyAveragePrev;
+
+
+    if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin)
+    {
+        return bnProofOfWorkLimit.GetCompact();
+    }
+
+    for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++)
+    {
+
+        while (BlockReading->IsProofOfStake() != fProofOfStake)
+        {
+            if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
+            BlockReading = BlockReading->pprev;
+        }
+
+        if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
+        CountBlocks++;
+
+        if(CountBlocks <= PastBlocksMin) {
+            if (CountBlocks == 1)
+                { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
+            else { PastDifficultyAverage = ((PastDifficultyAveragePrev * CountBlocks)+(CBigNum().SetCompact(BlockReading->nBits))) / (CountBlocks+1); }
+            PastDifficultyAveragePrev = PastDifficultyAverage;
+        }
+
+        if(LastBlockTime > 0){
+            int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
+            nActualTimespan += Diff;
+        }
+        LastBlockTime = BlockReading->GetBlockTime();
+
+        if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
+        BlockReading = BlockReading->pprev;
+    }
+
+    CBigNum bnNew(PastDifficultyAverage);
+
+    --CountBlocks;
+
+    int64_t nTargetSpacing = GetTargetSpacing();
+
+    int64_t nTargetTimespan = CountBlocks*nTargetSpacing;
+
+    if (nActualTimespan < nTargetTimespan/2)
+        nActualTimespan = nTargetTimespan/2;
+    if (nActualTimespan > nTargetTimespan*2)
+        nActualTimespan = nTargetTimespan*2;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
+
+    if (fProofOfStake)
+    {
+        if (bnNew > bnProofOfStakeLimitvFix)
+            bnNew = bnProofOfStakeLimitvFix;
+    }
+
+    else
+    {
+       if (bnNew > bnProofOfWorkLimit)
+           bnNew = bnProofOfWorkLimit;
+    }
+
+
+    if (fTestNet || fDebug)
+    {
+    printf("\n");
+    printf("Difficulty Retarget - Anti Gravity Wave 2\n");
+    printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
+    printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
+    printf("\n");
+    }
+
+    return bnNew.GetCompact();
+}
+
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
+    // Change testnet from GNTR -> DGW3 -> AGW2
     if (fTestNet)
     {
-        if (pindexLast->nHeight < 130)
+        if (pindexLast->nHeight < 200)
         {
             return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
         }
-        else if (pindexLast->nHeight < 10100)
+        else if (pindexLast->nHeight < 400)
         {
-            return DarkGravityWave3(pindexLast);
+            return AntiGravityWave(pindexLast);
         }
         else
-            return AntiGravityWave(pindexLast);
+            return AntiGravityWave2(pindexLast, fProofOfStake);
+
     }
+
+    // As long mainnet is below 42k, return GNTR
     else if (pindexLast->nHeight < 42000)
     {
         return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
     }
+
+
     else
         return AntiGravityWave(pindexLast);
+
+
+    // If its above 42k make it AGW
+/*    else if (pindexLast->nHeight < 67000)
+    {
+        return AntiGravityWave1(pindexLast, fProofOfStake);
+    }
+
+     // If above 67k make AGW2
+     else
+        return AntiGravityaWave2(pindexLast, fProofOfStake);
+*/
+
+
 
 }
 
@@ -2316,10 +2451,14 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                 {
                                     int lastPaid = mn.nBlockLastPaid;
                                     int paidAge = pindex->nHeight+1 - lastPaid;
+                                    int MNacceptable = 50 - paidAge;
                                     printf("Masternode PoS payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[1].vout[i].nValue / COIN).c_str(), paidAge, mn.nBlockLastPaid);
                                     if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                     {
-                                        printf("WARNING: This masternode payment is too aggressive and will not be accepted after block XXXX");
+                                        if (pindex->nHeight < PoSFixHeight || fTestNet)
+                                             printf ("\nWARNING: Masternode PoS payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
+                                        else
+                                            return DoS(1, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                     }
                                     mn.nBlockLastPaid = pindex->nHeight+1;
                                     foundPayee = true;
@@ -2381,11 +2520,16 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                             {
                                 int lastPaid = mn.nBlockLastPaid;
                                 int paidAge = pindex->nHeight+1 - lastPaid;
+                                int MNacceptable = 50 - paidAge;
                                 printf("Masternode PoW payee found at block %d: %s who got paid %s SONO (last payment was %d blocks ago at %d)\n", pindex->nHeight+1, address2.ToString().c_str(), FormatMoney(vtx[0].vout[i].nValue).c_str(), paidAge, mn.nBlockLastPaid);
                                 if (paidAge < 50) // TODO: Probably make this check the MN is in the top 50?
                                 {
-                                    printf("WARNING: This masternode payment is too aggressive and will not be accepted after block XXXX\n");
+                                    if (pindex->nHeight < PoSFixHeight || fTestNet)
+                                         printf ("\nWARNING: Masternode PoW payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
+                                    else
+                                        return DoS(1, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                 }
+				    
                                 mn.nBlockLastPaid = pindex->nHeight+1;
                                 foundPayee = true;
                             }
@@ -2992,7 +3136,7 @@ bool CBlock::AcceptBlock()
     int nHeight = pindexPrev->nHeight+1;
 
     if (IsProofOfWork() && nHeight > LAST_POW_BLOCK)
-        return DoS(100, error("AcceptBlock() : reject proof-of-work at height %d", nHeight));
+        return DoS(100, error("AcceptBlock() : reject proof-of-work at height %d. Block beyond last PoW-Block", nHeight));
 
     // Check proof-of-work or proof-of-stake
     if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake()))
@@ -3388,9 +3532,9 @@ bool LoadBlockIndex(bool fAllowNew)
     if (fTestNet)
     {
         pchMessageStart[0] = 0x07;
-        pchMessageStart[1] = 0x11;
-        pchMessageStart[2] = 0x05;
-        pchMessageStart[3] = 0x0b;
+        pchMessageStart[1] = 0x12;
+        pchMessageStart[2] = 0x13;
+        pchMessageStart[3] = 0x14;
 
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 16 bits PoW target limit for testnet
         nStakeMinAge = 1 * 30 * 60; // test net min age is 30 min
@@ -3417,7 +3561,7 @@ bool LoadBlockIndex(bool fAllowNew)
         txNew.nTime = 1529319600;
         if(fTestNet)
         {
-            txNew.nTime = 1529566200;
+            txNew.nTime = 1535349600;
         }
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -3438,7 +3582,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nNonce   = 7204;
 		if(fTestNet)
         {
-            block.nNonce   = 1416;
+            block.nNonce   = 82;
         }
         if (false && (block.GetHash() != hashGenesisBlock)) {
 
@@ -3465,7 +3609,7 @@ bool LoadBlockIndex(bool fAllowNew)
         //// debug print
         if (fTestNet)
         {
-            assert(block.hashMerkleRoot == uint256("0x44e85752f19ee431a33b9ef816c84aa587ca8909e8afce84d2d17752e9f22755"));
+            assert(block.hashMerkleRoot == uint256("0x250d1754eb415b4057dd1ca62b775113ec26d7b3e3322b0a0d01310fa8f7402e"));
         }
         else
         {
@@ -3898,8 +4042,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             oldVersion = true;
 
         // Disconnect nodes that are over block height 42k and have an old peer version
-        //if (nBestHeight >= 42000 && pfrom->nVersion < PROTOCOL_VERSION)
-        //    oldVersion = true;
+        if (nBestHeight >= PoSFixHeight && pfrom->nVersion < PROTOCOL_VERSION)
+            oldVersion = true;
 
         if (oldVersion == true)
         {
@@ -3907,15 +4051,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
           pfrom->fDisconnect = true;
           return false;
         }
-
-        /*
-        if (pfrom->nVersion < PROTO_VERSION)
-        {
-            // disconnect from peers older than this proto version
-            printf("partner %s using obsolete version %i; disconnecting\n", pfrom->addr.ToString().c_str(), pfrom->nVersion);
-            pfrom->fDisconnect = true;
-            return false;
-        }*/
 
         if (pfrom->nVersion == 10300)
             pfrom->nVersion = 300;

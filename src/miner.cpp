@@ -203,16 +203,9 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
             CScript payee;
             if(!masternodePayments.GetBlockPayee(pindexPrev->nHeight+1, payee)){
                 //no masternode detected
-                int winningNode = GetMasternodeByRank(1);
+                int winningNode = GetCurrentMasterNode(1);
                 if(winningNode >= 0){
-                    BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
-                    {
-                        if (s.first == winningNode)
-                        {
-                            payee.SetDestination(s.second->pubkey.GetID());
-                            break;
-                        }
-                    }
+                payee.SetDestination(vecMasternodes[winningNode].pubkey.GetID());
                 } else {
                     printf("CreateNewBlock: Failed to detect masternode to pay\n");
                     // pay the burn address if it can't detect
@@ -604,6 +597,16 @@ bool CheckStake(CBlock* pblock, CWallet& wallet)
     return true;
 }
 
+
+unsigned int GetNeededMN()
+{
+    if (fTestNet)
+        return 3;
+
+    else
+        return 50;
+}
+
 void StakeMiner(CWallet *pwallet)
 {
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
@@ -644,13 +647,12 @@ void StakeMiner(CWallet *pwallet)
                 MilliSleep(60000);
                 vnThreadsRunning[THREAD_STAKE_MINER]++;
                 if (fShutdown)
-                {
-                    return;
-                }
+                return;
+                
             }
         }
 
-        if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < 50))
+        if (vecMasternodes.size() == 0 || (mnCount > 0 && vecMasternodes.size() < GetNeededMN()))
         {
             vnThreadsRunning[THREAD_STAKE_MINER]--;
             MilliSleep(10000);

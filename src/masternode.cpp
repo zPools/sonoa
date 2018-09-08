@@ -63,8 +63,8 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         if(fIsInitialDownload) return;
 
         int masternodeversion = MIN_MN_PROTO_VERSION;
-        //if (pindexBest->nHeight > 42000)
-        //    masternodeversion = 20011;
+        if (pindexBest->nHeight > PoSFixHeight)
+           masternodeversion = PROTOCOL_VERSION;
 
 
         CTxIn vin;
@@ -157,7 +157,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
 
         // make sure the vout that was signed is related to the transaction that spawned the masternode
         //  - this is expensive, so it's only done once per masternode
-        if(!darkSendSigner.IsVinAssociatedWithPubkey(vin, pubkey)) {
+        if(!darkSendSigner.IsVinAssociatedWithPubkey(vin, pubkey) && !IsInitialBlockDownload()) {
             printf("dsee - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
