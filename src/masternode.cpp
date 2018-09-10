@@ -518,6 +518,8 @@ int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
         if (s.second->vin == tmn.vin)
             return i;
     }
+
+    return -1;
 }
 
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
@@ -532,6 +534,8 @@ int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
         if (i == findRank)
             return s.first;
     }
+
+    return -1;
 }
 
 //Get the last hash that matches the modulus given. Processed in reverse order
