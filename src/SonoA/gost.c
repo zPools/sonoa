@@ -1041,12 +1041,13 @@ static void hash_256(const unsigned char *message,unsigned long long length,unsi
 
 
 /* see sph_gost.h */
+/*
 void
 sph_gost256_init(void *cc)
 {
 	//gost_init(cc, 256);
 }
-
+*/
 /* see sph_gost.h */
 void
 sph_gost256(void *cc, const void *data, size_t len)
