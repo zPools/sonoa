@@ -1987,8 +1987,8 @@ bool CWallet::SelectCoinsMinConf(int64_t nTargetValue, unsigned int nSpendTime, 
         printf("selectcoins", "SelectCoins() best subset: ");
         for (unsigned int i = 0; i < vValue.size(); i++)
             if (vfBest[i])
-        printf("selectcoins", "%s ", FormatMoney(vValue[i].first).c_str());
-        printf("selectcoins", "total %s\n", FormatMoney(nBest).c_str());
+        printf("selectcoins: %s\n", FormatMoney(vValue[i].first).c_str());
+        printf("selectcoins: total %s\n", FormatMoney(nBest).c_str());
           ;
         }
 
