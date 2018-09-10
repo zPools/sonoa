@@ -670,7 +670,7 @@ bool AppInit2()
                         // More than nWalletBackups backups: delete oldest one(s)
                         try {
                             boost::filesystem::remove(file.second);
-                            printf("A backup that is older than 10 starts, was deleted\n", file.second);
+                            printf("A backup that is older than 10 starts, was deleted\n");
                         } catch(boost::filesystem::filesystem_error &error) {
                             printf("Failed to delete backup %s\n", error.what());
                         }
