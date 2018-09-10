@@ -1063,18 +1063,20 @@ sph_gost256_close(void *cc, void *dst)
 }
 
 /* see sph_gost.h */
+/*
 void
 sph_gost256_addbits_and_close(void *cc, unsigned ub, unsigned n, void *dst)
 {
 	//gost_close32(cc, ub, n, dst);
 }
-
+*/
 /* see sph_gost.h */
+/*
 void sph_gost512_init(void *cc)
 {
 	//gost_init(cc, 512);
 }
-
+*/
 /* see sph_gost.h */
 void sph_gost512(void *cc, const void *data, size_t len)
 {
@@ -1089,12 +1091,13 @@ void sph_gost512_close(void *cc, void *dst)
 }
 
 /* see sph_gost.h */
+/*
 void
 sph_gost512_addbits_and_close(void *cc, unsigned ub, unsigned n, void *dst)
 {
 	//gost_close64(cc, ub, n, dst);
 }
-
+*/
 
 #ifdef __cplusplus
 }
