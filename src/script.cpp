@@ -1335,7 +1335,7 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, co
 
     return true;
 }
-
+/*
 bool static IsLowDERSignature(const valtype &vchSig, ScriptError* serror) {
     if (!IsDERSignature(vchSig)) {
         return set_error(serror, SCRIPT_ERR_SIG_DER);
@@ -1351,6 +1351,7 @@ bool static IsLowDERSignature(const valtype &vchSig, ScriptError* serror) {
 
     return true;
 }
+*/
 
 /*
 bool static CheckSignatureEncoding(const valtype &vchSig, unsigned int flags, ScriptError* serror) {

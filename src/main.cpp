@@ -2424,7 +2424,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 
                     if(!masternodePayments.GetBlockPayee(pindexBest->nHeight+1, payee) || payee == CScript()){
                         foundPayee = true; //doesn't require a specific payee
-                        if(fDebug) { printf("CheckBlock-POW() : Using non-specific masternode payments %ld\n", pindexBest->nHeight+1); }
+                        if(fDebug) { printf("CheckBlock-POW() : Using non-specific masternode payments %d\n", pindexBest->nHeight+1); }
                     }
 
                     // Check transaction for payee and if contains masternode reward payment
