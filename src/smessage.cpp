@@ -2727,7 +2727,7 @@ int SecureMsgAddAddress(std::string& address, std::string& publicKey)
         return 2;
     };
     
-    CKeyID keyIDT = pubKeyT.GetID();
+    //CKeyID keyIDT = pubKeyT.GetID();
     
     CBitcoinAddress addressT(address);
     

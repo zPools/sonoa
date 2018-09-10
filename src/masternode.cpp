@@ -583,7 +583,7 @@ void CMasterNode::UpdateLastPaidBlock(const CBlockIndex *pindex, int nMaxBlocksT
     ExtractDestination(mnpayee, address1);
     CBitcoinAddress address2(address1);
 
-    uint64_t nCoinAge;
+    //uint64_t nCoinAge;
 
     for (int i = 0; BlockReading && BlockReading->nHeight > nBlockLastPaid && i < nMaxBlocksToScanBack; i++) {
             CBlock block;
