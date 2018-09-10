@@ -1984,10 +1984,10 @@ bool CWallet::SelectCoinsMinConf(int64_t nTargetValue, unsigned int nSpendTime, 
                 nValueRet += vValue[i].first;
             }
 
-        printf("selectcoins", "SelectCoins() best subset: ");
+        printf("selectcoins: SelectCoins() best subset: ");
         for (unsigned int i = 0; i < vValue.size(); i++)
             if (vfBest[i])
-        printf("selectcoins: %s\n", FormatMoney(vValue[i].first).c_str());
+        printf("%s\n", FormatMoney(vValue[i].first).c_str());
         printf("selectcoins: total %s\n", FormatMoney(nBest).c_str());
           ;
         }
