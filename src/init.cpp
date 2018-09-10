@@ -635,9 +635,9 @@ bool AppInit2()
                 backupFile.make_preferred();
                 try {
                     boost::filesystem::copy_file(sourceFile, backupFile);
-                    printf("Creating backup of %c -> %c\n", sourceFile, backupFile);
+                    printf("Creating backup\n");
                 } catch(boost::filesystem::filesystem_error &error) {
-                    printf("Failed to create backup %s\n", error.what());
+                    printf("Failed to create backup\n");
                 }
                 // Keep only the last 10 backups, including the new one of course
                 typedef std::multimap<std::time_t, boost::filesystem::path> folder_set_t;
