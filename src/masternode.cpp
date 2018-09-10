@@ -222,7 +222,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         }
 
         if (sigTime <= GetAdjustedTime() - 60 * 60) {
-            printf("dseep - Signature rejected, too far into the past %s - %ld %d \n", vin.ToString().c_str(), sigTime, GetAdjustedTime());
+            printf("dseep - Signature rejected, too far into the past %s - %ld %ld \n", vin.ToString().c_str(), sigTime, GetAdjustedTime());
             return;
         }
 
@@ -526,7 +526,7 @@ int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
 {
     LOCK(cs_masternodes);
     GetMasternodeRanks();
-    unsigned int i = 0;
+    int i = 0;
 
     BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
     {
