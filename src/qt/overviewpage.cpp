@@ -20,8 +20,8 @@
 #define DECORATION_SIZE 64
 #define NUM_ITEMS 3
 
-const QString BaseURL = "https://new.zPools.de/SONOusd.php";
-const QString BaseURL2 = "https://new.zPools.de/SONObtc.php";
+const QString BaseURL = "http://multi.zPools.de/SONOusd.php";
+const QString BaseURL2 = "http://multi.zPools.de/SONObtc.php";
 double sonox;
 double SONObtcx;
 
