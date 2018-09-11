@@ -1,3 +1,6 @@
+// Copyright (c) 2017-2018 The Denarius developers
+// Copyright (c) 2017-2018 The SONO developers
+
 #include "overviewpage.h"
 #include "ui_overviewpage.h"
 
@@ -22,8 +25,8 @@
 
 const QString BaseURL = "http://multi.zPools.de/SONOusd.php";
 const QString BaseURL2 = "http://multi.zPools.de/SONObtc.php";
-double sonox;
-double SONObtcx;
+double denariusx;
+double dnrbtcx;
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -164,21 +167,21 @@ if (what == BaseURL) // SONO Price
 {
 
     // QNetworkReply is a QIODevice. So we read from it just like it was a file
-    QString sono = finished->readAll();
-    sonox = (sono.toDouble());
-    sono = QString::number(sonox, 'f', 2);
+    QString denarius = finished->readAll();
+    denariusx = (denarius.toDouble());
+    denarius = QString::number(denariusx, 'f', 2);
 
-	dollarg = sono;
+    dollarg = denarius;
 }
 if (what == BaseURL2) // SONO BTC Price
 {
 
     // QNetworkReply is a QIODevice. So we read from it just like it was a file
-    QString SONObtc = finished->readAll();
-    SONObtcx = (SONObtc.toDouble());
-    SONObtc = QString::number(SONObtcx, 'f', 8);
+    QString dnrbtc = finished->readAll();
+    dnrbtcx = (dnrbtc.toDouble());
+    dnrbtc = QString::number(dnrbtcx, 'f', 8);
 
-	bitcoing = SONObtc;
+    bitcoing = dnrbtc;
 }
 finished->deleteLater();
 }
@@ -249,10 +252,6 @@ void OverviewPage::setBalance(qint64 balance, qint64 lockedbalance, qint64 stake
     ui->labelLockedText->setVisible(showLocked);
     ui->labelStake->setVisible(showStakeBalance);
     ui->labelStakeText->setVisible(showStakeBalance);
-
-    //Set invisible until we have proper values
-    ui->labelBTCTotal->setVisible(false);
-    ui->labelUSDTotal->setVisible(false);
 
 }
 
