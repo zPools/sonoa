@@ -507,7 +507,7 @@ bool GetMasternodeRanks()
     return true;
 }
 
-int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
+int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
 {
     LOCK(cs_masternodes);
     std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
