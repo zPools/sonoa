@@ -352,6 +352,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/clientversion.h \
 	src/hash.h \
     src/hashblock.h \
+	src/fasthash.h \
     src/SonoA/sph_blake.h \
     src/SonoA/sph_skein.h \
     src/SonoA/sph_keccak.h \

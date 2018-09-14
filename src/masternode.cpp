@@ -12,6 +12,7 @@
 #include "addrman.h"
 #include "sync.h"
 #include "core.h"
+#include "fasthash.h"
 #include <boost/lexical_cast.hpp>
 
 int CMasterNode::minProtoVersion = MIN_MN_PROTO_VERSION;
@@ -509,14 +510,31 @@ bool GetMasternodeRanks()
 int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
 {
     LOCK(cs_masternodes);
-    GetMasternodeRanks();
-    unsigned int i = 0;
+    std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
 
-    BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
-    {
-        i++;
-        if (s.second->vin == tmn.vin)
-            return i;
+    BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
+        mn.Check();
+
+        if(mn.protocolVersion < minProtocol) continue;
+        if(!mn.IsEnabled()) {
+            continue;
+        }
+
+        uint256 n = mn.CalculateScore(1, nBlockHeight);
+        unsigned int n2 = 0;
+        memcpy(&n2, &n, sizeof(n2));
+
+        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
+    }
+
+    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
+
+    unsigned int rank = 0;
+    BOOST_FOREACH (PAIRTYPE(unsigned int, CTxIn)& s, vecMasternodeScores){
+        rank++;
+        if(s.second == vin) {
+            return rank;
+        }
     }
 
     return -1;
@@ -653,8 +671,8 @@ uint256 CMasterNode::CalculateScore(int mod, int64_t nBlockHeight)
 
     if(!GetBlockHash(hash, nBlockHeight)) return 0;
 
-    uint256 hash2 = SonoA(BEGIN(hash), END(hash)); //SonoA Algo Integrated, WIP
-    uint256 hash3 = SonoA(BEGIN(hash), END(aux));
+    uint256 hash2 = fasthash(BEGIN(hash), END(hash)); //SonoA Algo Integrated, WIP
+    uint256 hash3 = fasthash(BEGIN(hash), END(aux));
 
     uint256 r = (hash3 > hash2 ? hash3 - hash2 : hash2 - hash3);
 
