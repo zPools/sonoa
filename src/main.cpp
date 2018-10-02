@@ -1462,78 +1462,6 @@ unsigned int GetNextTargetRequired_OLD(const CBlockIndex* pindexLast, bool fProo
 }
 
 
-// DGWv3 is obsolete and remain here for historical reason
-/*
-//DGWv3 was used in testnet for a while but was replaced with AGW
-unsigned int static DarkGravityWave3(const CBlockIndex* pindexLast, const CBlock *pblock) {
-    /* current difficulty formula, darkcoin - DarkGravity v3, written by Evan Duffield - evan@darkcoin.io
-    const CBlockIndex *BlockLastSolved = pindexLast;
-    const CBlockIndex *BlockReading = pindexLast;
-   // const CBlock *BlockCreating = pblock;
-   // BlockCreating = BlockCreating;
-    int64_t nActualTimespan = 0;
-    int64_t LastBlockTime = 0;
-    int64_t PastBlocksMin = 24;
-    int64_t PastBlocksMax = 24;
-    int64_t CountBlocks = 0;
-    CBigNum PastDifficultyAverage;
-    CBigNum PastDifficultyAveragePrev;
-
-    if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || BlockLastSolved->nHeight < PastBlocksMin) {
-        return bnProofOfWorkLimit.GetCompact();
-    }
-
-    for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
-        if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
-        CountBlocks++;
-
-        if(CountBlocks <= PastBlocksMin) {
-            if (CountBlocks == 1) { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
-            else { PastDifficultyAverage = ((PastDifficultyAveragePrev * CountBlocks)+(CBigNum().SetCompact(BlockReading->nBits))) / (CountBlocks+1); }
-            PastDifficultyAveragePrev = PastDifficultyAverage;
-        }
-
-        if(LastBlockTime > 0){
-            int64_t Diff = (LastBlockTime - BlockReading->GetBlockTime());
-            nActualTimespan += Diff;
-        }
-        LastBlockTime = BlockReading->GetBlockTime();
-
-        if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
-        BlockReading = BlockReading->pprev;
-    }
-
-    int64_t nTargetSpacing = GetTargetSpacing();
-
-    CBigNum bnNew(PastDifficultyAverage);
-
-    int64_t nTargetTimespan = CountBlocks*nTargetSpacing;
-
-    if (nActualTimespan < nTargetTimespan/3)
-        nActualTimespan = nTargetTimespan/3;
-    if (nActualTimespan > nTargetTimespan*3)
-        nActualTimespan = nTargetTimespan*3;
-
-    // Retarget
-    bnNew *= nActualTimespan;
-    bnNew /= nTargetTimespan;
-
-    if (bnNew > bnProofOfWorkLimit){
-        bnNew = bnProofOfWorkLimit;
-    }
-
-    if (fTestNet)
-    {
-    printf("Difficulty Retarget - Dark Gravity Wave 3\n");
-    printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
-    printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
-    }
-
-    return bnNew.GetCompact();
-}
-*/
-
-
 
 unsigned int static AntiGravityWave(const CBlockIndex* pindexLast) {
     /* AntiGravityWave by reorder, derived from code by Evan Duffield - evan@darkcoin.io */ 
@@ -1688,11 +1616,9 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
 
     if (fTestNet || fDebug)
     {
-    printf("\n");
     printf("Difficulty Retarget - Anti Gravity Wave 2\n");
     printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
     printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
-    printf("\n");
     }
 
     return bnNew.GetCompact();
@@ -1701,7 +1627,7 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
-    // Change testnet from GNTR -> DGW3 -> AGW2
+    // Change testnet from GNTR -> AGW2
     if (fTestNet)
     {
         if (pindexLast->nHeight < 200)
@@ -1723,28 +1649,14 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
     }
 
-
-    else
+    else if (pindexLast->nHeight < PoSFixHeight)
+	{
         return AntiGravityWave(pindexLast);
-
-
-    // If its above 42k make it AGW
-/*    else if (pindexLast->nHeight < 67000)
-    {
-        return AntiGravityWave1(pindexLast, fProofOfStake);
-    }
-
-     // If above 67k make AGW2
-     else
-        return AntiGravityaWave2(pindexLast, fProofOfStake);
-*/
-
-
-
+	}
+	
+	else
+		return AntiGravityWave2(pindexLast, fProofOfStake);
 }
-
-
-
 
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
