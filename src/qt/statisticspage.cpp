@@ -63,7 +63,7 @@ void StatisticsPage::updateStatistics()
     QString subsidy = "";
 	if (pindexBest->nHeight < 1000000)
     {
-        subsidy = "1 SONO per block";
+        subsidy = "2 SONO per block";
     }
 
     QString hardness = QString::number(pHardness, 'f', 6);
