@@ -343,7 +343,7 @@ void MasternodeManager::on_copyAddressButton_clicked()
 
     QModelIndex index = selected.at(0);
     int r = index.row();
-    std::string sCollateralAddress = ui->tableWidget_2->item(r, 3)->text().toStdString();
+    std::string sCollateralAddress = ui->tableWidget_2->item(r, 4)->text().toStdString();
 
     QApplication::clipboard()->setText(QString::fromStdString(sCollateralAddress));
 }
