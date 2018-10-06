@@ -22,9 +22,9 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **Proof of Work Reward:** 2 Coins
 
-**Proof of Stake Reward:** 50% APR 
+**Proof of Stake Reward:** 40% APR 
 
-**Masternode Reward:** 0.5 Coins
+**Masternode Reward:** 25% of each block 
 
 
 
