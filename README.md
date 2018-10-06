@@ -18,9 +18,13 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **Block Time:** 30 seconds 
 
-**Proof of Work Reward:** 1 Coin 
+**Masternode Collateral:** 1000 Coins
+
+**Proof of Work Reward:** 2 Coins
 
 **Proof of Stake Reward:** 50% APR 
+
+**Masternode Reward:** 0.5 Coins
 
 
 
