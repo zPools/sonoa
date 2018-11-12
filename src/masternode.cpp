@@ -12,6 +12,7 @@
 #include "addrman.h"
 #include "sync.h"
 #include "core.h"
+#include "fasthash.h"
 #include <boost/lexical_cast.hpp>
 
 int CMasterNode::minProtoVersion = MIN_MN_PROTO_VERSION;
@@ -214,7 +215,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         bool stop;
         vRecv >> vin >> vchSig >> sigTime >> stop;
 
-        if (fDebug) printf("dseep - Received: vin: %s sigTime: %lld stop: %s\n", vin.ToString().c_str(), sigTime, stop ? "true" : "false");
+        if (fDebug) printf("dseep - Received: vin: %s sigTime: %ld stop: %s\n", vin.ToString().c_str(), sigTime, stop ? "true" : "false");
 
         if (sigTime > GetAdjustedTime() + 60 * 60) {
             printf("dseep - Signature rejected, too far into the future %s\n", vin.ToString().c_str());
@@ -222,7 +223,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         }
 
         if (sigTime <= GetAdjustedTime() - 60 * 60) {
-            printf("dseep - Signature rejected, too far into the past %s - %d %d \n", vin.ToString().c_str(), sigTime, GetAdjustedTime());
+            printf("dseep - Signature rejected, too far into the past %s - %ld %ld \n", vin.ToString().c_str(), sigTime, GetAdjustedTime());
             return;
         }
 
@@ -506,25 +507,44 @@ bool GetMasternodeRanks()
     return true;
 }
 
-int GetMasternodeRank(CMasterNode &tmn, int64_t nBlockHeight, int minProtocol)
+int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
 {
     LOCK(cs_masternodes);
-    GetMasternodeRanks();
-    unsigned int i = 0;
+    std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
 
-    BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
-    {
-        i++;
-        if (s.second->vin == tmn.vin)
-            return i;
+    BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
+        mn.Check();
+
+        if(mn.protocolVersion < minProtocol) continue;
+        if(!mn.IsEnabled()) {
+            continue;
+        }
+
+        uint256 n = mn.CalculateScore(1, nBlockHeight);
+        unsigned int n2 = 0;
+        memcpy(&n2, &n, sizeof(n2));
+
+        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
     }
+
+    sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
+
+    unsigned int rank = 0;
+    BOOST_FOREACH (PAIRTYPE(unsigned int, CTxIn)& s, vecMasternodeScores){
+        rank++;
+        if(s.second == vin) {
+            return rank;
+        }
+    }
+
+    return -1;
 }
 
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
 {
     LOCK(cs_masternodes);
     GetMasternodeRanks();
-    unsigned int i = 0;
+    int i = 0;
 
     BOOST_FOREACH(PAIRTYPE(int, CMasterNode*)& s, vecMasternodeScores)
     {
@@ -532,6 +552,8 @@ int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
         if (i == findRank)
             return s.first;
     }
+
+    return -1;
 }
 
 //Get the last hash that matches the modulus given. Processed in reverse order
@@ -583,7 +605,7 @@ void CMasterNode::UpdateLastPaidBlock(const CBlockIndex *pindex, int nMaxBlocksT
     ExtractDestination(mnpayee, address1);
     CBitcoinAddress address2(address1);
 
-    uint64_t nCoinAge;
+    //uint64_t nCoinAge;
 
     for (int i = 0; BlockReading && BlockReading->nHeight > nBlockLastPaid && i < nMaxBlocksToScanBack; i++) {
             CBlock block;
@@ -649,8 +671,8 @@ uint256 CMasterNode::CalculateScore(int mod, int64_t nBlockHeight)
 
     if(!GetBlockHash(hash, nBlockHeight)) return 0;
 
-    uint256 hash2 = SonoA(BEGIN(hash), END(hash)); //SonoA Algo Integrated, WIP
-    uint256 hash3 = SonoA(BEGIN(hash), END(aux));
+    uint256 hash2 = fasthash(BEGIN(hash), END(hash)); //SonoA Algo Integrated, WIP
+    uint256 hash3 = fasthash(BEGIN(hash), END(aux));
 
     uint256 r = (hash3 > hash2 ? hash3 - hash2 : hash2 - hash3);
 

@@ -143,7 +143,7 @@ contains(USE_LEVELDB, -) {
 	    SOURCES += src/txdb-bdb.cpp \
 		src/bloom.cpp \
 		src/hash.cpp \
-		src/aes_helper.c \
+                src/SonoA/aes_helper.c \
                 src/SonoA/blake.c \
                 src/SonoA/bmw.c \
                 src/SonoA/groestl.c \
@@ -176,7 +176,7 @@ contains(USE_LEVELDB, -) {
 	SOURCES += src/txdb-leveldb.cpp \
 		src/bloom.cpp \
 		src/hash.cpp \
-		src/aes_helper.c \
+                src/SonoA/aes_helper.c \
                 src/SonoA/blake.c \
                 src/SonoA/bmw.c \
                 src/SonoA/groestl.c \
@@ -352,6 +352,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/clientversion.h \
 	src/hash.h \
     src/hashblock.h \
+	src/fasthash.h \
     src/SonoA/sph_blake.h \
     src/SonoA/sph_skein.h \
     src/SonoA/sph_keccak.h \
@@ -370,7 +371,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/SonoA/sph_whirlpool.h \
     src/SonoA/sph_haval.h \
     src/SonoA/sph_sha2.h \
-    src/sph_types.h \
+    src/SonoA/sph_types.h \
     src/threadsafety.h \
 	src/eccryptoverify.h \
     src/qt/messagepage.h \

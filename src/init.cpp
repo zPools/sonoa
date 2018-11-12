@@ -635,9 +635,9 @@ bool AppInit2()
                 backupFile.make_preferred();
                 try {
                     boost::filesystem::copy_file(sourceFile, backupFile);
-                    printf("Creating backup of %s -> %s\n", sourceFile, backupFile);
+                    printf("Creating backup\n");
                 } catch(boost::filesystem::filesystem_error &error) {
-                    printf("Failed to create backup %s\n", error.what());
+                    printf("Failed to create backup\n");
                 }
                 // Keep only the last 10 backups, including the new one of course
                 typedef std::multimap<std::time_t, boost::filesystem::path> folder_set_t;
@@ -670,7 +670,7 @@ bool AppInit2()
                         // More than nWalletBackups backups: delete oldest one(s)
                         try {
                             boost::filesystem::remove(file.second);
-                            printf("Old backup deleted: %s\n", file.second);
+                            printf("A backup that is older than 10 starts, was deleted\n");
                         } catch(boost::filesystem::filesystem_error &error) {
                             printf("Failed to delete backup %s\n", error.what());
                         }

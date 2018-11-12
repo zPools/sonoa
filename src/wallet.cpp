@@ -1897,7 +1897,7 @@ bool CWallet::SelectCoinsMinConf(int64_t nTargetValue, unsigned int nSpendTime, 
     // try to find nondenom first to prevent unneeded spending of mixed coins
     for (unsigned int tryDenom = 0; tryDenom < 2; tryDenom++)
     {
-        if (fDebug) printf("selectcoins", "tryDenom: %d\n", tryDenom);
+      //  if (fDebug) printf("selectcoins", "tryDenom: %d\n", tryDenom);
         vValue.clear();
         nTotalLower = 0;
 
@@ -1984,12 +1984,13 @@ bool CWallet::SelectCoinsMinConf(int64_t nTargetValue, unsigned int nSpendTime, 
                 nValueRet += vValue[i].first;
             }
 
-        printf("selectcoins", "SelectCoins() best subset: ");
+        printf("selectcoins: SelectCoins() best subset: ");
         for (unsigned int i = 0; i < vValue.size(); i++)
             if (vfBest[i])
-                printf("selectcoins", "%s ", FormatMoney(vValue[i].first).c_str());
-        printf("selectcoins", "total %s\n", FormatMoney(nBest).c_str());
-    }
+        printf("%s\n", FormatMoney(vValue[i].first).c_str());
+        printf("selectcoins: total %s\n", FormatMoney(nBest).c_str());
+          ;
+        }
 
     return true;
     }

@@ -1100,44 +1100,24 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                    fprintf(ConfFile, "###################\n");
                    fprintf(ConfFile, "#->SONO - CONFIG<-#\n");
                    fprintf(ConfFile, "###################\n\n\n");
-
-                   fprintf(ConfFile, "rpcuser=yourusername\n");
-
-                   //That can be done much nicer and smoother.
-
-                   static const char alphanum[] =
-                       "0123456789"
-                       "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                       "abcdefghijklmnopqrstuvwxyz";
-                   char s[32];
-
-                   for (int i = 0; i < 32; ++i)
-                   {
-                       s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
-                   }
-
-                   std::string str(s);
-
-                   const char* p = str.data();
-                   fprintf(ConfFile, "rpcpassword=");
-                   fprintf(ConfFile, p);
-                   fprintf(ConfFile, "\n");
-
-                   //I can hear your facepalm for the code above. But it works :P
-
-                   fprintf(ConfFile, "listen=1\n");
+                   fprintf(ConfFile, "#####Security#####\n");
+                   fprintf(ConfFile, "rpcuser=cHANGEmEpLEASE\n");
+                   fprintf(ConfFile, "rpcpassword=MeTooPlease");
+                   fprintf(ConfFile, "rpcallowip=localhost\n\n");
+                   fprintf(ConfFile, "#####Options#####\n");
                    fprintf(ConfFile, "server=1\n");
-                   fprintf(ConfFile, "daemon=1\n");
+                   fprintf(ConfFile, "listen=1\n");
+                   fprintf(ConfFile, "daemon=1\n\n");
+                   fprintf(ConfFile, "#####Network#####\n");
                    fprintf(ConfFile, "maxconnections=16\n");
                    fprintf(ConfFile, "port=32000\n");
-                   fprintf(ConfFile, "rpcport=31000\n");
+                   fprintf(ConfFile, "rpcport=31000\n\n");
+                   fprintf(ConfFile, "#####Seeds#####\n");
                    fprintf(ConfFile, "addnode=seed1.projectsono.io\n");
                    fprintf(ConfFile, "addnode=seed2.projectsono.io\n");
                    fprintf(ConfFile, "addnode=seed3.projectsono.io\n");
                    fprintf(ConfFile, "addnode=gfx-world.org\n"); //Thanks to belowzero01
                    fprintf(ConfFile, "addnode=seed.zpools.de\n"); //USA Seed
-
-
 
                    fclose(ConfFile);
 

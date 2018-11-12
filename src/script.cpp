@@ -1335,7 +1335,7 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, co
 
     return true;
 }
-
+/*
 bool static IsLowDERSignature(const valtype &vchSig, ScriptError* serror) {
     if (!IsDERSignature(vchSig)) {
         return set_error(serror, SCRIPT_ERR_SIG_DER);
@@ -1351,8 +1351,9 @@ bool static IsLowDERSignature(const valtype &vchSig, ScriptError* serror) {
 
     return true;
 }
+*/
 
-
+/*
 bool static CheckSignatureEncoding(const valtype &vchSig, unsigned int flags, ScriptError* serror) {
     if ((flags & (SCRIPT_VERIFY_DERSIG | SCRIPT_VERIFY_LOW_S | SCRIPT_VERIFY_STRICTENC)) != 0 && !IsDERSignature(vchSig)) {
         return set_error(serror, SCRIPT_ERR_SIG_DER);
@@ -1394,6 +1395,7 @@ bool static CheckMinimalPush(const valtype& data, opcodetype opcode) {
     }
     return true;
 }
+*/
 
 /*
 

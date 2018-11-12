@@ -171,7 +171,7 @@ public:
 int GetCurrentMasterNode(int mod=1, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 
 int GetMasternodeByVin(CTxIn& vin);
-int GetMasternodeRank(CMasterNode& tmn, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
+int GetMasternodeRank(CTxIn &vin, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 bool GetMasternodeRanks();
 
