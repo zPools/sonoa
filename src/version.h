@@ -30,16 +30,16 @@ static const int DATABASE_VERSION = 20001;
 // network protocol versioning
 //
 
-static const int PROTOCOL_VERSION = 20021;
+static const int PROTOCOL_VERSION = 20023;
 
 // intial proto version, to be increased after version/verack negotiation
-static const int INIT_PROTO_VERSION = 20011;
+static const int INIT_PROTO_VERSION = 20023;
 
 // disconnect from peers older than this proto version
-static const int MIN_PEER_PROTO_VERSION = 20011;
+static const int MIN_PEER_PROTO_VERSION = 20023;
 
 // Don't forget to change proto in DARKSEND.h as well!!
-static const int MIN_MN_PROTO_VERSION = 20011; //Dont forget -> we set a manual kickout in masternode.cpp
+static const int MIN_MN_PROTO_VERSION = 20023; //Dont forget -> we set a manual kickout in masternode.cpp
 
 
 // nTime field added to CAddress, starting with this version;

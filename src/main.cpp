@@ -1616,11 +1616,9 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
 
     if (fTestNet || fDebug)
     {
-    printf("\n");
     printf("Difficulty Retarget - Anti Gravity Wave 2\n");
     printf("Before: %08x %s\n", BlockLastSolved->nBits, CBigNum().SetCompact(BlockLastSolved->nBits).getuint256().ToString().c_str());
     printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
-    printf("\n");
     }
 
     return bnNew.GetCompact();
@@ -1629,7 +1627,7 @@ unsigned int static AntiGravityWave2(const CBlockIndex* pindexLast, bool fProofO
 
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
-    // Change testnet from GNTR -> DGW3 -> AGW2
+    // Change testnet from GNTR -> AGW2
     if (fTestNet)
     {
         if (pindexLast->nHeight < 200)
@@ -1651,28 +1649,14 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
         return GetNextTargetRequired_OLD(pindexLast, fProofOfStake);
     }
 
-
-    else
+    else if (pindexLast->nHeight < PoSFixHeight)
+	{
         return AntiGravityWave(pindexLast);
-
-
-    // If its above 42k make it AGW
-/*    else if (pindexLast->nHeight < 67000)
-    {
-        return AntiGravityWave1(pindexLast, fProofOfStake);
-    }
-
-     // If above 67k make AGW2
-     else
-        return AntiGravityaWave2(pindexLast, fProofOfStake);
-*/
-
-
-
+	}
+	
+	else
+		return AntiGravityWave2(pindexLast, fProofOfStake);
 }
-
-
-
 
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
@@ -2385,8 +2369,8 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                     {
                                         if (pindex->nHeight < PoSFixHeight || fTestNet)
                                              printf ("\nWARNING: Masternode PoS payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
-                                        else
-                                            return DoS(1, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+                                    //    else
+                                      //      return DoS(1, error("ConnectBlock(PoS-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                     }
                                     mn.nBlockLastPaid = pindex->nHeight+1;
                                     foundPayee = true;
@@ -2454,8 +2438,8 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
                                 {
                                     if (pindex->nHeight < PoSFixHeight || fTestNet)
                                          printf ("\nWARNING: Masternode PoW payment threshold violation detected. MN was paid %d blocks ago. Need %d to get paid again\n",  paidAge, MNacceptable) ;
-                                    else
-                                        return DoS(1, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
+                            //        else
+                            //            return DoS(1, error("ConnectBlock(PoW-MN) : NOT ACCEPTED. Last payment was only %d blocks ago. This MN will be available again in %d blocks\n ", paidAge, MNacceptable) );
                                 }
 				    
                                 mn.nBlockLastPaid = pindex->nHeight+1;
