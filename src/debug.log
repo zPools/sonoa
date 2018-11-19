@@ -1,0 +1,16 @@
+Shutdown is in progress...
+
+Flush(false) db not started
+StopNode()
+Flushed 0 addresses to peers.dat  3ms
+Flush(true) db not started
+SONO exited
+
+Shutdown is in progress...
+
+Flush(false) db not started
+StopNode()
+Flushed 0 addresses to peers.dat  2ms
+Flush(true) db not started
+SONO exited
+
