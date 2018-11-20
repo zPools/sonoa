@@ -519,8 +519,10 @@ int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
         }
 
         uint256 n = mn.CalculateScore(1, nBlockHeight);
+        unsigned char *p=(unsigned char *)&n;
         unsigned int n2 = 0;
-        memcpy(&n2, &n, sizeof(n2));
+
+        memcpy(&n2, p+28, sizeof(n2));
 
         vecMasternodeScores.push_back(make_pair(n2, mn.vin));
     }
