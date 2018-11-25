@@ -33,7 +33,7 @@ static const int DATABASE_VERSION = 20001;
 static const int PROTOCOL_VERSION = 20023;
 
 // intial proto version, to be increased after version/verack negotiation
-static const int INIT_PROTO_VERSION = 20023;
+static const int INIT_PROTO_VERSION = 20024;
 
 // disconnect from peers older than this proto version
 static const int MIN_PEER_PROTO_VERSION = 20023;
