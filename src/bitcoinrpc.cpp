@@ -225,7 +225,7 @@ Value stop(const Array& params, bool fHelp)
     if (params.size() > 0)
         bitdb.SetDetach(params[0].get_bool());
     StartShutdown();
-    return "SONO server stopping, please wait a few minutes for full shutdown...";
+    return "The SONO server is now shutting down. Please wait a few minutes for its full shutdown";
 }
 
 
