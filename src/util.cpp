@@ -1117,7 +1117,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                    fprintf(ConfFile, "addnode=seed2.projectsono.io\n");
                    fprintf(ConfFile, "addnode=seed3.projectsono.io\n");
                    fprintf(ConfFile, "addnode=gfx-world.org\n"); //Thanks to belowzero01
-                   fprintf(ConfFile, "addnode=seed.zpools.de\n"); //USA Seed
+                   fprintf(ConfFile, "addnode=159.69.158.15\n"); 
 
                    fclose(ConfFile);
 
