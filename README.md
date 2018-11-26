@@ -46,7 +46,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **NVIDIA:** https://github.com/QuaLiTyX/ccminer/releases
 
-**AMD:** BOUNTY => 300 coins for the first AMD miner
+**AMD:** https://bitcointalk.org/index.php?topic=5023676.0
 
 
 
@@ -73,7 +73,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **kob** http://kob.site/
 
-**zergpool** https://zergpool.com/
+
 
 
 
