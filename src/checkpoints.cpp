@@ -13,7 +13,7 @@
 
 
 //static const int nCheckpointSpan = nCoinbaseMaturity * 2; // twice of coin maturity is a long enough chain
-static const int nCheckpointSpan = 60; // 1000 would be overkill -> 60 is ok
+static const int nCheckpointSpan = 100; // 1000 would be overkill -> 100 is ok
 
 namespace Checkpoints
 {
@@ -31,9 +31,10 @@ namespace Checkpoints
         (   0,        hashGenesisBlock )
         ( 3000,       uint256("0x00000000012913a55056291faa2d46c34121a2c9a6637b0e0fea754cd0936582") ) //PoW
         (42000,       uint256("0x40e48dbceb9dc9926c3af6ddfac3806b3dbadf0a470d4118cd6b4a65efcec385") ) //PoS
-	(100000,      uint256("0x000000001cd83e2d2c94e8600c8a445962fbd85103fed6d5bbc99d85565c3c3e") ) //PoW
-	(150000,      uint256("0x0000000001f4d586fffa7f7a57b7bff387a381a8365eed73a3bda9f16c1302e0") ) //PoW
-	(200000,      uint256("0x000000002303e8a87d24f57b0c041d8d7a808ca6cae9dfa7de6c4098f9729023") ) //PoW    
+		(100000,      uint256("0x000000001cd83e2d2c94e8600c8a445962fbd85103fed6d5bbc99d85565c3c3e") ) //PoW
+		(200000,      uint256("0x000000002303e8a87d24f57b0c041d8d7a808ca6cae9dfa7de6c4098f9729023") ) //PoW 
+		(300000,      uint256("0x000000001703527d1b309c8214a587a75dab371aa88dd1734cb22ea6adf58b08") ) //PoW
+		(400000,      uint256("0x000000000c5d5c9b637890c701c5d0ff5379aea3313107d1e9704923340d9c80") ) //PoW		
 	;
 
     // TestNet has no checkpoints

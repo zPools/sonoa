@@ -115,7 +115,7 @@ SonoA is a perfect compromise between secure hashing and still delivering enough
 
 **NOMP (Pool)** https://github.com/zPools/node-open-mining-portal
 
-**Masernode Guide** https://github.com/buzzkillb/SONO-masternode
+**Masernode Guide** https://github.com/mtbor/SONO-masternode
 
 
 
