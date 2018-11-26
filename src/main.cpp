@@ -3954,7 +3954,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             oldVersion = true;
 
         // Disconnect nodes that are over block height 42k and have an old peer version
-        if (nBestHeight >= PoSFixHeight && pfrom->nVersion < PROTOCOL_VERSION)
+        if (nBestHeight >= PoSFixHeight && pfrom->nVersion < KICK_BELOW_THIS_VERSION)
             oldVersion = true;
 
         if (oldVersion == true)
