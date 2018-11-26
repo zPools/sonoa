@@ -26,7 +26,7 @@
  * This file was originally written by Colin Percival as part of the Tarsnap
  * online backup system.
  */
-/*
+
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -196,4 +196,3 @@ uint256 scrypt_blockhash(const void* input)
     return scrypt_nosalt(input, 80, scratchpad);
 }
 
-*/
