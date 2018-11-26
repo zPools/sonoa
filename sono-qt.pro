@@ -143,25 +143,25 @@ contains(USE_LEVELDB, -) {
 	    SOURCES += src/txdb-bdb.cpp \
 		src/bloom.cpp \
 		src/hash.cpp \
-                src/SonoA/aes_helper.c \
-                src/SonoA/blake.c \
-                src/SonoA/bmw.c \
-                src/SonoA/groestl.c \
-                src/SonoA/jh.c \
-                src/SonoA/keccak.c \
-                src/SonoA/skein.c \
-                src/SonoA/luffa.c \
-                src/SonoA/cubehash.c \
-                src/SonoA/shavite.c \
-                src/SonoA/echo.c \
-                src/SonoA/simd.c \
-                src/SonoA/hamsi.c \
-                src/SonoA/fugue.c \
-                src/SonoA/shabal.c \
-                src/SonoA/whirlpool.c \
-                src/SonoA/haval.c \
-                src/SonoA/gost.c \
-                src/SonoA/sha2big.c
+            src/SonoA/aes_helper.c \
+            src/SonoA/blake.c \
+            src/SonoA/bmw.c \
+            src/SonoA/groestl.c \
+            src/SonoA/jh.c \
+            src/SonoA/keccak.c \
+            src/SonoA/skein.c \
+            src/SonoA/luffa.c \
+            src/SonoA/cubehash.c \
+            src/SonoA/shavite.c \
+            src/SonoA/echo.c \
+            src/SonoA/simd.c \
+            src/SonoA/hamsi.c \
+            src/SonoA/fugue.c \
+            src/SonoA/shabal.c \
+            src/SonoA/whirlpool.c \
+            src/SonoA/haval.c \
+            src/SonoA/gost.c \
+            src/SonoA/sha2big.c
 		
 } else {
 	message(Building with LevelDB transaction index)
@@ -351,8 +351,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/netbase.h \
     src/clientversion.h \
 	src/hash.h \
-    src/hashblock.h \
 	src/fasthash.h \
+    src/hashblock.h \
     src/SonoA/sph_blake.h \
     src/SonoA/sph_skein.h \
     src/SonoA/sph_keccak.h \
@@ -473,9 +473,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/adrenalinenodeconfigdialog.cpp \
     src/noui.cpp \
     src/kernel.cpp \
-    src/scrypt-arm.S \
-    src/scrypt-x86.S \
-    src/scrypt-x86_64.S \
     src/scrypt.cpp \
     src/pbkdf2.cpp \
     src/stealth.cpp \
