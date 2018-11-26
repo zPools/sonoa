@@ -21,7 +21,7 @@
 # LIABILITY, OR SONOT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
-
+/*
 #if defined(OPTIMIZED_SALSA) &&  defined(__i386__)
 
 #if defined(__linux__) && defined(__ELF__)
@@ -910,3 +910,4 @@ xmm_scrypt_core_loop2:
 	ret
 
 #endif
+ */

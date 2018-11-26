@@ -5,7 +5,7 @@
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
  * any later version.  See COPYING for more details.
- */
+
 
 
 #if defined(OPTIMIZED_SALSA) &&  defined(__arm__) && defined(__APCS_32__)
@@ -553,3 +553,4 @@ scrypt_core_loop2:
 #endif
 
 #endif
+ */
