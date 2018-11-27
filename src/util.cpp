@@ -1099,10 +1099,10 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                        
                    fprintf(ConfFile, "###################\n");
                    fprintf(ConfFile, "#->SONO - CONFIG<-#\n");
-                   fprintf(ConfFile, "###################\n\n\n");
+                   fprintf(ConfFile, "###################\n\n");
                    fprintf(ConfFile, "#####Security#####\n");
                    fprintf(ConfFile, "rpcuser=cHANGEmEpLEASE\n");
-                   fprintf(ConfFile, "rpcpassword=MeTooPlease");
+                   fprintf(ConfFile, "rpcpassword=MeTooPlease\n");
                    fprintf(ConfFile, "rpcallowip=localhost\n\n");
                    fprintf(ConfFile, "#####Options#####\n");
                    fprintf(ConfFile, "server=1\n");
