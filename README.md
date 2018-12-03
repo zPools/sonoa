@@ -46,7 +46,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **NVIDIA:** https://github.com/QuaLiTyX/ccminer/releases
 
-**AMD:** BOUNTY => 300 coins for the first AMD miner
+**AMD:** https://bitcointalk.org/index.php?topic=5023676.0
 
 
 
@@ -73,7 +73,7 @@ The SONO project is an aggregate of multiple teams working on an entire ecosyste
 
 **kob** http://kob.site/
 
-**zergpool** https://zergpool.com/
+
 
 
 
@@ -115,7 +115,7 @@ SonoA is a perfect compromise between secure hashing and still delivering enough
 
 **NOMP (Pool)** https://github.com/zPools/node-open-mining-portal
 
-**Masernode Guide** https://github.com/buzzkillb/SONO-masternode
+**Masernode Guide** https://github.com/mtbor/SONO-masternode
 
 
 

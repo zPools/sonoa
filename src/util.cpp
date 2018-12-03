@@ -1099,10 +1099,10 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                        
                    fprintf(ConfFile, "###################\n");
                    fprintf(ConfFile, "#->SONO - CONFIG<-#\n");
-                   fprintf(ConfFile, "###################\n\n\n");
+                   fprintf(ConfFile, "###################\n\n");
                    fprintf(ConfFile, "#####Security#####\n");
                    fprintf(ConfFile, "rpcuser=cHANGEmEpLEASE\n");
-                   fprintf(ConfFile, "rpcpassword=MeTooPlease");
+                   fprintf(ConfFile, "rpcpassword=MeTooPlease\n");
                    fprintf(ConfFile, "rpcallowip=localhost\n\n");
                    fprintf(ConfFile, "#####Options#####\n");
                    fprintf(ConfFile, "server=1\n");
@@ -1117,7 +1117,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                    fprintf(ConfFile, "addnode=seed2.projectsono.io\n");
                    fprintf(ConfFile, "addnode=seed3.projectsono.io\n");
                    fprintf(ConfFile, "addnode=gfx-world.org\n"); //Thanks to belowzero01
-                   fprintf(ConfFile, "addnode=seed.zpools.de\n"); //USA Seed
+                   fprintf(ConfFile, "addnode=159.69.158.15\n"); 
 
                    fclose(ConfFile);
 

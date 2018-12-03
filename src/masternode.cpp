@@ -65,7 +65,7 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
 
         int masternodeversion = MIN_MN_PROTO_VERSION;
         if (pindexBest->nHeight > PoSFixHeight)
-           masternodeversion = PROTOCOL_VERSION;
+           masternodeversion = KICK_BELOW_THIS_VERSION;
 
 
         CTxIn vin;
@@ -448,7 +448,7 @@ int GetMasternodeByVin(CTxIn& vin)
 int GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
 {
     int i = 0;
-    unsigned int score = 0;
+    uint256 score = 0;
     int winner = -1;
     LOCK(cs_masternodes);
     // scan for winner
@@ -462,12 +462,10 @@ int GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
 
         // calculate the score for each masternode
         uint256 n = mn.CalculateScore(mod, nBlockHeight);
-        unsigned int n2 = 0;
-        memcpy(&n2, &n, sizeof(n2));
 
         // determine the winner
-        if(n2 > score){
-            score = n2;
+        if(n > score){
+            score = n;
             winner = i;
         }
         i++;
@@ -485,8 +483,8 @@ bool GetMasternodeRanks()
     vecMasternodeScores.clear();
 
     int masternodeversion = MIN_MN_PROTO_VERSION;
-    //if (pindexBest->nHeight > 42000)
-    //    masternodeversion = 20011;
+    if (pindexBest->nHeight > PoSFixHeight)
+       masternodeversion = KICK_BELOW_THIS_VERSION;
 
     BOOST_FOREACH(CMasterNode& mn, vecMasternodes) {
 
@@ -521,8 +519,10 @@ int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
         }
 
         uint256 n = mn.CalculateScore(1, nBlockHeight);
+        unsigned char *p=(unsigned char *)&n;
         unsigned int n2 = 0;
-        memcpy(&n2, &n, sizeof(n2));
+
+        memcpy(&n2, p+28, sizeof(n2));
 
         vecMasternodeScores.push_back(make_pair(n2, mn.vin));
     }
@@ -787,8 +787,8 @@ bool CMasternodePayments::Sign(CMasternodePaymentWinner& winner)
 uint64_t CMasternodePayments::CalculateScore(uint256 blockHash, CTxIn& vin)
 {
     uint256 n1 = blockHash;
-    uint256 n2 = SonoA(BEGIN(n1), END(n1));
-    uint256 n3 = SonoA(BEGIN(vin.prevout.hash), END(vin.prevout.hash));
+    uint256 n2 = fasthash(BEGIN(n1), END(n1));
+    uint256 n3 = fasthash(BEGIN(vin.prevout.hash), END(vin.prevout.hash));
     uint256 n4 = n3 > n2 ? (n3 - n2) : (n2 - n3);
 
     //printf(" -- CMasternodePayments CalculateScore() n2 = %d \n", n2.Get64());

@@ -13,3 +13,4 @@ uint256 scrypt_hash(const void* input, size_t inputlen);
 uint256 scrypt_blockhash(const void* input);
 
 #endif // SCRYPT_MINE_H
+
