@@ -209,9 +209,18 @@ int main(int argc, char *argv[])
 	
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
-        splash.setEnabled(false);
-        splash.show();
-        splashref = &splash;
+		if (GetBoolArg("-litemode", true))
+			{
+			splash-litemode.setEnabled(false);
+			splash-litemode.show();
+			splashref = &splash;			
+			}
+		else
+			{
+			splash.setEnabled(false);
+			splash.show();
+			splashref = &splash;
+			}
     }
 
     app.processEvents();
