@@ -202,23 +202,15 @@ int main(int argc, char *argv[])
     }
 
     // show a persistent splash screen unless it is disabled from flags
-	QSplashScreen splashlitemode(QPixmap(":/images/splash-litemode"), 0);
+	//QSplashScreen splash(QPixmap(":/images/splash-litemode"), 0);
 	QSplashScreen splash(QPixmap(":/images/splash"), 0);
 	
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
-		if (GetBoolArg("-litemode", true))
-			{
-			splashlitemode.setEnabled(false);
-			splashlitemode.show();
-			splashref = &splash;			
-			}
-		else
-			{
 			splash.setEnabled(false);
 			splash.show();
 			splashref = &splash;
-			}
+
     }
 
     app.processEvents();
