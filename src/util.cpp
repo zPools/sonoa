@@ -59,6 +59,7 @@ using namespace std;
 
 //Masternode  features
 bool fMasterNode = false;
+bool fLiteMode = false;
 string strMasterNodePrivKey = "";
 string strMasterNodeAddr = "";
 int nDarksendRounds = 2;

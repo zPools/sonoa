@@ -131,6 +131,7 @@ inline void MilliSleep(int64_t n)
 
 extern bool fMasterNode;
 extern int nDarksendRounds;
+extern bool fLiteMode;
 
 extern int64_t enforceMasternodePaymentsTime;
 extern std::string strMasterNodeAddr;

@@ -64,6 +64,7 @@
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
+		<file alias="splash-litemode">res/images/splash-litemode.png</file>
         <file alias="vertical">res/images/vertical.png</file>
         <file alias="horizontal">res/images/horizontal.png</file>
         <file alias="dbg">res/images/dbg.jpg</file>

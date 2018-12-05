@@ -247,14 +247,15 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addStretch();
 
-    if (GetBoolArg("-staking", true))
-    {
-        QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
-        connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
-        timerStakingIcon->start(30 * 1000);
-        updateStakingIcon();
-    }
-
+	if (!GetBoolArg("-litemode", true)) {
+		if (GetBoolArg("-staking", true))
+		{
+			QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
+			connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
+			timerStakingIcon->start(30 * 1000);
+			updateStakingIcon();
+		}
+	}
     connect(labelEncryptionIcon, SIGNAL(clicked()), unlockWalletAction, SLOT(trigger()));
 
     // Progress bar and label for blocks download
@@ -532,14 +533,20 @@ void BitcoinGUI::createToolBars()
     mainToolbar->addAction(sendCoinsAction);
     mainToolbar->addAction(receiveCoinsAction);
     mainToolbar->addAction(historyAction);
-    mainToolbar->addAction(mintingAction);
     mainToolbar->addAction(addressBookAction);
-//    mainToolbar->addAction(messageAction);
-    mainToolbar->addAction(statisticsAction);
+	mainToolbar->addAction(statisticsAction);
     mainToolbar->addAction(blockAction);
-    mainToolbar->addAction(masternodeManagerAction);
+
+	if (!GetBoolArg("-litemode", true)){
+		mainToolbar->addAction(mintingAction);
+		mainToolbar->addAction(masternodeManagerAction);
+	}
+
+/*	  Code for these 3 will be removed soon
+//    mainToolbar->addAction(messageAction);
 //    mainToolbar->addAction(marketAction);
 //    mainToolbar->addAction(proofOfImageAction);
+*/
 
     secondaryToolbar = addToolBar(tr("Actions toolbar"));
     secondaryToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -1445,9 +1452,11 @@ void BitcoinGUI::updateStakingIcon()
     else
     {
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        if (pwalletMain && pwalletMain->IsLocked())
+        if (GetBoolArg("-litemode", true))
+			labelStakingIcon->setToolTip(tr("Not staking because wallet is in Lite Mode"));
+		else if (pwalletMain && pwalletMain->IsLocked())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is locked"));
-        else if (vNodes.empty())
+		else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is offline"));
         else if (IsInitialBlockDownload())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is syncing"));

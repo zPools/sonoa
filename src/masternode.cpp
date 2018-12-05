@@ -59,7 +59,9 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
 {
 
     if (strCommand == "dsee") { //DarkSend Election Entry
-
+	
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode
+		
         bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
@@ -206,7 +208,10 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
     }
 
     else if (strCommand == "dseep") { //DarkSend Election Entry Ping
-        bool fIsInitialDownload = IsInitialBlockDownload();
+        
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode
+		
+		bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
         CTxIn vin;
@@ -277,6 +282,9 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         askedForMasternodeListEntry[vin.prevout] = askAgain;
 
     } else if (strCommand == "dseg") { //Get masternode list or specific entry
+	
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode	
+	
         bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
@@ -337,7 +345,10 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
     }
 
     else if (strCommand == "mnget") { //Masternode Payments Request Sync
-        bool fIsInitialDownload = IsInitialBlockDownload();
+        
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode		
+		
+		bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
         if(pfrom->HasFulfilledRequest("mnget")) {
