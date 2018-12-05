@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
             }
 
             // Show a persistent splash screen while shutting down
-            QSplashScreen splash(QPixmap(":/images/splash"), 0);
+            QSplashScreen splash(QPixmap(":/images/splash-goodbye"), 0);
             splash.setEnabled(false);
             splash.show();
             splashref = &splash;

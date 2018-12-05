@@ -94,7 +94,7 @@ Value getstakinginfo(const Array& params, bool fHelp)
     Object obj;
 
 	if (GetBoolArg("-litemode", true))
-		{obj.push_back(Pair("Staking is disabled due to Lite Mode")}
+		{obj.push_back(Pair("Staking is disabled due to Lite Mode is set to ", GetBoolArg("-litemode", true)));}
 	else
 		{
 		obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
