@@ -513,7 +513,7 @@ bool GetMasternodeRanks(CBlockIndex* pindex)
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareLastPaidBlock());
 
-    masternodePayments.vecMasternodeRanksLastUpdated = pindex->GetBlockHash();
+    masternodePayments.vecMasternodeRanksLastUpdated = pindexBest->nHeight;
     return true;
 }
 

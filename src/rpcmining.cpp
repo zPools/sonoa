@@ -93,10 +93,10 @@ Value getstakinginfo(const Array& params, bool fHelp)
 
     Object obj;
 	
-	obj.push_back(Pair("LiteMode (disables staking) ", GetBoolArg("-litemode")));}
-	obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
-	obj.push_back(Pair("staking", staking));
-	obj.push_back(Pair("errors", GetWarnings("statusbar")));
+    obj.push_back(Pair("LiteMode (disables staking) ", GetBoolArg("-litemode")));
+    obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
+    obj.push_back(Pair("staking", staking));
+    obj.push_back(Pair("errors", GetWarnings("statusbar")));
 	
 		
     obj.push_back(Pair("currentblocksize", (uint64_t)nLastBlockSize));
@@ -262,7 +262,7 @@ Value getwork(const Array& params, bool fHelp)
             "If [data] is specified, tries to solve the block and returns true if it was successful.");
 if (!fTestNet)
     {
-	if (fLiteMode))
+	if (fLiteMode)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}		
     
 	if (vNodes.empty())
