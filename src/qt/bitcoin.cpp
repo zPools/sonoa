@@ -231,9 +231,6 @@ int main(int argc, char *argv[])
 
                 if (splashref)
                     splash.finish(&window);
-				
-				if	(splashreflitemodehref)
-					splashreflitemodehref.finish(&window);
 
                 //make sure user has agreed to TOU
                 window.checkTOU();
