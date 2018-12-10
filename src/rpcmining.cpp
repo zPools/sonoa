@@ -93,7 +93,7 @@ Value getstakinginfo(const Array& params, bool fHelp)
 
     Object obj;
 	
-	obj.push_back(Pair("LiteMode (disables staking) ", GetBoolArg("-litemode", true)));}
+	obj.push_back(Pair("LiteMode (disables staking) ", GetBoolArg("-litemode")));}
 	obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
 	obj.push_back(Pair("staking", staking));
 	obj.push_back(Pair("errors", GetWarnings("statusbar")));
@@ -123,7 +123,7 @@ Value getworkex(const Array& params, bool fHelp)
         );
 if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when not sync
     {
-	if (GetBoolArg("-litemode", true))
+	if (fLiteMode)
 		{throw JSONRPCError(-9, "This node is in Lite Mode and cant mine");}
     
 	if (vNodes.empty())
@@ -262,7 +262,7 @@ Value getwork(const Array& params, bool fHelp)
             "If [data] is specified, tries to solve the block and returns true if it was successful.");
 if (!fTestNet)
     {
-	if (GetBoolArg("-litemode", true))
+	if (fLiteMode))
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}		
     
 	if (vNodes.empty())
@@ -416,7 +416,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
 
 if (!fTestNet)
     {
-	if (GetBoolArg("-litemode", true))
+	if (fLiteMode)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}		
     
 	if (vNodes.empty())
@@ -606,7 +606,7 @@ Value submitblock(const Array& params, bool fHelp)
     vector<unsigned char> blockData(ParseHex(params[0].get_str()));
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
     CBlock block;
-	if (GetBoolArg("-litemode", true))
+	if (fLiteMode)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
     try {
         ssBlock >> block;

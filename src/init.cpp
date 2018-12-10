@@ -1031,7 +1031,7 @@ bool AppInit2()
     // Verify if the wallet wants to start as a masternode...
     fMasterNode = GetBoolArg("-masternode", false);
     // ...and dont let it start if litemode is on
-    fLiteMode = GetBoolArg("-litemode", false);
+    fLiteMode = GetBoolArg("-litemode");
     if(fMasterNode && fLiteMode){
         return InitError("You can not start a masternode in litemode");
     }

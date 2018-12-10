@@ -37,6 +37,7 @@
 #include "wallet.h"
 #include "termsofuse.h"
 #include "proofofimage.h"
+#include "init.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -139,7 +140,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     resize(1300, 400);
     setWindowTitle(tr("SONO") + " - " + tr("Wallet"));
-	if (GetBoolArg("-litemode", true))
+	if (fLiteMode)
 		{setWindowTitle(windowTitle() + QString(" ") + tr("[Lite Mode]"));}
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/sono"));
@@ -249,7 +250,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addStretch();
 
-	if (!GetBoolArg("-litemode", true)) {
+	if (!fLiteMode) {
 		if (GetBoolArg("-staking", true))
 		{
 			QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
@@ -539,7 +540,8 @@ void BitcoinGUI::createToolBars()
 	mainToolbar->addAction(statisticsAction);
     mainToolbar->addAction(blockAction);
 
-	if (!GetBoolArg("-litemode", true)){
+	if (!fLiteMode)
+	{
 		mainToolbar->addAction(mintingAction);
 		mainToolbar->addAction(masternodeManagerAction);
 	}
@@ -1454,7 +1456,7 @@ void BitcoinGUI::updateStakingIcon()
     else
     {
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        if (GetBoolArg("-litemode", true))
+        if (fLiteMode)
 			labelStakingIcon->setToolTip(tr("Not staking because wallet is in Lite Mode"));
 		else if (pwalletMain && pwalletMain->IsLocked())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is locked"));
