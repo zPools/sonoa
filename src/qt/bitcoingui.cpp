@@ -140,6 +140,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     resize(1300, 400);
     setWindowTitle(tr("SONO") + " - " + tr("Wallet"));
+	fLiteMode = GetBoolArg("-litemode");
 	if (fLiteMode)
 		{setWindowTitle(windowTitle() + QString(" ") + tr("[Lite Mode]"));}
 #ifndef Q_OS_MAC

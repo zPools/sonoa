@@ -455,7 +455,7 @@ bool AppInit2()
 
     fTestNet = GetBoolArg("-testnet");
 
-    //if (fTestNet)
+	fLiteMode = GetBoolArg("-litemode");
 
     if (mapArgs.count("-bind")) {
         // when specifying an explicit binding address, you want to listen on it
@@ -1031,7 +1031,6 @@ bool AppInit2()
     // Verify if the wallet wants to start as a masternode...
     fMasterNode = GetBoolArg("-masternode", false);
     // ...and dont let it start if litemode is on
-    fLiteMode = GetBoolArg("-litemode");
     if(fMasterNode && fLiteMode){
         return InitError("You can not start a masternode in litemode");
     }

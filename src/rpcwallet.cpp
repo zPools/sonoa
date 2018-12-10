@@ -104,7 +104,8 @@ Value getinfo(const Array& params, bool fHelp)
     diff.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex(pindexBest, true))));
     obj.push_back(Pair("difficulty",    diff));
 
-    obj.push_back(Pair("testnet",       fTestNet));
+    obj.push_back(Pair("litemode",      fLiteMode));
+	obj.push_back(Pair("testnet",       fTestNet));
     obj.push_back(Pair("masternode",    fMasterNode));
     obj.push_back(Pair("keypoololdest", (int64_t)pwalletMain->GetOldestKeyPoolTime()));
     obj.push_back(Pair("keypoolsize",   (int)pwalletMain->GetKeyPoolSize()));
