@@ -202,23 +202,13 @@ int main(int argc, char *argv[])
     }
 
     // show a persistent splash screen unless it is disabled from flags
-	QSplashScreen splashlitemode(QPixmap(":/images/splash-litemode"), 0);
 	QSplashScreen splash(QPixmap(":/images/splash"), 0);
 	
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min"))
     {
-		if (GetBoolArg("-litemode", true))
-		{
-			splashlitemode.setEnabled(false);
-			splashlitemode.show();
-			splashreflitemodehref = &splashlitemode;
-		}
-		else
-		{
-			splash.setEnabled(false);
-			splash.show();
-			splashref = &splash;			
-		}
+		splash.setEnabled(false);
+		splash.show();
+		splashref = &splash;			
     }
 
     app.processEvents();
@@ -242,8 +232,8 @@ int main(int argc, char *argv[])
                 if (splashref)
                     splash.finish(&window);
 				
-				if	(splashreflitemodehref=
-					splashreflitemode.finish(&window);
+				if	(splashreflitemodehref)
+					splashreflitemodehref.finish(&window);
 
                 //make sure user has agreed to TOU
                 window.checkTOU();

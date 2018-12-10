@@ -1035,7 +1035,7 @@ bool AppInit2()
     if(fMasterNode && fLiteMode){
         return InitError("You can not start a masternode in litemode");
     }
-    if(fMasterNode) {
+    if(fMasterNode && !fLiteMode) /*fLiteMode should have returned a InitError. Its "just in case"*/ {
         printf("Masternode Enabled\n");
         strMasterNodeAddr = GetArg("-masternodeaddr", "");
 
