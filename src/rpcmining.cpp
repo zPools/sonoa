@@ -92,15 +92,12 @@ Value getstakinginfo(const Array& params, bool fHelp)
     int nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : -1;
 
     Object obj;
-
-	if (GetBoolArg("-litemode", true))
-		{obj.push_back(Pair("Staking is disabled due to Lite Mode is set to ", GetBoolArg("-litemode", true)));}
-	else
-		{
-		obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
-		obj.push_back(Pair("staking", staking));
-		obj.push_back(Pair("errors", GetWarnings("statusbar")));
-		}
+	
+	obj.push_back(Pair("LiteMode (disables staking) ", GetBoolArg("-litemode", true)));}
+	obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
+	obj.push_back(Pair("staking", staking));
+	obj.push_back(Pair("errors", GetWarnings("statusbar")));
+	
 		
     obj.push_back(Pair("currentblocksize", (uint64_t)nLastBlockSize));
     obj.push_back(Pair("currentblocktx", (uint64_t)nLastBlockTx));
@@ -128,7 +125,8 @@ if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when n
     {
 	if (GetBoolArg("-litemode", true))
 		{throw JSONRPCError(-9, "This node is in Lite Mode and cant mine");}
-    if (vNodes.empty())
+    
+	if (vNodes.empty())
         throw JSONRPCError(-9, "SONO is not connected!");
 
     if (IsInitialBlockDownload())
@@ -266,7 +264,8 @@ if (!fTestNet)
     {
 	if (GetBoolArg("-litemode", true))
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}		
-    if (vNodes.empty())
+    
+	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
 
     if (IsInitialBlockDownload())
@@ -419,7 +418,8 @@ if (!fTestNet)
     {
 	if (GetBoolArg("-litemode", true))
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}		
-    if (vNodes.empty())
+    
+	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
 
     if (IsInitialBlockDownload())
