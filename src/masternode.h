@@ -173,7 +173,7 @@ int GetCurrentMasterNode(int mod=1, int64_t nBlockHeight=0, int minProtocol=CMas
 int GetMasternodeByVin(CTxIn& vin);
 int GetMasternodeRank(CTxIn &vin, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
-bool GetMasternodeRanks();
+bool GetMasternodeRanks(CBlockIndex* pindex=pindexBest);
 
 // for storing the winning payments
 class CMasternodePaymentWinner
