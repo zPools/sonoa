@@ -262,7 +262,6 @@ HEADERS += src/qt/bitcoingui.h \
 	src/qt/mintingfilterproxy.h \
     src/qt/mintingtablemodel.h \
     src/qt/mintingview.h \
-    src/qt/proofofimage.h \
 	src/qt/multisigaddressentry.h \
     src/qt/multisiginputentry.h \
     src/qt/multisigdialog.h \
@@ -404,7 +403,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
 	src/qt/multisigaddressentry.cpp \
     src/qt/multisiginputentry.cpp \
     src/qt/multisigdialog.cpp \
-    src/qt/proofofimage.cpp \
     src/qt/termsofuse.cpp \
     src/alert.cpp \
 	src/base58.cpp \
@@ -506,7 +504,6 @@ FORMS += \
 	src/qt/forms/statisticspage.ui \
 	src/qt/forms/blockbrowser.ui \
 	src/qt/forms/marketbrowser.ui \
-    src/qt/forms/proofofimage.ui \
     src/qt/forms/termsofuse.ui \
     src/qt/forms/masternodemanager.ui \
     src/qt/forms/addeditadrenalinenode.ui \
