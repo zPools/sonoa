@@ -67,7 +67,7 @@ Value getmininginfo(const Array& params, bool fHelp)
     mn.push_back(Pair("local-acitve-masternodes",	(uint64_t)vecMasternodes.size()));
     mn.push_back(Pair("network-seen-masternodes",	(uint64_t)mnCount));
     mn.push_back(Pair("needed-masternodes",		(uint64_t)mnCount*0.25));
-    mn.push_back(Pair("mining-enabled",			MiningReqMN));
+    mn.push_back(Pair("mining-enabled",			MiningReqMN()));
     obj.push_back(Pair("masternodes",			mn)),   
 
     obj.push_back(Pair("netmhashps",     		GetPoWMHashPS()));
@@ -132,7 +132,7 @@ if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when n
 	if (fLiteMode)
 		{throw JSONRPCError(-9, "This node is in Lite Mode and cant mine");}
 
-	if (!MiningReqMN)
+	if (!MiningReqMN())
 		{throw JSONRPCError(-9, "This node need more active Masternodes");}
     
 	if (vNodes.empty())
@@ -274,7 +274,7 @@ if (!fTestNet)
 	if (fLiteMode)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}	
 	
-	if (!MiningReqMN)
+	if (!MiningReqMN())
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}	
     
 	if (vNodes.empty())
@@ -431,7 +431,7 @@ if (!fTestNet)
 	if (fLiteMode)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
 	
-	if (!MiningReqMN)
+	if (!MiningReqMN())
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}		
     
 	if (vNodes.empty())
@@ -624,7 +624,7 @@ Value submitblock(const Array& params, bool fHelp)
 	if (fLiteMode)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
 	
-	if (!MiningReqMN)
+	if (!MiningReqMN())
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}
     try {
         ssBlock >> block;
