@@ -61,7 +61,7 @@ int CountMasternodesAboveProtocol(int protocolVersion);
 
 void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 bool CheckMasternodeVin(CTxIn& vin, std::string& errorMessage);
-
+bool MiningReqMN();
 //
 // The Masternode Class. For managing the darksend process. It contains the input of the 1000 SONO, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.

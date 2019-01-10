@@ -1004,3 +1004,16 @@ bool CMasternodePayments::SetPrivKey(std::string strPrivKey)
         return false;
     }
 }
+
+bool MiningReqMN()
+{ 
+// Mining will now require at least 25% of the seen Masternodes as active
+// mnCount = seen masternodes  ---  vecMasternodes.size() = active masternodes
+	
+	uint64_t acme = vecMasternodes.size();
+	uint64_t min = mnCount * 0.25;
+
+	if (min > acme)
+		return false;
+	else return true;
+}
