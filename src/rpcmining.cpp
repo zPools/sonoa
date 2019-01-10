@@ -65,8 +65,9 @@ Value getmininginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("difficulty",            	diff));
 
     mn.push_back(Pair("local-acitve-masternodes",	(uint64_t)vecMasternodes.size()));
-    mn.push_back(Pair("network-seen-masternodes",	(uint64_t)mnCount)); 
-    mn.push_back(Pair("enough-active-MN-in-list",	MiningReqMN()));
+    mn.push_back(Pair("network-seen-masternodes",	(uint64_t)mnCount));
+    mn.push_back(Pair("needed-masternodes",		(uint64_t)mnCount*0.25));
+    mn.push_back(Pair("mining-enabled",			MiningReqMN));
     obj.push_back(Pair("masternodes",			mn)),   
 
     obj.push_back(Pair("netmhashps",     		GetPoWMHashPS()));
@@ -130,6 +131,9 @@ if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when n
     {
 	if (fLiteMode)
 		{throw JSONRPCError(-9, "This node is in Lite Mode and cant mine");}
+
+	if (!MiningReqMN)
+		{throw JSONRPCError(-9, "This node need more active Masternodes");}
     
 	if (vNodes.empty())
         throw JSONRPCError(-9, "SONO is not connected!");
@@ -268,7 +272,10 @@ Value getwork(const Array& params, bool fHelp)
 if (!fTestNet)
     {
 	if (fLiteMode)
-		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}		
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}	
+	
+	if (!MiningReqMN)
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}	
     
 	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
@@ -422,7 +429,10 @@ Value getblocktemplate(const Array& params, bool fHelp)
 if (!fTestNet)
     {
 	if (fLiteMode)
-		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}		
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
+	
+	if (!MiningReqMN)
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}		
     
 	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
@@ -526,14 +536,14 @@ if (!fTestNet)
         aMutable.push_back("prevblock");
     }
 
-	CScript payee;
+    CScript payee;
 	
     Object result;
     result.push_back(Pair("version", pblock->nVersion));
     result.push_back(Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
     result.push_back(Pair("transactions", transactions));
     result.push_back(Pair("coinbaseaux", aux));
-	result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
+    result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
     result.push_back(Pair("target", hashTarget.GetHex()));
     result.push_back(Pair("mintime", (int64_t)pindexPrev->GetPastTimeLimit()+1));
     result.push_back(Pair("mutable", aMutable));
@@ -613,6 +623,9 @@ Value submitblock(const Array& params, bool fHelp)
     CBlock block;
 	if (fLiteMode)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
+	
+	if (!MiningReqMN)
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}
     try {
         ssBlock >> block;
     }
