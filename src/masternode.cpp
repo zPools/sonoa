@@ -59,7 +59,9 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
 {
 
     if (strCommand == "dsee") { //DarkSend Election Entry
-
+	
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode
+		
         bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
@@ -206,7 +208,10 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
     }
 
     else if (strCommand == "dseep") { //DarkSend Election Entry Ping
-        bool fIsInitialDownload = IsInitialBlockDownload();
+        
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode
+		
+		bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
         CTxIn vin;
@@ -277,6 +282,9 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
         askedForMasternodeListEntry[vin.prevout] = askAgain;
 
     } else if (strCommand == "dseg") { //Get masternode list or specific entry
+	
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode	
+	
         bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
@@ -337,7 +345,10 @@ void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream
     }
 
     else if (strCommand == "mnget") { //Masternode Payments Request Sync
-        bool fIsInitialDownload = IsInitialBlockDownload();
+        
+		if (fLiteMode) return; //Disable Masternodes on Lite Mode		
+		
+		bool fIsInitialDownload = IsInitialBlockDownload();
         if(fIsInitialDownload) return;
 
         if(pfrom->HasFulfilledRequest("mnget")) {
@@ -470,12 +481,58 @@ int GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
         }
         i++;
     }
-
     return winner;
 }
-bool GetMasternodeRanks()
+
+int GetCurrentMasterNodenew(int mod, int64_t nBlockHeight, int minProtocol)
 {
-    if (masternodePayments.vecMasternodeRanksLastUpdated == pindexBest->nHeight)
+    int i = 0;
+    uint256 score = 0;
+    int winner = -1;
+    LOCK(cs_masternodes);
+    // scan for winner
+    BOOST_FOREACH(CMasterNode mn, vecMasternodes) 
+	{
+        mn.Check();
+        if(mn.protocolVersion < minProtocol) continue;
+        
+	if(!mn.IsEnabled()) 
+	    {
+            i++;
+            continue;
+            }
+	
+        int lastPaid = mn.nBlockLastPaid;
+        int paidAge = nBestHeight - lastPaid;
+	int min = mnCount * 0.50;
+
+	if (paidAge < min) 
+	    {
+            printf ("lastPaid %i ---- paidAge %i ---- i%i\n", lastPaid, paidAge, i);
+	    i++;
+	    continue;
+            }
+	
+
+        // calculate the score for each masternode
+        uint256 n = mn.CalculateScore(mod, nBlockHeight);
+
+        // determine the winner
+        if(n > score)
+	    {
+            score = n;
+            winner = i;
+            }
+        i++;
+    }
+    return winner;
+}
+
+
+bool GetMasternodeRanks(CBlockIndex* pindex)
+{
+	if (!pindex || fLiteMode || IsInitialBlockDownload()) return true;
+    if (masternodePayments.vecMasternodeRanksLastUpdated == pindex->GetBlockHash())
         return true;
 
     // std::vector<pair<int, CMasterNode*> > vecMasternodeScores;
@@ -493,7 +550,7 @@ bool GetMasternodeRanks()
 
         if (!mn.nBlockLastPaid || mn.nBlockLastPaid == 0)
         {
-            CBlockIndex* pindex = pindexBest;
+            //CBlockIndex* pindex = pindexBest;
             mn.UpdateLastPaidBlock(pindex, 2880); // search back 1 day
         }
         vecMasternodeScores.push_back(make_pair(mn.nBlockLastPaid, &mn));
@@ -507,6 +564,7 @@ bool GetMasternodeRanks()
 
 int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
 {
+	if (fLiteMode || IsInitialBlockDownload()) return 0;
     LOCK(cs_masternodes);
     std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
 
@@ -542,6 +600,7 @@ int GetMasternodeRank(CTxIn& vin, int64_t nBlockHeight, int minProtocol)
 
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight, int minProtocol)
 {
+	if (fLiteMode || IsInitialBlockDownload()) return 0;
     LOCK(cs_masternodes);
     GetMasternodeRanks();
     int i = 0;
@@ -596,7 +655,7 @@ bool GetBlockHash(uint256& hash, int nBlockHeight)
 
 void CMasterNode::UpdateLastPaidBlock(const CBlockIndex *pindex, int nMaxBlocksToScanBack)
 {
-    if(!pindex) return;
+	if (!pindex || fLiteMode || IsInitialBlockDownload()) return;
 
     const CBlockIndex *BlockReading = pindex;
 
@@ -664,14 +723,20 @@ void CMasterNode::UpdateLastPaidBlock(const CBlockIndex *pindex, int nMaxBlocksT
 //
 uint256 CMasterNode::CalculateScore(int mod, int64_t nBlockHeight)
 {
-    if(pindexBest == NULL) return 0;
+    if(pindexBest == NULL || fLiteMode) return 0; //Disable Masternodes on Lite Mode
 
     uint256 hash = 0;
     uint256 aux = vin.prevout.hash + vin.prevout.n;
 
     if(!GetBlockHash(hash, nBlockHeight)) return 0;
 
-    uint256 hash2 = fasthash(BEGIN(hash), END(hash)); //SonoA Algo Integrated, WIP
+    int lastPaid = nBlockLastPaid;
+    int paidAge = nBestHeight - lastPaid;
+    int min = mnCount * 0.50;
+    
+    if (paidAge < min) return 0;
+
+    uint256 hash2 = fasthash(BEGIN(hash), END(hash)); //fasthash
     uint256 hash3 = fasthash(BEGIN(hash), END(aux));
 
     uint256 r = (hash3 > hash2 ? hash3 - hash2 : hash2 - hash3);
@@ -791,10 +856,12 @@ uint64_t CMasternodePayments::CalculateScore(uint256 blockHash, CTxIn& vin)
     uint256 n3 = fasthash(BEGIN(vin.prevout.hash), END(vin.prevout.hash));
     uint256 n4 = n3 > n2 ? (n3 - n2) : (n2 - n3);
 
-    //printf(" -- CMasternodePayments CalculateScore() n2 = %d \n", n2.Get64());
-    //printf(" -- CMasternodePayments CalculateScore() n3 = %d \n", n3.Get64());
-    //printf(" -- CMasternodePayments CalculateScore() n4 = %d \n", n4.Get64());
-
+	if (fDebug)
+	{
+		printf(" -- CMasternodePayments CalculateScore() n2 = %d \n", n2.Get64());
+		printf(" -- CMasternodePayments CalculateScore() n3 = %d \n", n3.Get64());
+		printf(" -- CMasternodePayments CalculateScore() n4 = %d \n", n4.Get64());
+	}
     return n4.Get64();
 }
 
@@ -987,4 +1054,18 @@ bool CMasternodePayments::SetPrivKey(std::string strPrivKey)
     } else {
         return false;
     }
+}
+
+bool MiningReqMN()
+{ 
+// Mining will now require at least 25% of the seen Masternodes as active
+// mnCount = seen masternodes  ---  vecMasternodes.size() = active masternodes
+// fLiteMode will also disable mining. Mining on LiteMode is not possible
+	
+	uint64_t acme = vecMasternodes.size();
+	uint64_t min = mnCount * 0.25;
+
+	if (min > acme || fLiteMode)
+		return false;
+	else return true;
 }

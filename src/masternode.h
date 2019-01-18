@@ -61,7 +61,7 @@ int CountMasternodesAboveProtocol(int protocolVersion);
 
 void ProcessMessageMasternode(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 bool CheckMasternodeVin(CTxIn& vin, std::string& errorMessage);
-
+bool MiningReqMN();
 //
 // The Masternode Class. For managing the darksend process. It contains the input of the 1000 SONO, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.
@@ -169,11 +169,12 @@ public:
 
 // Get the current winner for this block
 int GetCurrentMasterNode(int mod=1, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
+int GetCurrentMasterNodenew(int mod=1, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 
 int GetMasternodeByVin(CTxIn& vin);
 int GetMasternodeRank(CTxIn &vin, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
 int GetMasternodeByRank(int findRank, int64_t nBlockHeight=0, int minProtocol=CMasterNode::minProtoVersion);
-bool GetMasternodeRanks();
+bool GetMasternodeRanks(CBlockIndex* pindex=pindexBest);
 
 // for storing the winning payments
 class CMasternodePaymentWinner

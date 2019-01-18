@@ -51,29 +51,35 @@ Value getmininginfo(const Array& params, bool fHelp)
     uint64_t nMinWeight = 0, nMaxWeight = 0, nWeight = 0;
     pwalletMain->GetStakeWeight(*pwalletMain, nMinWeight, nMaxWeight, nWeight);
 
-    Object obj, diff, weight;
-    obj.push_back(Pair("blocks",            (int)nBestHeight));
-    obj.push_back(Pair("blockvalue",        (uint64_t)GetProofOfWorkReward(nBestHeight+1, 0)));
-    obj.push_back(Pair("currentblocksize",  (uint64_t)nLastBlockSize));
-    obj.push_back(Pair("currentblocktx",    (uint64_t)nLastBlockTx));
-    obj.push_back(Pair("errors",            GetWarnings("statusbar")));
-    obj.push_back(Pair("pooledtx",          (uint64_t)mempool.size()));
+    Object obj, diff, mn, weight;
+    obj.push_back(Pair("blocks",            		(int)nBestHeight));
+    obj.push_back(Pair("blockvalue",        		(uint64_t)GetProofOfWorkReward(nBestHeight+1, 0)));
+    obj.push_back(Pair("currentblocksize",  		(uint64_t)nLastBlockSize));
+    obj.push_back(Pair("currentblocktx",    		(uint64_t)nLastBlockTx));
+    obj.push_back(Pair("errors",            		GetWarnings("statusbar")));
+    obj.push_back(Pair("pooledtx",          		(uint64_t)mempool.size()));
 
-    diff.push_back(Pair("proof-of-work",        GetDifficulty()));
-    diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
-    diff.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
-    obj.push_back(Pair("difficulty",            diff));
-    
-    obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
+    diff.push_back(Pair("proof-of-work",        	GetDifficulty()));
+    diff.push_back(Pair("proof-of-stake",       	GetDifficulty(GetLastBlockIndex(pindexBest, true))));
+    diff.push_back(Pair("search-interval",      	(int)nLastCoinStakeSearchInterval));
+    obj.push_back(Pair("difficulty",            	diff));
+
+    mn.push_back(Pair("local-acitve-masternodes",	(uint64_t)vecMasternodes.size()));
+    mn.push_back(Pair("network-seen-masternodes",	(uint64_t)mnCount));
+    mn.push_back(Pair("needed-masternodes",		(uint64_t)mnCount*0.25));
+    mn.push_back(Pair("mining-enabled",			MiningReqMN()));
+    obj.push_back(Pair("masternodes",			mn)),   
+
+    obj.push_back(Pair("netmhashps",     		GetPoWMHashPS()));
    
-    weight.push_back(Pair("minimum",    (uint64_t)nMinWeight));
-    weight.push_back(Pair("maximum",    (uint64_t)nMaxWeight));
-    weight.push_back(Pair("combined",   (uint64_t)nWeight));
-    obj.push_back(Pair("stakeweight",    weight));
-    obj.push_back(Pair("netstakeweight", GetPoSKernelPS()));
+    weight.push_back(Pair("minimum",    		(uint64_t)nMinWeight));
+    weight.push_back(Pair("maximum",    		(uint64_t)nMaxWeight));
+    weight.push_back(Pair("combined",   		(uint64_t)nWeight));
+    obj.push_back(Pair("stakeweight",    		weight));
+    obj.push_back(Pair("netstakeweight", 		GetPoSKernelPS()));
 
-    //obj.push_back(Pair("stakeinterest",    (uint64_t)COIN_YEAR_REWARD));
-    obj.push_back(Pair("testnet",       fTestNet));
+    //obj.push_back(Pair("stakeinterest",    		(uint64_t)COIN_YEAR_REWARD));
+    obj.push_back(Pair("testnet",       		fTestNet));
     return obj;
 }
 
@@ -92,11 +98,13 @@ Value getstakinginfo(const Array& params, bool fHelp)
     int nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : -1;
 
     Object obj;
-
+	
+    obj.push_back(Pair("LiteMode (disables staking) ", GetBoolArg("-litemode")));
     obj.push_back(Pair("enabled", GetBoolArg("-staking", true)));
     obj.push_back(Pair("staking", staking));
     obj.push_back(Pair("errors", GetWarnings("statusbar")));
-
+	
+		
     obj.push_back(Pair("currentblocksize", (uint64_t)nLastBlockSize));
     obj.push_back(Pair("currentblocktx", (uint64_t)nLastBlockTx));
     obj.push_back(Pair("pooledtx", (uint64_t)mempool.size()));
@@ -121,7 +129,13 @@ Value getworkex(const Array& params, bool fHelp)
         );
 if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when not sync
     {
-    if (vNodes.empty())
+	if (fLiteMode)
+		{throw JSONRPCError(-9, "This node is in Lite Mode and cant mine");}
+
+	if (!MiningReqMN())
+		{throw JSONRPCError(-9, "This node need more active Masternodes");}
+    
+	if (vNodes.empty())
         throw JSONRPCError(-9, "SONO is not connected!");
 
     if (IsInitialBlockDownload())
@@ -257,7 +271,13 @@ Value getwork(const Array& params, bool fHelp)
             "If [data] is specified, tries to solve the block and returns true if it was successful.");
 if (!fTestNet)
     {
-    if (vNodes.empty())
+	if (fLiteMode)
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}	
+	
+	if (!MiningReqMN())
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}	
+    
+	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
 
     if (IsInitialBlockDownload())
@@ -406,7 +426,15 @@ Value getblocktemplate(const Array& params, bool fHelp)
     if (strMode != "template")
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
-    if (vNodes.empty())
+if (!fTestNet)
+    {
+	if (fLiteMode)
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
+	
+	if (!MiningReqMN())
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}		
+    
+	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
 
     if (IsInitialBlockDownload())
@@ -414,6 +442,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
 
     if (pindexBest->nHeight >= LAST_POW_BLOCK)
         throw JSONRPCError(RPC_MISC_ERROR, "No more PoW blocks");
+    }
 
     static CReserveKey reservekey(pwalletMain);
 
@@ -507,14 +536,15 @@ Value getblocktemplate(const Array& params, bool fHelp)
         aMutable.push_back("prevblock");
     }
 
-	CScript payee;
+    CScript payee;
+    CScript payee2;
 	
     Object result;
     result.push_back(Pair("version", pblock->nVersion));
     result.push_back(Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
     result.push_back(Pair("transactions", transactions));
     result.push_back(Pair("coinbaseaux", aux));
-	result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
+    result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
     result.push_back(Pair("target", hashTarget.GetHex()));
     result.push_back(Pair("mintime", (int64_t)pindexPrev->GetPastTimeLimit()+1));
     result.push_back(Pair("mutable", aMutable));
@@ -540,8 +570,11 @@ Value getblocktemplate(const Array& params, bool fHelp)
     if(!masternodePayments.GetBlockPayee(pindexPrev->nHeight+1, payee)){
         //no masternode detected
         int winningNode = GetCurrentMasterNode(1);
+	int testnode = GetCurrentMasterNodenew();
+	if (testnode >= 0)
+	payee.SetDestination(vecMasternodes[testnode].pubkey.GetID());
         if(winningNode >= 0){
-        payee.SetDestination(vecMasternodes[winningNode].pubkey.GetID());
+        payee2.SetDestination(vecMasternodes[winningNode].pubkey.GetID());
         } else {
             printf("getblocktemplate() RPC: Failed to detect masternode to pay, burning coins\n");
             // masternodes are in-eligible for payment, burn the coins in-stead
@@ -562,8 +595,13 @@ Value getblocktemplate(const Array& params, bool fHelp)
     {
         CTxDestination address1;
         ExtractDestination(payee, address1);
-        CBitcoinAddress address2(address1);
+	CBitcoinAddress address2(address1);
+	ExtractDestination(payee2, address1);
+	CBitcoinAddress address3(address1);
         masternodeObj.push_back(Pair("payee", address2.ToString().c_str()));
+	masternodeObj.push_back(Pair("payee-new", address3.ToString().c_str()));
+	masternodeObj.push_back(Pair("old", (int)GetCurrentMasterNode()));
+	masternodeObj.push_back(Pair("new", (int)GetCurrentMasterNodenew()));
         masternodeObj.push_back(Pair("amount", (int64_t)GetMasternodePayment(pindexPrev->nHeight+1, pblock->vtx[0].GetValueOut())));
     }
     else
@@ -592,6 +630,11 @@ Value submitblock(const Array& params, bool fHelp)
     vector<unsigned char> blockData(ParseHex(params[0].get_str()));
     CDataStream ssBlock(blockData, SER_NETWORK, PROTOCOL_VERSION);
     CBlock block;
+	if (fLiteMode)
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
+	
+	if (!MiningReqMN())
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}
     try {
         ssBlock >> block;
     }
