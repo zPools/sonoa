@@ -131,7 +131,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPri
         if (fPrintTransactionDetail)
         {
             Object entry;
-
+          
             TxToJSON(tx, 0, entry);
 
             txinfo.push_back(entry);

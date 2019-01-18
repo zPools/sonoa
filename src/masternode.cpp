@@ -481,9 +481,53 @@ int GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
         }
         i++;
     }
-
     return winner;
 }
+
+int GetCurrentMasterNodenew(int mod, int64_t nBlockHeight, int minProtocol)
+{
+    int i = 0;
+    uint256 score = 0;
+    int winner = -1;
+    LOCK(cs_masternodes);
+    // scan for winner
+    BOOST_FOREACH(CMasterNode mn, vecMasternodes) 
+	{
+        mn.Check();
+        if(mn.protocolVersion < minProtocol) continue;
+        
+	if(!mn.IsEnabled()) 
+	    {
+            i++;
+            continue;
+            }
+	
+        int lastPaid = mn.nBlockLastPaid;
+        int paidAge = nBestHeight - lastPaid;
+	int min = mnCount * 0.50;
+
+	if (paidAge < min) 
+	    {
+            printf ("lastPaid %i ---- paidAge %i ---- i%i\n", lastPaid, paidAge, i);
+	    i++;
+	    continue;
+            }
+	
+
+        // calculate the score for each masternode
+        uint256 n = mn.CalculateScore(mod, nBlockHeight);
+
+        // determine the winner
+        if(n > score)
+	    {
+            score = n;
+            winner = i;
+            }
+        i++;
+    }
+    return winner;
+}
+
 bool GetMasternodeRanks(CBlockIndex* pindex)
 {
 	if (!pindex || fLiteMode || IsInitialBlockDownload()) return true;
@@ -678,12 +722,20 @@ void CMasterNode::UpdateLastPaidBlock(const CBlockIndex *pindex, int nMaxBlocksT
 //
 uint256 CMasterNode::CalculateScore(int mod, int64_t nBlockHeight)
 {
-	if(pindexBest == NULL || fLiteMode) return 0; //Disable Masternodes on Lite Mode
+	  if(pindexBest == NULL || fLiteMode) return 0; //Disable Masternodes on Lite Mode
+
 
     uint256 hash = 0;
     uint256 aux = vin.prevout.hash + vin.prevout.n;
 
     if(!GetBlockHash(hash, nBlockHeight)) return 0;
+
+    int lastPaid = nBlockLastPaid;
+    int paidAge = nBestHeight - lastPaid;
+    int min = mnCount * 0.50;
+    
+    if (paidAge < min) return 0;
+
 
     uint256 hash2 = fasthash(BEGIN(hash), END(hash)); //fasthash
     uint256 hash3 = fasthash(BEGIN(hash), END(aux));

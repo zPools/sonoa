@@ -133,6 +133,7 @@ if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when n
 		{throw JSONRPCError(-9, "This node is in Lite Mode and cant mine");}
 
 	if (!MiningReqMN())
+    
 		{throw JSONRPCError(-9, "This node need more active Masternodes. Use getmininginfo for more details");}
     
 	if (vNodes.empty())
@@ -276,6 +277,7 @@ if (!fTestNet)
 	
 	if (!MiningReqMN())
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes. Use getmininginfo for more details");}	
+
     
 	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
@@ -433,6 +435,7 @@ if (!fTestNet)
 	
 	if (!MiningReqMN())
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes. Use getmininginfo for more details");}		
+
     
 	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
@@ -537,6 +540,8 @@ if (!fTestNet)
     }
 
     CScript payee;
+    CScript payee2;
+
 	
     Object result;
     result.push_back(Pair("version", pblock->nVersion));
@@ -569,8 +574,11 @@ if (!fTestNet)
     if(!masternodePayments.GetBlockPayee(pindexPrev->nHeight+1, payee)){
         //no masternode detected
         int winningNode = GetCurrentMasterNode(1);
+	int testnode = GetCurrentMasterNodenew();
+	if (testnode >= 0)
+	payee.SetDestination(vecMasternodes[testnode].pubkey.GetID());
         if(winningNode >= 0){
-        payee.SetDestination(vecMasternodes[winningNode].pubkey.GetID());
+        payee2.SetDestination(vecMasternodes[winningNode].pubkey.GetID());
         } else {
             printf("getblocktemplate() RPC: Failed to detect masternode to pay, burning coins\n");
             // masternodes are in-eligible for payment, burn the coins in-stead
@@ -591,8 +599,13 @@ if (!fTestNet)
     {
         CTxDestination address1;
         ExtractDestination(payee, address1);
-        CBitcoinAddress address2(address1);
+	CBitcoinAddress address2(address1);
+	ExtractDestination(payee2, address1);
+	CBitcoinAddress address3(address1);
         masternodeObj.push_back(Pair("payee", address2.ToString().c_str()));
+	masternodeObj.push_back(Pair("payee-new", address3.ToString().c_str()));
+	masternodeObj.push_back(Pair("old", (int)GetCurrentMasterNode()));
+	masternodeObj.push_back(Pair("new", (int)GetCurrentMasterNodenew()));
         masternodeObj.push_back(Pair("amount", (int64_t)GetMasternodePayment(pindexPrev->nHeight+1, pblock->vtx[0].GetValueOut())));
     }
     else
