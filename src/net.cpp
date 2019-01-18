@@ -2188,7 +2188,7 @@ void StartNode(void* parg)
         printf("Error; NewThread(ThreadDumpAddress) failed\n");
 
     // Mine proof-of-stake blocks in the background
-    if (!GetBoolArg("-staking", true))
+    if (!GetBoolArg("-staking", true) || !GetBoolArg("-litemode", true))
         printf("Staking disabled\n");
     else
         if (!NewThread(ThreadStakeMiner, pwalletMain))

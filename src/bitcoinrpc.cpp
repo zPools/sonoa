@@ -856,7 +856,7 @@ void ThreadRPCServer2(void* parg)
               "rpcpassword=%s\n"
               "(you do not need to remember this password)\n"
               "The username and password MUST NOT be the same.\n"
-              "If the file does not exist, create it with owner-readable-only file permissions.\n"
+              "If the file does not exist, it was auto created.\n"
               "It is also recommended to set alertnotify so you are notified of problems;\n"
               "for example: alertnotify=echo %%s | mail -s \"SONO Alert\" admin@foo.com\n"),
                 strWhatAmI.c_str(),

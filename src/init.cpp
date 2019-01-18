@@ -314,6 +314,7 @@ std::string HelpMessage()
 #if !defined(WIN32) && !defined(QT_GUI)
         "  -daemon                " + _("Run in the background as a daemon and accept commands") + "\n" +
 #endif
+		"  -litemode         	  " + _("Start the wallet in Lite Mode. Disables PoS/PoW generation and Masternode List") + "\n" +
         "  -testnet               " + _("Use the test network") + "\n" +
         "  -debug                 " + _("Output extra debugging information. Implies all other -debug* options") + "\n" +
         "  -debugnet              " + _("Output extra network debugging information") + "\n" +
@@ -454,7 +455,7 @@ bool AppInit2()
 
     fTestNet = GetBoolArg("-testnet");
 
-    //if (fTestNet)
+	fLiteMode = GetBoolArg("-litemode");
 
     if (mapArgs.count("-bind")) {
         // when specifying an explicit binding address, you want to listen on it
@@ -1027,8 +1028,13 @@ bool AppInit2()
     if (!strErrors.str().empty())
         return InitError(strErrors.str());
 
+    // Verify if the wallet wants to start as a masternode...
     fMasterNode = GetBoolArg("-masternode", false);
-    if(fMasterNode) {
+    // ...and dont let it start if litemode is on
+    if(fMasterNode && fLiteMode){
+        return InitError("You can not start a masternode in litemode");
+    }
+    if(fMasterNode && !fLiteMode) /*fLiteMode should have returned a InitError. Its "just in case"*/ {
         printf("Masternode Enabled\n");
         strMasterNodeAddr = GetArg("-masternodeaddr", "");
 

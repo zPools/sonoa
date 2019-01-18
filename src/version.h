@@ -30,19 +30,19 @@ static const int DATABASE_VERSION = 20001;
 // network protocol versioning
 //
 
-static const int PROTOCOL_VERSION = 20024;
+static const int PROTOCOL_VERSION = 20025;
 
 // Kick out wallets that are below this version
-static const int KICK_BELOW_THIS_VERSION = 20023;
+static const int KICK_BELOW_THIS_VERSION = 20024;
 
 // intial proto version, to be increased after version/verack negotiation
-static const int INIT_PROTO_VERSION = 20023;
+static const int INIT_PROTO_VERSION = 20024;
 
 // disconnect from peers older than this proto version
-static const int MIN_PEER_PROTO_VERSION = 20023;
+static const int MIN_PEER_PROTO_VERSION = 20024;
 
 // Don't forget to change proto in DARKSEND.h as well!!
-static const int MIN_MN_PROTO_VERSION = 20023; //Dont forget -> we set a manual kickout in masternode.cpp
+static const int MIN_MN_PROTO_VERSION = 20024; //Dont forget -> we set a manual kickout in masternode.cpp
 
 
 // nTime field added to CAddress, starting with this version;

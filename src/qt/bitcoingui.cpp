@@ -36,7 +36,7 @@
 #include "rpcconsole.h"
 #include "wallet.h"
 #include "termsofuse.h"
-#include "proofofimage.h"
+#include "init.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -139,6 +139,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 {
     resize(1300, 400);
     setWindowTitle(tr("SONO") + " - " + tr("Wallet"));
+	fLiteMode = GetBoolArg("-litemode");
+	if (fLiteMode)
+		{setWindowTitle(windowTitle() + QString(" ") + tr("[Lite Mode]"));}
 #ifndef Q_OS_MAC
     qApp->setWindowIcon(QIcon(":icons/sono"));
     setWindowIcon(QIcon(":icons/sono"));
@@ -179,7 +182,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 	blockBrowser = new BlockBrowser(this);
     marketBrowser = new MarketBrowser(this);
 	multisigPage = new MultisigDialog(this);
-    proofOfImagePage = new ProofOfImage(this);
 	//chatWindow = new ChatWindow(this);
 
 
@@ -218,7 +220,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 	centralWidget->addWidget(blockBrowser);
     centralWidget->addWidget(masternodeManagerPage);
 	centralWidget->addWidget(marketBrowser);
-    centralWidget->addWidget(proofOfImagePage);
 	//centralWidget->addWidget(chatWindow);
     setCentralWidget(centralWidget);
 
@@ -247,14 +248,15 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->addWidget(labelBlocksIcon);
     frameBlocksLayout->addStretch();
 
-    if (GetBoolArg("-staking", true))
-    {
-        QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
-        connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
-        timerStakingIcon->start(30 * 1000);
-        updateStakingIcon();
-    }
-
+	if (!fLiteMode) {
+		if (GetBoolArg("-staking", true))
+		{
+			QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
+			connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
+			timerStakingIcon->start(30 * 1000);
+			updateStakingIcon();
+		}
+	}
     connect(labelEncryptionIcon, SIGNAL(clicked()), unlockWalletAction, SLOT(trigger()));
 
     // Progress bar and label for blocks download
@@ -377,11 +379,6 @@ void BitcoinGUI::createActions()
     masternodeManagerAction->setCheckable(true);
     tabGroup->addAction(masternodeManagerAction);
 
-    proofOfImageAction = new QAction(QIcon(":/icons/data"), tr("&Proof of Data"), this);
-    proofOfImageAction ->setToolTip(tr("Timestamp Files on the SONO blockchain."));
-    proofOfImageAction ->setCheckable(true);
-    tabGroup->addAction(proofOfImageAction);
-
 	multisigAction = new QAction(QIcon(":/icons/multi"), tr("Multisig"), this);
     tabGroup->addAction(multisigAction);
 
@@ -407,8 +404,6 @@ void BitcoinGUI::createActions()
     connect(messageAction, SIGNAL(triggered()), this, SLOT(gotoMessagePage()));
 	connect(multisigAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(multisigAction, SIGNAL(triggered()), this, SLOT(gotoMultisigPage()));
-    connect(proofOfImageAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(proofOfImageAction, SIGNAL(triggered()), this, SLOT(gotoProofOfImagePage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit application"));
@@ -532,14 +527,20 @@ void BitcoinGUI::createToolBars()
     mainToolbar->addAction(sendCoinsAction);
     mainToolbar->addAction(receiveCoinsAction);
     mainToolbar->addAction(historyAction);
-    mainToolbar->addAction(mintingAction);
     mainToolbar->addAction(addressBookAction);
-//    mainToolbar->addAction(messageAction);
-    mainToolbar->addAction(statisticsAction);
+	mainToolbar->addAction(statisticsAction);
     mainToolbar->addAction(blockAction);
-    mainToolbar->addAction(masternodeManagerAction);
+
+	if (!fLiteMode)
+	{
+		mainToolbar->addAction(mintingAction);
+		mainToolbar->addAction(masternodeManagerAction);
+	}
+
+/*	  Code for these 3 will be removed soon
+//    mainToolbar->addAction(messageAction);
 //    mainToolbar->addAction(marketAction);
-//    mainToolbar->addAction(proofOfImageAction);
+*/
 
     secondaryToolbar = addToolBar(tr("Actions toolbar"));
     secondaryToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -1074,15 +1075,6 @@ void BitcoinGUI::gotoMarketBrowser()
 
 }
 
-void BitcoinGUI::gotoProofOfImagePage()
-{
-    proofOfImageAction->setChecked(true);
-    centralWidget->setCurrentWidget(proofOfImagePage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
-
 void BitcoinGUI::gotoMasternodeManagerPage()
 {
     masternodeManagerAction->setChecked(true);
@@ -1291,9 +1283,17 @@ void BitcoinGUI::setEncryptionStatus(int status)
         disconnect(labelEncryptionIcon, SIGNAL(clicked()),   lockWalletAction, SLOT(trigger()));
         connect   (labelEncryptionIcon, SIGNAL(clicked()),   lockWalletAction, SLOT(trigger()));
         labelEncryptionIcon->show();
-        labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>")); // TODO: Click to lock + translations
-        encryptWalletAction->setChecked(true);
+		if (fWalletUnlockStakingOnly)
+		{
+			labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_stake").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+			labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked for staking only</b>"));
+		}
+		else
+		{
+			labelEncryptionIcon->setPixmap(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+			labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>")); // TODO: Click to lock + translations
+        }
+		encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         unlockWalletAction->setVisible(false);
         lockWalletAction->setVisible(true);
@@ -1445,9 +1445,11 @@ void BitcoinGUI::updateStakingIcon()
     else
     {
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        if (pwalletMain && pwalletMain->IsLocked())
+        if (fLiteMode)
+			labelStakingIcon->setToolTip(tr("Not staking because wallet is in Lite Mode"));
+		else if (pwalletMain && pwalletMain->IsLocked())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is locked"));
-        else if (vNodes.empty())
+		else if (vNodes.empty())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is offline"));
         else if (IsInitialBlockDownload())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is syncing"));

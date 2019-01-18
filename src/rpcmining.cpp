@@ -133,7 +133,8 @@ if (!fTestNet) //Testnet could stand still for a while, so its ok to mine when n
 		{throw JSONRPCError(-9, "This node is in Lite Mode and cant mine");}
 
 	if (!MiningReqMN())
-		{throw JSONRPCError(-9, "This node need more active Masternodes");}
+    
+		{throw JSONRPCError(-9, "This node need more active Masternodes. Use getmininginfo for more details");}
     
 	if (vNodes.empty())
         throw JSONRPCError(-9, "SONO is not connected!");
@@ -275,7 +276,8 @@ if (!fTestNet)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}	
 	
 	if (!MiningReqMN())
-		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}	
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes. Use getmininginfo for more details");}	
+
     
 	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
@@ -432,7 +434,8 @@ if (!fTestNet)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
 	
 	if (!MiningReqMN())
-		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}		
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes. Use getmininginfo for more details");}		
+
     
 	if (vNodes.empty())
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "SONO is not connected!");
@@ -538,6 +541,7 @@ if (!fTestNet)
 
     CScript payee;
     CScript payee2;
+
 	
     Object result;
     result.push_back(Pair("version", pblock->nVersion));
@@ -634,7 +638,7 @@ Value submitblock(const Array& params, bool fHelp)
 		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node is in Lite Mode and cant mine");}
 	
 	if (!MiningReqMN())
-		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes");}
+		{throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "This node need more active Masternodes. Use getmininginfo for more details");}
     try {
         ssBlock >> block;
     }

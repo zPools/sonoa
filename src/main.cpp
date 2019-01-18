@@ -2276,7 +2276,8 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
     }
 
 
-    //   ==> Honor to people who honor deserves <==
+    //   ==> Honor to people who honor deserves. The team around Carsen implemented the MN code into this codebase. <==
+	//	 ==> The snippet below is their story, which is also in their main.cpp on the same place <==
 
     // ----------- masternode payments -----------
     // Once upon a time, People were really interested in Denarius.

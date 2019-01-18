@@ -59,6 +59,7 @@ using namespace std;
 
 //Masternode  features
 bool fMasterNode = false;
+bool fLiteMode = false;
 string strMasterNodePrivKey = "";
 string strMasterNodeAddr = "";
 int nDarksendRounds = 2;
@@ -1105,7 +1106,8 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
                    fprintf(ConfFile, "rpcpassword=MeTooPlease\n");
                    fprintf(ConfFile, "rpcallowip=localhost\n\n");
                    fprintf(ConfFile, "#####Options#####\n");
-                   fprintf(ConfFile, "server=1\n");
+                   fprintf(ConfFile, "litemode=0\n");
+				   fprintf(ConfFile, "server=1\n");
                    fprintf(ConfFile, "listen=1\n");
                    fprintf(ConfFile, "daemon=1\n\n");
                    fprintf(ConfFile, "#####Network#####\n");

@@ -528,7 +528,6 @@ int GetCurrentMasterNodenew(int mod, int64_t nBlockHeight, int minProtocol)
     return winner;
 }
 
-
 bool GetMasternodeRanks(CBlockIndex* pindex)
 {
 	if (!pindex || fLiteMode || IsInitialBlockDownload()) return true;
@@ -723,7 +722,8 @@ void CMasterNode::UpdateLastPaidBlock(const CBlockIndex *pindex, int nMaxBlocksT
 //
 uint256 CMasterNode::CalculateScore(int mod, int64_t nBlockHeight)
 {
-    if(pindexBest == NULL || fLiteMode) return 0; //Disable Masternodes on Lite Mode
+	  if(pindexBest == NULL || fLiteMode) return 0; //Disable Masternodes on Lite Mode
+
 
     uint256 hash = 0;
     uint256 aux = vin.prevout.hash + vin.prevout.n;
@@ -735,6 +735,7 @@ uint256 CMasterNode::CalculateScore(int mod, int64_t nBlockHeight)
     int min = mnCount * 0.50;
     
     if (paidAge < min) return 0;
+
 
     uint256 hash2 = fasthash(BEGIN(hash), END(hash)); //fasthash
     uint256 hash3 = fasthash(BEGIN(hash), END(aux));

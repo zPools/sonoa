@@ -47,6 +47,7 @@
         <file alias="tx_output">res/icons/tx_output.png</file>
         <file alias="tx_inout">res/icons/tx_inout.png</file>
         <file alias="lock_closed">res/icons/lock_closed.png</file>
+		<file alias="lock_stake">res/icons/lock_stake.png</file>
         <file alias="lock_open">res/icons/lock_open.png</file>
         <file alias="key">res/icons/key.png</file>
         <file alias="filesave">res/icons/filesave.png</file>
@@ -64,6 +65,8 @@
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
         <file alias="splash">res/images/splash.png</file>
+		<file alias="splash-litemode">res/images/splash-litemode.png</file>
+		<file alias="splash-goodbye">res/images/splash-goodbye.png</file>
         <file alias="vertical">res/images/vertical.png</file>
         <file alias="horizontal">res/images/horizontal.png</file>
         <file alias="dbg">res/images/dbg.jpg</file>
